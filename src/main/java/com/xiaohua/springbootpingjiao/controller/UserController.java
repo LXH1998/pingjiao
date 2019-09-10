@@ -9,13 +9,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
+@Controller
 @RequestMapping("/testBoot")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    @RequestMapping("goIndex")
+    public String GoIndex(){
+        return "index";
+    }
+    @RequestMapping("goAdminIndex")
+    public String goAdminIndex(){
+        return "indexAdmin";
+    }
+
+    @ResponseBody
     @RequestMapping("getUser/{id}")
     public String GetUser(@PathVariable int id){
         return userService.Sel(id).toString();
