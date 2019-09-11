@@ -1,51 +1,58 @@
 package com.xiaohua.springbootpingjiao.entity;
 
-public class User {
-    private Integer id;
-    private String userName;
-    private String passWord;
-    private String realName;
+public class User{
+    private Integer user_Id;
+    private String user_Name;
+    private String user_Account;
+    private String user_Password;
+    private Integer departments_Id;
+    private Integer class_Id;
 
-    public Integer getId() {
-        return id;
+    public Integer getUser_Id() {
+        return user_Id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUser_Id(Integer user_Id) {
+        this.user_Id = user_Id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUser_Name() {
+        return user_Name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUser_Name(String user_Name) {
+        this.user_Name = user_Name;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getUser_Account() {
+        return user_Account;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public void setUser_Account(String user_Account) {
+        this.user_Account = user_Account;
     }
 
-    public String getRealName() {
-        return realName;
+    public String getUser_Password() {
+        return user_Password;
     }
 
-    public void setRealName(String realName) {
-        this.realName = realName;
+    public void setUser_Password(String user_Password) {
+        this.user_Password = user_Password;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", passWord='" + passWord + '\'' +
-                ", realName='" + realName + '\'' +
-                '}';
+    public Integer getDepartments_Id() {
+        return departments_Id;
     }
 
+    public void setDepartments_Id(Integer departments_Id) {
+        this.departments_Id = departments_Id;
+    }
+
+    public Integer getClass_Id() {
+        return class_Id;
+    }
+
+    public void setClass_Id(Integer class_Id) {
+        this.class_Id = class_Id;
+    }
 }
