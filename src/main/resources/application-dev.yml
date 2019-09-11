@@ -2,19 +2,18 @@ server:
   port: 8080
 spring:
   datasource:
-    username: root
+    name: vote
+    username: lxh
     password: 123456
-    url: jdbc:mysql://localhost:3306/pingjiao?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://106.15.190.231:3306/ppp?serverTimezone=UTC
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
     encoding: UTF-8
-#    content-type: text/html
     cache: false
     check-template-location: true
-    mvc:
+  mvc:
       static-path-pattern: /static/**
 mybatis:
-  check-config-location:
-    mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath:mapper/*.xml

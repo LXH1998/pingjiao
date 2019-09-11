@@ -3,8 +3,9 @@
 <html>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>在线评教系统</title>
-    <!--<link th:href="@{/static/js/layui.css}" rel="stylesheet">-->
-    <link rel="stylesheet" href="../static/css/layui.css">
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -16,7 +17,7 @@
             <li class="layui-nav-item"><a href="">商品管理</a></li>
             <li class="layui-nav-item"><a href="">用户</a></li>
             <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
+                <a href="javascript:">其它系统</a>
                 <dl class="layui-nav-child">
                     <dd><a href="">邮件管理</a></dd>
                     <dd><a href="">消息管理</a></dd>
@@ -68,7 +69,28 @@
 
     <div class="layui-body">
         <!-- 内容主体区域 -->
-        <div style="padding: 15px;">内容主体区域</div>
+        <!--<div style="padding: 15px;">内容主体区域</div>-->
+        <div class="layui-tab layui-tab-card" lay-allowclose="true">
+            <ul class="layui-tab-title">
+                <li class="layui-this">网站设置</li>
+                <li>用户基本管理</li>
+                <li>权限分配</li>
+                <li>商品管理</li>
+                <li>订单管理</li>
+            </ul>
+            <div class="layui-tab-content" style="height: 150px;">
+                <div class="layui-tab-item layui-show">
+                    1. 我个人比较喜欢卡片风格的，所以你发现又是以卡片的风格举例
+                    2. 删除功能适用于所有风格
+                </div>
+                <div class="layui-tab-item">2</div>
+                <div class="layui-tab-item">3</div>
+                <div class="layui-tab-item">4</div>
+                <div class="layui-tab-item">5</div>
+                <div class="layui-tab-item">6</div>
+            </div>
+        </div>
+
         <div class="layui-tab" lay-filter="demo" lay-allowclose="true" style="margin-left: 200px;">
             <ul class="layui-tab-title">
             </ul>
@@ -87,8 +109,7 @@
         © layui.com - 底部固定区域
     </div>
 </div>
-<script type="text/javascript" src="../static/js/jquery-3.4.0.js"></script>
-<script type="text/javascript" src="../static/js/layui.js">
+<script type="text/javascript">
     layui.use('element', function() {
         var $ = layui.jquery;
         var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
