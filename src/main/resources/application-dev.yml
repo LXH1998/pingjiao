@@ -5,7 +5,7 @@ spring:
     name: vote
     username: lxh
     password: 123456
-    url: jdbc:mysql://106.15.190.231:3306/ppp?serverTimezone=UTC
+    url: jdbc:mysql://106.15.190.231:3306/pingjiao?serverTimezone=UTC
 #    driver-class-name: com.mysql.cj.jdbc.Driver
   thymeleaf:
     prefix: classpath:/templates/
