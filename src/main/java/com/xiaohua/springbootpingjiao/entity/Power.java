@@ -4,6 +4,45 @@ public class Power{
     private Integer power_Id;
     private String power_Name;
     private String power_url;
+    private Integer power_parentid;
+    private Integer power_state;
+    private String describe;
+    private  Integer sort;
+
+
+    
+    public Integer getPower_parentid() {
+        return power_parentid;
+    }
+
+    public void setPower_parentid(Integer power_parentid) {
+        this.power_parentid = power_parentid;
+    }
+
+    public Integer getPower_state() {
+        return power_state;
+    }
+
+    public void setPower_state(Integer power_state) {
+        this.power_state = power_state;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
 
     public Integer getPower_Id() {
         return power_Id;
