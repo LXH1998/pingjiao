@@ -3,10 +3,28 @@ package com.xiaohua.springbootpingjiao.entity;
 public class User{
     private Integer user_Id;
     private String user_Name;
+    private String user_Sex;
     private String user_Account;
     private String user_Password;
     private Integer departments_Id;
     private Integer class_Id;
+    private String user_state;
+
+    public String getUser_Sex() {
+        return user_Sex;
+    }
+
+    public void setUser_Sex(String user_Sex) {
+        this.user_Sex = user_Sex;
+    }
+
+    public String getUser_state() {
+        return user_state;
+    }
+
+    public void setUser_state(String user_state) {
+        this.user_state = user_state;
+    }
 
     public Integer getUser_Id() {
         return user_Id;
