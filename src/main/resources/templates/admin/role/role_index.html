@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>角色管理</title>
+<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<body>
+
+<table id="demo" lay-filter="test"></table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail">权限</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">添加权限</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.auth > 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
+</script>
+
+<!--序号自增-->
+<script type="text/html" id="xuhao">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
+
+
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //数据表表头
+        table.render({
+            elem: '#demo'
+            ,height: 200
+            ,url: '/roleManagement/allRoles' //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                        [ //表头
+                            {field: 'role_ID', templet: '#xuhao',title: 'ID', width:'20%', sort: true, fixed: 'left', align: 'center'}
+                            ,{field: 'role_Name', title: '角色', width:'30%', align: 'center'}
+                            ,{title: '操作', width: '50%', align: 'center', toolbar: '#barDemo'}
+                        ]
+                    ]
+        });
+
+
+        //监听工具条
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var roleName = data.role_Name; //获得属性role_ID的值
+            // console.log(roleId);
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+                //iframe层-父子操作
+                layer.open({
+                    type: 2,
+                    title:'已有权限',
+                    area: ['700px', '450px'],
+                    fixed: false, //不固定
+                    maxmin: true,
+                    content: '/roleManagement/checkPower',
+                    success:function (layero,index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.child(data)
+                    }
+                });
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    //向服务端发送删除指令
+                    $.ajax({
+                        url:'/roleManagement/deleteTheRole',
+                        type:'post',
+                        data:{
+                            role_Name: roleName
+                        },
+                        success:function (res) {
+                            if (res.result=="操作成功"){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.close(index);
+                                layer.msg(res.result)
+                            } else if (res.result=="操作失败") {
+                                layer.msg(res.result);
+                            }
+                        },
+                        error:function () {
+                            layer.msg("异常");
+                        }
+                    })
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                //do something
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            } else if(layEvent === 'LAYTABLE_TIPS'){
+                layer.alert('Hi，头部工具栏扩展的右侧图标。');
+            }
+        });
+    });
+
+</script>
+</body>
+</html>
