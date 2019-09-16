@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohua.springbootpingjiao.mapper.RoleMapper">
+
+    <!--<resultMap id="BaseResultMap" type="com.xiaohua.springbootpingjiao.entity.User">-->
+        <!--<result column="id" jdbcType="INTEGER" property="id" />-->
+        <!--<result column="userName" jdbcType="VARCHAR" property="userName" />-->
+        <!--<result column="passWord" jdbcType="VARCHAR" property="passWord" />-->
+        <!--<result column="realName" jdbcType="VARCHAR" property="realName" />-->
+    <!--</resultMap>-->
+
+    <!--<select id="Sel" resultType="com.xiaohua.springbootpingjiao.entity.User">-->
+        <!--select * from user where id = #{id}-->
+    <!--</select>-->
+
+    <!--查询所有角色-->
+    <select id="selectAllRoles" resultMap="allRolesMap">
+        select * from role;
+    </select>
+    <resultMap id="allRolesMap" type="com.xiaohua.springbootpingjiao.entity.Role">
+        <result column="role_id" property="role_ID"></result>
+        <result column="role_name" property="role_Name"></result>
+    </resultMap>
+
+    <!--新增角色-->
+    <select id="selectTheRole" parameterType="String">
+        select ifnull(max(role_id),0) as role_id from role where role_name=#{role_Name};
+    </select>
+    <insert id="insertRole" parameterType="String">
+        insert into role(role_name) value (#{role_Name});
+    </insert>
+
+    <!--删除角色-->
+    <delete id="deleteTheRole" parameterType="String">
+        delete from role where role_name=#{role_Name};
+    </delete>
+
+    <!--查看权限-->
+    <select id="selectThePower" resultMap="thePowerMap">
+        select r.*,rp.*,p.*
+        from role r
+                 join rolepower rp
+                      on r.role_id = rp.role_id
+                 join power p
+                      on p.power_id = rp.power_id
+        where r.role_id=#{role_ID};
+    </select>
+    <resultMap id="thePowerMap" type="com.xiaohua.springbootpingjiao.entity.Power">
+        <id property="power_Id" column="power_id"></id>
+        <result property="power_Name" column="power_name"></result>
+        <result property="power_url" column="power_url"></result>
+    </resultMap>
+
+
+    <!--增加角色权限（1.1、查看未授权权限）-->
+    <select id="selectUnauthorizedPower" parameterType="int" resultMap="thePowerMap">
+        select * from power  where power_id not in(select power_id from rolepower where role_id=#{role_ID})
+    </select>
+</mapper>
