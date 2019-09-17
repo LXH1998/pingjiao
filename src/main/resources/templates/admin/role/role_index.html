@@ -8,19 +8,41 @@
 <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <body>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">添加角色：</label>
+        <div class="layui-input-block">
+            <input type="text" name="role_Name" required  lay-verify="required" placeholder="请输入角色名" autocomplete="off" class="layui-input" style="width: 150px;float: left;margin-right: 5px">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">添加</button>
+        </div>
+    </div>
+</form>
 
-<table id="demo" lay-filter="test"></table>
+<div class="layui-btn-group demoTable">
+    <!--<button class="layui-btn" data-type="add">添加权限</button>-->
+    <button class="layui-btn" data-type="batchDelete">批量删除</button>
+</div>
 
+
+<table class="layui-table" lay-data="{width: 900, url:'/roleManagement/allRoles', page:true, id:'idTest'}" lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{type:'checkbox', width:'10%', fixed: 'left'}"></th>
+        <th lay-data="{field:'role_ID' , templet: '#xuhao', width:'20%', sort: true, fixed: true}">ID</th>
+        <th lay-data="{field:'role_Name', width:'25%', align:'center'}">角色</th>
+        <th lay-data="{fixed: 'right', width:'45%', align:'center', toolbar: '#barDemo'}">操作</th>
+    </tr>
+    </thead>
+</table>
+
+<!--操作-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail">权限</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">添加权限</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-
-    <!-- 这里同样支持 laytpl 语法，如： -->
-    {{#  if(d.auth > 2){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
-    {{#  } }}
 </script>
+
+
 
 <!--序号自增-->
 <script type="text/html" id="xuhao">
@@ -32,24 +54,9 @@
     layui.use('table', function(){
         var table = layui.table;
 
-        //数据表表头
-        table.render({
-            elem: '#demo'
-            ,height: 200
-            ,url: '/roleManagement/allRoles' //数据接口
-            ,page: true //开启分页
-            ,cols: [
-                        [ //表头
-                            {field: 'role_ID', templet: '#xuhao',title: 'ID', width:'20%', sort: true, fixed: 'left', align: 'center'}
-                            ,{field: 'role_Name', title: '角色', width:'30%', align: 'center'}
-                            ,{title: '操作', width: '50%', align: 'center', toolbar: '#barDemo'}
-                        ]
-                    ]
-        });
-
 
         //监听工具条
-        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(demo)', function(obj){ //注：tool 是工具条事件名，demo 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var roleName = data.role_Name; //获得属性role_ID的值
@@ -96,18 +103,65 @@
                 });
             } else if(layEvent === 'edit'){ //编辑
                 //do something
-
-                //同步更新缓存对应的值
-                obj.update({
-                    username: '123'
-                    ,title: 'xxx'
+                layer.open({
+                    type: 2,
+                    title:'可添加权限',
+                    area: ['700px', '450px'],
+                    fixed: false, //不固定
+                    maxmin: true,
+                    content: '/roleManagement/goAddPower',
+                    success:function (layero,index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        iframe.child(data)
+                    }
                 });
-            } else if(layEvent === 'LAYTABLE_TIPS'){
-                layer.alert('Hi，头部工具栏扩展的右侧图标。');
             }
         });
+
+
+        //头部工具栏
+        var $ = layui.$, active = {
+            add: function(){ //获取选中数据
+                // var checkStatus = table.checkStatus('idTest')
+                //     ,data = checkStatus.data;
+                // layer.alert(JSON.stringify(data));
+            }
+            ,batchDelete: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
     });
 
 </script>
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            // var rolename = JSON.stringify(data.field);
+            $.ajax({
+                url:'/roleManagement/insertRole',
+                data:data.field,
+                success:function (res) {
+                    console.log("成功")
+                }
+            })
+            // layer.msg(rolename);
+            // return false;
+        });
+    });
+</script>
+
 </body>
 </html>

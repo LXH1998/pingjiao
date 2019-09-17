@@ -35,7 +35,23 @@ public class RoleController {
     public String checkPower(){
         return "admin/role/role_power";
     }
+    @RequestMapping("/ccc")
+    public String checkPo11wer(){
+        return "admin/role/aaaa";
+    }
 
+    /**
+     * 添加权限弹窗
+     */
+    @RequestMapping("/goAddPower")
+    public String goAddPower(){
+        return "admin/role/role_addPower";
+    }
+
+    @RequestMapping("/gotest")
+    public String goTest(){
+        return "admin/role/test";
+    }
 
 
     /**
@@ -98,7 +114,10 @@ public class RoleController {
     public Map selectThePower(int role_ID){
         Map result = new HashMap();
         List<Power> powers = roleService.selectThePower(role_ID);
-        result.put("powers",powers);
+        result.put("code",0);
+        result.put("msg","返回成功");
+        result.put("count",powers.size());
+        result.put("data",powers);
         return result;
     }
 
@@ -110,7 +129,10 @@ public class RoleController {
     public Map selectUnauthorizedPower(int role_ID){
         Map result = new HashMap();
         List<Power> unauthorizedPower = roleService.selectUnauthorizedPower(role_ID);
-        result.put("unauthorizedPowers", unauthorizedPower);
+        result.put("code",0);
+        result.put("msg","返回成功");
+        result.put("count",unauthorizedPower.size());
+        result.put("data",unauthorizedPower);
         return result;
     }
 }
