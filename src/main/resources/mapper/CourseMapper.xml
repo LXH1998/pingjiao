@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohua.springbootpingjiao.mapper.CourseMapper">
+
+    <resultMap id="BaseResultMap" type="com.xiaohua.springbootpingjiao.entity.Courses">
+        <result column="courses_Id" jdbcType="INTEGER" property="id" />
+        <result column="courses_Name" jdbcType="VARCHAR" property="name" />
+    </resultMap>
+<!--查找所有课程-->
+    <select id="SelectCourseAll" resultType="com.xiaohua.springbootpingjiao.entity.Courses">
+        select * from Courses where courses_state = '0'
+    </select>
+    <!--修改课程状态量为删除-->
+    <update id="deleteTheCourse" parameterType="com.xiaohua.springbootpingjiao.entity.Courses">
+        update  courses set courses_state = '1' where courses_id=#{courses_Id}
+    </update>
+    <!-- 删除指定课程-->
+    <!--<delete id="deleteTheCourse" parameterType="com.xiaohua.springbootpingjiao.entity.Courses" >-->
+        <!--delete  from  courses where courses_id=#{courses_Id}-->
+    <!--</delete>-->
+</mapper>

@@ -27,6 +27,10 @@ public class UserController {
     public String goAdminIndex1(){
         return "b";
     }
+    @RequestMapping("UserList")
+    public String UserList(){
+        return "admin/course/course_list";
+    }
 
     @ResponseBody
     @RequestMapping("getUser/{id}")
