@@ -2,7 +2,6 @@ package com.xiaohua.springbootpingjiao.controller;
 
 import com.xiaohua.springbootpingjiao.entity.Courses;
 import com.xiaohua.springbootpingjiao.service.CourseService;
-import com.xiaohua.springbootpingjiao.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

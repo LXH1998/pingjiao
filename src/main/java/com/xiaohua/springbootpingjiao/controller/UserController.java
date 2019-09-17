@@ -1,6 +1,6 @@
 package com.xiaohua.springbootpingjiao.controller;
 
-import com.xiaohua.springbootpingjiao.service.impl.UserService;
+import com.xiaohua.springbootpingjiao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +19,15 @@ public class UserController {
     public String GoIndex(){
         return "index";
     }
-    @RequestMapping("goA")
+
+
+
+    @RequestMapping("goclass")
+    public String goclass(){
+        return "admin/class/class";
+    }
+    @RequestMapping("goAdminIndex")
+
     public String goAdminIndex(){
         return "a";
     }
