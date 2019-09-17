@@ -9,6 +9,33 @@ public class User{
     private Integer departments_Id;
     private Integer class_Id;
     private String user_state;
+    private Departments departments;
+    private Userrole userrole;
+    private Role role;
+
+    public Departments getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(Departments departments) {
+        this.departments = departments;
+    }
+
+    public Userrole getUserrole() {
+        return userrole;
+    }
+
+    public void setUserrole(Userrole userrole) {
+        this.userrole = userrole;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public String getUser_Sex() {
         return user_Sex;

@@ -1,23 +1,20 @@
-package com.xiaohua.springbootpingjiao.mapper;
+package com.xiaohua.springbootpingjiao.service;
 
 import com.xiaohua.springbootpingjiao.entity.Role;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * @Author: luquanlin
- * @Date: 2019/9/11 12:28
+ * @Date: 2019/9/11 12:29
  * @VERSION: 1.0
  **/
 
-
-@Repository
-public interface UserMapper {
+public interface UserService {
     List<HashMap> selectAllUser(int pages,int limit);
-    int updateUserPassword(int user_Id);
-    int updateUserState(int user_Id);
+    Boolean updateUserPassword(int user_Id);
+    Boolean updateUserState(int user_Id);
     List<HashMap> selectAccountUsers(String user_Account,String role_name);
     List<Role> selectAllRole();
     List<HashMap> selectCount();
