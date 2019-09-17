@@ -21,6 +21,7 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
+
     //查询课程
     @RequestMapping("/listDate")
     @ResponseBody
@@ -54,8 +55,12 @@ public class CourseController {
         return result;
     }
     @RequestMapping("/list")
-    public String UserList(){
+    public String CourseList(){
         return "admin/course/course_list";
+    }
+    @RequestMapping("/teach")
+    public String Courseteach(){
+        return "admin/course/course_teach";
     }
 
 }
