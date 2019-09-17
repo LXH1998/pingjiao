@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+
+</head>
+<body>
+
+<div style="width: 100%;">
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<form class="layui-form" action="">
+
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">学院:</label>
+
+        <div class="layui-input-inline">
+            <select name="quiz2">
+                <option value="">请选择学院</option>
+                <option value="软件学院">软件学院</option>
+                <option value="电子学院" >电子学院</option>
+                <option value="土木学院">土木学院</option>
+                <option value="动画学院">动画学院</option>
+                <option value="智能学院">智能学院</option>
+            </select>
+
+
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">班级编号 </label>
+            <div class="layui-input-inline">
+                <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级编号" class="layui-input">
+            </div>
+            <button type="button" class="layui-btn layui-btn-normal" id="a">   <i class="layui-icon">&#xe615;</i>搜索</button>
+        </div>
+        <button type="button" class="layui-btn"   id="add">
+            <i class="layui-icon">&#xe608;</i> 添加
+        </button>
+
+
+    </div>
+
+
+
+
+
+</form>
+
+
+<div class="layui-btn-group demoTable">
+    <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+    <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+    <button class="layui-btn layui-btn-danger" data-type="isAll">批量删除</button>
+</div>
+
+<table class="layui-table" lay-data="{ url:'/class/goclass', page:true, id:'idTest'}" lay-filter="demo">
+    <thead>
+    <tr>
+        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+
+        <th lay-data="{field:'class_id',  sort: true, fixed: true}">班级编号</th>
+        <th lay-data="{field:'class_name'}">班级名称</th>
+        <th lay-data="{field:'departments_name'}">所属院系</th>
+        <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}">操作</th>
+    </tr>
+    </thead>
+</table>
+<style>
+
+    body::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<!--         ,url:' ../static/b.json'-->
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            , table = layui.table;
+
+
+
+        //头工具栏事件
+        // table.on('checkbox(demo)', function(obj){
+        //     console.log(obj)
+        // });
+        //监听工具条
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            }
+        });
+
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+
+                layer.confirm('是否删除这'+ data.length + ' 个', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    layer.msg('删除成功', {icon: 1});
+                });
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    });
+// $("#add").click(function () {
+//     console.log("aa")
+//     layer.open({
+//         type: 2,
+//         area: ['700px', '450px'],
+//         fixed: false, //不固定
+//         maxmin: true,
+//         content: 'class/goaddclass'
+//     });
+// })
+
+    $("#add").click(function(){
+        console.log("aa")
+        layer.open({
+            type: 2,
+            title: false,
+            area: ['450px', '360px'],
+            shade: 0.8,
+            closeBtn: 1,
+            shadeClose: true,
+            // time:timee,
+            content: '/class/goaddclass',
+            end: function(){ //此处用于演示
+                // var a=sessionStorage.getItem("check")
+                // if(account!=null){
+                //     layer.msg('登陆成功', { icon: 1 });
+                // }
+
+                // setTimeout(function () {location.reload();}, 2000)
+                // console.log(a)
+
+//     if (a == 1) {
+
+
+//             $(".check2").css("display", "block")
+//
+
+//         }
+
+//         if (a == 2) {
+//             $(".check1").css("display", "block")
+//             $(".check2").show()
+//             layer.msg('登陆成功', { icon: 1 });
+//         }
+
+            }
+        });
+    })
+
+</script>
+
+</body>
+<script>
+
+</script>
+</html>

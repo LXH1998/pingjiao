@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+
+</head>
+<style>
+    .biaoti{
+        text-align: center;
+        height: 40px;
+        font-size: 28px;
+        color: #009688;
+    }
+
+</style>
+<body>
+<div class="biaoti">新增班级</div>
+<form class="layui-form" action="" style="width: 400px;">
+
+
+<div class="layui-form-item">
+    <label class="layui-form-label" >学　　院:</label>
+<div>
+    <div class="layui-inline" style="width: 250px;">
+        <select name="quiz2" >
+
+            <option value="" >请选择学院</option>
+
+            <option value="软件学院">软件学院</option>
+            <option value="电子学院" >电子学院</option>
+            <option value="土木学院">土木学院</option>
+            <option value="动画学院">动画学院</option>
+            <option value="智能学院">智能学院</option>
+        </select>
+    </div>
+
+
+</div>
+
+    <div style="height: 20px;"></div>
+
+    <div class="layui-inline">
+        <label class="layui-form-label">班级编号: </label>
+        <div class="layui-input-inline">
+            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级编号" class="layui-input" style="width: 250px;">
+        </div>
+
+    </div>
+
+    <div style="height: 20px;"></div>
+    <div class="layui-inline">
+        <label class="layui-form-label">班级名称: </label>
+        <div class="layui-input-inline">
+            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级名称" class="layui-input" style="width: 250px;">
+        </div>
+
+    </div>
+    <div style="text-align: center;margin-top: 40px;">
+        <button type="button" class="layui-btn" style="margin-left: 40px">添加</button>
+        <button type="button" class="layui-btn layui-btn-warm"style="margin-left: 40px" id="quxiao">取消</button>
+    </div>
+
+
+
+
+</div>
+
+
+
+
+
+</form>
+
+</body>
+
+<script>
+    layui.use(['form', 'layedit', 'laydate','table'], function() {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate
+            , table = layui.table;
+
+        var index = parent.layer.getFrameIndex(window.name);
+        $('#quxiao').click(function(){
+            // var val = $('#name').val();
+            // if(val === ''){
+            //     parent.layer.msg('请填写标记');
+            //     return;
+            // }
+            // parent.layer.msg('您将标记 [ ' +val + ' ] 成功传送给了父窗口');
+            parent.layer.close(index);
+        });
+    });
+</script>
+</html>
