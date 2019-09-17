@@ -1,4 +1,4 @@
-package com.xiaohua.springbootpingjiao.service.impl;
+package com.xiaohua.springbootpingjiao.service;
 
 import com.xiaohua.springbootpingjiao.entity.User;
 import com.xiaohua.springbootpingjiao.mapper.UserMapper;

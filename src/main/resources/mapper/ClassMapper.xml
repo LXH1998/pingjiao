@@ -2,6 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.ClassMapper">
 
+    <resultMap id="classResultMap" type="com.xiaohua.springbootpingjiao.entity.Class">
+        <id property="class_Id" column="class_id"></id>
+        <result property="departments_id" column="departments_id"></result>
+        <result property="class_Name" column="class_name"></result>
+        <!--<association property="departments" column="departments"></association>-->
+        <collection property="departments" ofType="com.xiaohua.springbootpingjiao.entity.Departments" column="departments_id">
+            <id property="departments_Id" column="departments_id"></id>
+            <result property="departments_Name" column="departments_Name"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selectAllClass" resultType="HashMap">
+        select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id
+    </select>
 
 
 </mapper>
