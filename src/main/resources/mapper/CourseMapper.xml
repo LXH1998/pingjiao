@@ -10,6 +10,14 @@
     <select id="SelectCourseAll" resultType="com.xiaohua.springbootpingjiao.entity.Courses">
         select * from Courses where courses_state = '0'
     </select>
+    <!--查找具体一门课程-->
+    <select id="SelectCourseOne" parameterType="String" resultType="int">
+        select count(*) from Courses where courses_name = #{courses_Name} AND courses_state = '0'
+    </select>
+    <insert id="insertCourses" parameterType="String">
+        INSERT INTO courses (courses_name) VALUES (#{courses_Name})
+    </insert>
+
     <!--修改课程状态量为删除-->
     <update id="deleteTheCourse" parameterType="com.xiaohua.springbootpingjiao.entity.Courses">
         update  courses set courses_state = '1' where courses_id=#{courses_Id}

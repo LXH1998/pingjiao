@@ -10,4 +10,8 @@ public interface CourseService {
     public List<Courses> SelectCourse();
     public int deleteTheCourse(int id);
     public List<TeachData> SelectTeach();
+    //查询具体某一门课程是否存在
+    int SelectCourseOne(String courses_Name);
+    //新增课程
+    public int insertCourses(String courses_Name);
 }
