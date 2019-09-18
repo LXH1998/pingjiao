@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <title>layui</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
-    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
-    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>课程管理</title>
+<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <body>
 <div class="layui-btn-group demoTable">
@@ -16,48 +13,105 @@
     <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
     <button class="layui-btn" data-type="isAll">验证是否全选</button>
 </div>
-
-<table class="layui-table" lay-data="{width: 892, height:330, url:'/demo/table/user/', page:true, id:'idTest'}" lay-filter="demo">
-    <thead>
-    <tr>
-        <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
-        <th lay-data="{field:'id', width:80, sort: true, fixed: true}">课程ID</th>
-        <th lay-data="{field:'username', width:80}">教师名称</th>
-        <th lay-data="{field:'sex', width:80, sort: true}">教授班级</th>
-        <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}"></th>
-    </tr>
-    </thead>
-</table>
+<table id="demo" lay-filter="test"></table>
 
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">权限</a>
+    <a class="layui-btn layui-btn-xs" lay-event="detail">授课详情</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.auth > 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
 </script>
 
+<!--序号自增-->
+<!--<script type="text/html" id="xuhao">-->
+<!--{{d.LAY_TABLE_INDEX+1}}-->
+<!--</script>-->
 
-<script>
+
+<script type="text/javascript">
     layui.use('table', function(){
         var table = layui.table;
-        //监听表格复选框选择
-        table.on('checkbox(demo)', function(obj){
-            console.log(obj)
-        });
-        //监听工具条
-        table.on('tool(demo)', function(obj){
-            var data = obj.data;
-            if(obj.event === 'detail'){
-                layer.msg('ID：'+ data.id + ' 的查看操作');
-            } else if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
-                    obj.del();
-                    layer.close(index);
-                });
-            } else if(obj.event === 'edit'){
-                layer.alert('编辑行：<br>'+ JSON.stringify(data))
-            }
+
+        //数据表表头
+        table.render({
+            elem: '#demo'
+            // ,height: 400
+            ,url: '/course/teachListDate' //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                [ //表头
+                    {field: 'teach_id', templet: '#xuhao',title: '课程ID', width:'20%', sort: true, fixed: 'left', align: 'center'},
+                    {field: 'courses_Name', title: '课程名', width: '20%',align: 'center'}
+                    ,{field: 'class_Name', title: '班级', width:'20%', align: 'center'}
+                    ,{field: 'user_Name', title: '授课教师', width:'20%', align: 'center'}
+                    ,{title: '操作', width: '20%', align: 'center', toolbar: '#barDemo'}
+                ]
+            ]
         });
 
+
+        //监听工具条
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+            console.log(tr)
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+                //iframe层-父子操作
+                // layer.open({
+                //     type: 2,
+                //     title:'已有权限',
+                //     area: ['700px', '450px'],
+                //     fixed: false, //不固定
+                //     maxmin: true,
+                //     content: '/course/teach',
+                //     success:function (layero,index) {
+                //         var iframe = window['layui-layer-iframe' + index];
+                //         iframe.child(data)
+                //     }
+                // });
+                location.href = '/course/teach'
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    //向服务端发送删除指令
+                    $.ajax({
+                        url:'/course/deleteOne',
+                        type:'post',
+                        data:{
+                            courses_Id: data.courses_Id
+                        },
+                        success:function (res) {
+                            if (res.result=="操作成功"){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.close(index);
+                                layer.msg(res.result)
+                            } else if (res.result=="操作失败") {
+                                layer.msg(res.result);
+                            }
+                        },
+                        error:function () {
+                            layer.msg("异常");
+                        }
+                    })
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                //do something
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            } else if(layEvent === 'LAYTABLE_TIPS'){
+                layer.alert('Hi，头部工具栏扩展的右侧图标。');
+            }
+        });
+//头部按钮
         var $ = layui.$, active = {
             getCheckData: function(){ //获取选中数据
                 var checkStatus = table.checkStatus('idTest')
@@ -79,8 +133,9 @@
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
-    });
-</script>
 
+    });
+
+</script>
 </body>
 </html>
