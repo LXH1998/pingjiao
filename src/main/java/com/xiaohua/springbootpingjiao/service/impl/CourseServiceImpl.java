@@ -1,6 +1,8 @@
 package com.xiaohua.springbootpingjiao.service.impl;
 
 import com.xiaohua.springbootpingjiao.entity.Courses;
+import com.xiaohua.springbootpingjiao.entity.Teach;
+import com.xiaohua.springbootpingjiao.entity.TeachData;
 import com.xiaohua.springbootpingjiao.mapper.CourseMapper;
 import com.xiaohua.springbootpingjiao.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +31,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public int deleteTheCourse(int id) {
         return courseMapper.deleteTheCourse(id);
+    }
+
+    @Override
+    public List<TeachData> SelectTeach() {
+        return courseMapper.SelectTeachAll();
     }
 }
