@@ -6,6 +6,7 @@
         <id property="class_Id" column="class_id"></id>
         <result property="departments_id" column="departments_id"></result>
         <result property="class_Name" column="class_name"></result>
+        <result property="class_amount" column="class_amount"></result>
         <!--<association property="departments" column="departments"></association>-->
         <collection property="departments" ofType="com.xiaohua.springbootpingjiao.entity.Departments" column="departments_id">
             <id property="departments_Id" column="departments_id"></id>
@@ -20,7 +21,8 @@
 
 
     <select id="selectAllClass" resultType="HashMap">
-        select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id
+        select class.class_id,class.class_name,departments.departments_name from class left join departments
+         on class.departments_id=departments.departments_id  where class_amount=1
     </select>
 
     <!--查询所有院系-->
@@ -31,6 +33,17 @@
     <!--查询院系ID-->
     <select id="selectDepartId" resultType="String">
         SELECT * FROM departments where departments_name = #{departments_Name}
+    </select>
+    <!--重载指定院系id查找班级-->
+    <select id="selectClassWhereDepartId" resultType="HashMap">
+          select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id WHERE departments.departments_id=#{departments_id} and
+          class.class_amount=1
+    </select>
+
+    <!--重载指定班级编号查找班级-->
+    <select id="selectClassWhereClassId" resultType="HashMap">
+ select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id
+WHERE class.class_id like concat('%',#{class_Id},'%')
     </select>
 
     <!--添加班级-->

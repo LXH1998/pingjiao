@@ -54,10 +54,32 @@ public class ClassController {
         result.put("data",departments);
         return  result;
     }
-
+    @ResponseBody
+    @RequestMapping("/classindepartments")
+    public  HashMap selectClassWhereDepartments(String departments_id){
+        HashMap result = new HashMap();
+        List<HashMap> classes = classService.selectClassWhereDepartId(departments_id);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",classes.size());
+        result.put("data",classes);
+        return result;
+    }
 
     @ResponseBody
-        @RequestMapping("/insertClass")
+    @RequestMapping("/classinclassid")
+    public  HashMap selectClassWhereClassid(String class_Id){
+        HashMap result = new HashMap();
+        List<HashMap> classes = classService.selectClassWhereClassId(class_Id);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",classes.size());
+        result.put("data",classes);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("/insertClass")
     public  boolean insertClass(String class_Id,String  class_Name,String departments_id){
         Class c = new Class();
         c.setClass_Id(Integer.parseInt(class_Id));
