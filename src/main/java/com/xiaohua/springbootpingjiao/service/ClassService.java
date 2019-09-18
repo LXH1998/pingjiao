@@ -1,17 +1,16 @@
-package com.xiaohua.springbootpingjiao.mapper;
+package com.xiaohua.springbootpingjiao.service;
+
 
 import com.xiaohua.springbootpingjiao.entity.Class;
 import com.xiaohua.springbootpingjiao.entity.Departments;
-import com.xiaohua.springbootpingjiao.entity.User;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
-@Repository
-public interface ClassMapper {
+public interface ClassService {
     List<HashMap> selectAllClass();
     List<Departments> queryAllDepartments();
     List<Departments> selectDepartId(String departments_Name);
-    int insertClass(Class c);
+    boolean insertClass(Class c);
 }

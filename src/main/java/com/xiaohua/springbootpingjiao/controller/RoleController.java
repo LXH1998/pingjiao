@@ -35,10 +35,7 @@ public class RoleController {
     public String checkPower(){
         return "admin/role/role_power";
     }
-    @RequestMapping("/ccc")
-    public String checkPo11wer(){
-        return "admin/role/aaaa";
-    }
+
 
     /**
      * 添加权限弹窗
@@ -48,23 +45,20 @@ public class RoleController {
         return "admin/role/role_addPower";
     }
 
-    @RequestMapping("/gotest")
-    public String goTest(){
-        return "admin/role/test";
-    }
-
 
     /**
      * 管理员点击角色管理，首先查询角色表所有角色，将数据返回页面
      * */
     @ResponseBody
     @RequestMapping("/allRoles")
-    public Map selectAllRoles(){
+    public Map selectAllRoles(int page,int limit){
+        int thePage = (page-1)*limit;
         Map result = new HashMap();
-        List<Role> roles = roleService.selectAllRoles();
+        List<Role> count = roleService.selectAllRoles();
+        List<Role> roles = roleService.selectOnePageRoles(thePage,limit);
         result.put("code",0);
         result.put("msg","返回成功");
-        result.put("count",roles.size());
+        result.put("count",count.size());
         result.put("data",roles);
         return result;
     }
@@ -75,16 +69,16 @@ public class RoleController {
     @ResponseBody
     @RequestMapping("/insertRole")
     public Map insertRole(String role_Name){
-        int amount = roleService.selectTheRole(role_Name);
+        int roles = roleService.selectTheRole(role_Name);
         Map result = new HashMap();
-        if (amount == 0){
+        if (roles==0){
             int insertResult = roleService.insertRole(role_Name);
             if (insertResult == 1){
                 result.put("result","操作成功");
             }else {
                 result.put("result","操作失败");
             }
-        }else {
+        }else{
             result.put("result","角色已存在");
         }
         return result;
@@ -111,12 +105,14 @@ public class RoleController {
      * */
     @ResponseBody
     @RequestMapping("/selectThePower")
-    public Map selectThePower(int role_ID){
+    public Map selectThePower(int role_ID,int page,int limit){
+        int thePage = (page-1)*limit;
         Map result = new HashMap();
-        List<Power> powers = roleService.selectThePower(role_ID);
+        List<Power> count = roleService.selectThePower(role_ID);
+        List<Power> powers = roleService.selectOnePagePower(role_ID,thePage,limit);
         result.put("code",0);
         result.put("msg","返回成功");
-        result.put("count",powers.size());
+        result.put("count",count.size());
         result.put("data",powers);
         return result;
     }
@@ -126,13 +122,46 @@ public class RoleController {
      * */
     @ResponseBody
     @RequestMapping("/selectUnauthorizedPower")
-    public Map selectUnauthorizedPower(int role_ID){
+    public Map selectUnauthorizedPower(int role_ID,int page,int limit){
+        int thePage = (page-1)*limit;
         Map result = new HashMap();
-        List<Power> unauthorizedPower = roleService.selectUnauthorizedPower(role_ID);
+        List<Power> count = roleService.selectUnauthorizedPower(role_ID);
+        List<Power> unauthorizedPower = roleService.selectOnePageUnauthorizedPower(role_ID,thePage,limit);
         result.put("code",0);
         result.put("msg","返回成功");
-        result.put("count",unauthorizedPower.size());
+        result.put("count",count.size());
         result.put("data",unauthorizedPower);
+        return result;
+    }
+    /**
+     * 增加角色权限（1.2、增加角色权限）
+     */
+    @ResponseBody
+    @RequestMapping("/insertRolePower")
+    public Map insertRolePower(int role_Id,int power_Id){
+        Map result = new HashMap();
+        int insert = roleService.insertRolePower(role_Id,power_Id);
+        if (insert==1){
+            result.put("result","操作成功");
+        }else {
+            result.put("result","操作失败");
+        }
+        return result;
+    }
+
+    /**
+     * 删除角色权限
+     */
+    @ResponseBody
+    @RequestMapping("/deleteThePower")
+    public Map deleteThePower(int role_Id,int power_Id){
+        Map result = new HashMap();
+        int del = roleService.deleteThePower(role_Id,power_Id);
+        if (del==0){
+            result.put("data","操作失败");
+        }else if (del==1){
+            result.put("data","操作成功");
+        }
         return result;
     }
 }

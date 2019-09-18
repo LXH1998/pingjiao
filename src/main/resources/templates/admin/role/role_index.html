@@ -8,6 +8,8 @@
 <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <body>
+
+<!--表单-->
 <form class="layui-form">
     <div class="layui-form-item">
         <label class="layui-form-label">添加角色：</label>
@@ -18,52 +20,71 @@
     </div>
 </form>
 
+<!--头部工具栏-->
 <div class="layui-btn-group demoTable">
-    <!--<button class="layui-btn" data-type="add">添加权限</button>-->
-    <button class="layui-btn" data-type="batchDelete">批量删除</button>
+    <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+    <button class="layui-btn layui-btn-danger" data-type="getCheckLength">批量删除</button>
+    <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
 </div>
 
+<!--数据表格-->
+<table id="demo" lay-filter="test"></table>
 
-<table class="layui-table" lay-data="{width: 900, url:'/roleManagement/allRoles', page:true, id:'idTest'}" lay-filter="demo">
-    <thead>
-    <tr>
-        <th lay-data="{type:'checkbox', width:'10%', fixed: 'left'}"></th>
-        <th lay-data="{field:'role_ID' , templet: '#xuhao', width:'20%', sort: true, fixed: true}">ID</th>
-        <th lay-data="{field:'role_Name', width:'25%', align:'center'}">角色</th>
-        <th lay-data="{fixed: 'right', width:'45%', align:'center', toolbar: '#barDemo'}">操作</th>
-    </tr>
-    </thead>
-</table>
-
-<!--操作-->
+<!--行内工具条-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail">权限</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">添加权限</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.auth > 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
 </script>
-
-
 
 <!--序号自增-->
 <script type="text/html" id="xuhao">
     {{d.LAY_TABLE_INDEX+1}}
 </script>
 
-
+<!--数据表格js-->
 <script type="text/javascript">
     layui.use('table', function(){
         var table = layui.table;
 
+        //监听表格复选框选择
+        table.on('checkbox(test)', function(obj){
+            console.log(obj.checked); //当前是否选中状态
+            console.log(obj.data); //选中行的相关数据
+            console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
+        });
+
+        //数据表表头
+        table.render({
+            elem: '#demo'
+            // ,height: 400
+            ,url: '/roleManagement/allRoles' //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                [
+                    {type: 'checkbox', fixed: 'left', width:'10%'}
+                    //表头
+                    ,{field: 'role_ID', templet: '#xuhao',title: '序号', width:'10%', sort: true, align: 'center'}
+                    ,{field: 'role_Name', title: '角色', width:'50%', align: 'center'}
+                    ,{title: '操作', fixed:'right', width: '30%', align: 'center', toolbar: '#barDemo'}
+                ]
+            ]
+        });
+
 
         //监听工具条
-        table.on('tool(demo)', function(obj){ //注：tool 是工具条事件名，demo 是 table 原始容器的属性 lay-filter="对应的值"
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var roleName = data.role_Name; //获得属性role_ID的值
-            // console.log(roleId);
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+            var roleName = data.role_Name; //获得属性role_Name的值
 
-            if(layEvent === 'detail'){ //查看
+            if(layEvent === 'detail'){ //添加权限
                 //do somehing
                 //iframe层-父子操作
                 layer.open({
@@ -89,9 +110,19 @@
                         },
                         success:function (res) {
                             if (res.result=="操作成功"){
-                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                layer.close(index);
-                                layer.msg(res.result)
+                                // obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                // layer.close(index);
+                                // layer.msg(res.result)
+                                // //    操作成功执行方法重载
+                                // table.reload('demo', {
+                                //     page: {
+                                //         curr: 1 //重新从第 1 页开始
+                                //     }
+                                // });
+
+                                //操作成功后继续显示当前页数据
+                                $(".layui-laypage-btn").click();
+                                layer.msg(res.result);
                             } else if (res.result=="操作失败") {
                                 layer.msg(res.result);
                             }
@@ -101,8 +132,9 @@
                         }
                     })
                 });
-            } else if(layEvent === 'edit'){ //编辑
+            } else if(layEvent === 'edit'){ //查看已有权限
                 //do something
+
                 layer.open({
                     type: 2,
                     title:'可添加权限',
@@ -115,21 +147,61 @@
                         iframe.child(data)
                     }
                 });
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            } else if(layEvent === 'LAYTABLE_TIPS'){
+                layer.alert('Hi，头部工具栏扩展的右侧图标。');
             }
         });
 
 
-        //头部工具栏
+        //头部按钮
         var $ = layui.$, active = {
-            add: function(){ //获取选中数据
-                // var checkStatus = table.checkStatus('idTest')
-                //     ,data = checkStatus.data;
-                // layer.alert(JSON.stringify(data));
-            }
-            ,batchDelete: function(){ //获取选中数目
-                var checkStatus = table.checkStatus('idTest')
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('demo')
                     ,data = checkStatus.data;
-                layer.msg('选中了：'+ data.length + ' 个');
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('demo')
+                    ,data = checkStatus.data;
+                // layer.msg('选中了：'+ data.length + ' 个');
+
+                //角色批量删除（未完成）
+                if (data.length == 0){
+                    layer.msg("请选择将要删除的数据行", {icon: 2});
+                }
+                var codeId = "";
+                for(i=0;i<data.length;i++){
+                    codeId += data[i].role_ID+",";
+                    console.log(typeof codeId);
+                }
+                parent.layer.msg('删除中...', {icon: 16,shade: 0.3,time:5000});
+
+                // layer.confirm("您确定要删除吗？"+codeId,function(){
+                //     $.ajax({
+                //         type:"POST",
+                //         url: './json/servertheme.json',
+                //         data:{"id":codeId},
+                //         success:function (data) {
+                //             layer.closeAll('loading');
+                //             if(data.code==1){
+                //                 parent.layer.msg('删除成功！', {icon: 1,time:2000,shade:0.2});
+                //                 location.reload(true);
+                //             }else{
+                //                 parent.layer.msg('删除失败！', {icon: 2,time:3000,shade:0.2});
+                //             }
+                //         }
+                //     })
+                // })
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('demo');
+                layer.msg(checkStatus.isAll ? '全选': '未全选')
             }
         };
 
@@ -138,14 +210,18 @@
             active[type] ? active[type].call(this) : '';
         });
 
+
     });
 
 </script>
 
+
+<!--表单提交-->
 <script>
     //Demo
-    layui.use('form', function(){
+    layui.use(['form','table'], function(){
         var form = layui.form;
+        var table = layui.table;
 
         //监听提交
         form.on('submit(formDemo)', function(data){
@@ -154,14 +230,28 @@
                 url:'/roleManagement/insertRole',
                 data:data.field,
                 success:function (res) {
-                    console.log("成功")
+                    // console.log("成功")
+                    // layer.msg("成功")
+                    if (res.result == '操作成功') {
+                        layer.msg(res.result);
+                        //    操作成功执行方法重载
+                        table.reload('demo', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
+
+                    }else{
+                        layer.msg(res.result);
+                    }
+                },
+                error:function () {
+                    console.log("异常")
                 }
             })
-            // layer.msg(rolename);
-            // return false;
+            return false;
         });
     });
 </script>
-
 </body>
 </html>

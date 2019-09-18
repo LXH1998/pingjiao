@@ -1,5 +1,7 @@
 package com.xiaohua.springbootpingjiao.entity;
 
+import java.util.List;
+
 public class Class{
     private Integer class_Id;
     private String class_Name;
