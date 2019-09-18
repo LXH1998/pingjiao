@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.service.impl;
 
+import com.xiaohua.springbootpingjiao.entity.Departments;
 import com.xiaohua.springbootpingjiao.entity.Role;
 import com.xiaohua.springbootpingjiao.mapper.UserMapper;
 import com.xiaohua.springbootpingjiao.service.UserService;
@@ -56,5 +57,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<HashMap> selectCount() {
         return userMapper.selectCount();
+    }
+
+    @Override
+    public List<Departments> selectAllDepartments() {
+        return userMapper.selectAllDepartments();
+    }
+
+    @Override
+    public List<HashMap> selectAllClass(int departments_Id) {
+        return userMapper.selectAllClass(departments_Id);
     }
 }

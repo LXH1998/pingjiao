@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.controller;
 
+import com.xiaohua.springbootpingjiao.entity.Departments;
 import com.xiaohua.springbootpingjiao.entity.Role;
 import com.xiaohua.springbootpingjiao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,26 @@ public class UserController {
         result.put("data",roles);
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping("selectAllDepartments")
+    public Map selectAllDepartments(){
+        Map result = new HashMap();
+        List<Departments> departments = userService.selectAllDepartments();
+        result.put("data",departments);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("selectAllClass")
+    public Map selectAllClass(int departments_Id){
+        Map result = new HashMap();
+        List<HashMap> classes = userService.selectAllClass(departments_Id);
+        result.put("data",classes);
+        return result;
+    }
+
+
 
     @RequestMapping("goUserInterface")
     public String GoUserInterface(){

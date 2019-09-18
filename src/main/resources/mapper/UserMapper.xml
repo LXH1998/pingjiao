@@ -16,9 +16,10 @@
     <!--查询所有用户-->
     <select id="selectAllUser" resultType="HashMap">
         select * from user u left join departments d
-          on u.departments_id=d.departments_id left join userrole ur
-            on u.user_id=ur.user_id left join role r
-              on r.role_id=ur.role_id
+                                       on u.departments_id=d.departments_id left join userrole ur
+                                                                                      on u.user_id=ur.user_id left join role r
+                                                                                                                        on r.role_id=ur.role_id left join class c
+                                                                                                                                                          on c.class_id=u.class_id
         where u.user_state = 0 limit #{pages},#{limit}
     </select>
 
@@ -44,12 +45,13 @@
     <!--用户名的模糊查询-->
     <select id="selectAccountUsers" resultType="HashMap">
         select * from user u left join departments d
-          on u.departments_id=d.departments_id left join userrole ur
-            on u.user_id=ur.user_id left join role r
-              on r.role_id=ur.role_id
+                                       on u.departments_id=d.departments_id left join userrole ur
+                                                                                      on u.user_id=ur.user_id left join role r
+                                                                                                                        on r.role_id=ur.role_id left join class c
+                                                                                                                                                          on c.class_id=u.class_id
         where u.user_state = 0
           and u.user_account LIKE  concat('%',#{user_Account},'%')
-            and r.role_name LIKE  concat('%',#{role_name},'%')
+          and r.role_name LIKE  concat('%',#{role_name},'%')
     </select>
 
     <!--查询所有角色-->
@@ -57,16 +59,27 @@
         select * from role
     </select>
 
+    <!--查询所有院系-->
+    <select id="selectAllDepartments" resultType="com.xiaohua.springbootpingjiao.entity.Departments">
+        select * from departments
+    </select>
+
+    <!--查询所有班级-->
+    <select id="selectAllClass" resultType="HashMap">
+        select * from class c left join departments d
+          on c.departments_id = d.departments_id
+        where d.departments_id=${departments_Id}
+    </select>
 
     <!--<resultMap id="BaseResultMap" type="com.xiaohua.springbootpingjiao.entity.User">-->
-        <!--<result column="id" jdbcType="INTEGER" property="id" />-->
-        <!--<result column="userName" jdbcType="VARCHAR" property="userName" />-->
-        <!--<result column="passWord" jdbcType="VARCHAR" property="passWord" />-->
-        <!--<result column="realName" jdbcType="VARCHAR" property="realName" />-->
+    <!--<result column="id" jdbcType="INTEGER" property="id" />-->
+    <!--<result column="userName" jdbcType="VARCHAR" property="userName" />-->
+    <!--<result column="passWord" jdbcType="VARCHAR" property="passWord" />-->
+    <!--<result column="realName" jdbcType="VARCHAR" property="realName" />-->
     <!--</resultMap>-->
 
     <!--<select id="Sel" resultType="com.xiaohua.springbootpingjiao.entity.User">-->
-        <!--select * from user where id = #{id}-->
+    <!--select * from user where id = #{id}-->
     <!--</select>-->
 
 </mapper>

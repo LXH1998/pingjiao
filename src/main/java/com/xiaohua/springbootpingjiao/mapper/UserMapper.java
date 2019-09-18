@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.mapper;
 
+import com.xiaohua.springbootpingjiao.entity.Departments;
 import com.xiaohua.springbootpingjiao.entity.Role;
 import org.springframework.stereotype.Repository;
 
@@ -21,4 +22,6 @@ public interface UserMapper {
     List<HashMap> selectAccountUsers(String user_Account,String role_name);
     List<Role> selectAllRole();
     List<HashMap> selectCount();
+    List<Departments> selectAllDepartments();
+    List<HashMap> selectAllClass(int departments_Id);
 }
