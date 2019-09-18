@@ -79,6 +79,20 @@ public class ClassController {
     }
 
     @ResponseBody
+    @RequestMapping("/deleteClass")
+    public  boolean deleteClass(String class_Id){
+        Class c = new Class();
+        c.setClass_Id(Integer.parseInt(class_Id));
+        boolean flag = classService.deleteClass(c);
+        if (flag){
+            return   true;
+        }
+        return  false;
+
+    }
+
+
+    @ResponseBody
     @RequestMapping("/insertClass")
     public  boolean insertClass(String class_Id,String  class_Name,String departments_id){
         Class c = new Class();
@@ -92,7 +106,6 @@ public class ClassController {
         return  false;
 
     }
-
     @RequestMapping("goaddclass")
     public String goclass(){
         return "admin/class/addclass";

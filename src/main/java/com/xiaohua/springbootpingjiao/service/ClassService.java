@@ -15,4 +15,5 @@ public interface ClassService {
     boolean insertClass(Class c);
     List<HashMap> selectClassWhereDepartId(String departments_id);
     List<HashMap> selectClassWhereClassId(String class_Id);
+    boolean deleteClass(Class c);
 }

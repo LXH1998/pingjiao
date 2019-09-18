@@ -50,4 +50,9 @@ WHERE class.class_id like concat('%',#{class_Id},'%') and  class.class_amount=1
     <insert id="insertClass" parameterType="com.xiaohua.springbootpingjiao.entity.Class">
         INSERT INTO class ( class_id,class_name,departments_id)VALUES (#{class_Id},#{class_Name},#{departments_id});
     </insert>
+
+    <update id="deleteClass" parameterType="com.xiaohua.springbootpingjiao.entity.Class">
+        UPDATE class SET class_amount = 0 WHERE class_id =#{class_Id}
+    </update>
+
 </mapper>

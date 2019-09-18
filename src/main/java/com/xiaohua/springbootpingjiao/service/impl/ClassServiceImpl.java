@@ -54,6 +54,15 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
+    public boolean deleteClass(Class c) {
+        int result = classMapper.deleteClass(c);
+        if (result > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public List<HashMap> selectClassWhereClassId(String class_Id) {
         return classMapper.selectClassWhereClassId(class_Id);
     }
