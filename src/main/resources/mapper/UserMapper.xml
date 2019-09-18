@@ -2,15 +2,71 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.UserMapper">
 
-    <resultMap id="BaseResultMap" type="com.xiaohua.springbootpingjiao.entity.User">
-        <result column="id" jdbcType="INTEGER" property="id" />
-        <result column="userName" jdbcType="VARCHAR" property="userName" />
-        <result column="passWord" jdbcType="VARCHAR" property="passWord" />
-        <result column="realName" jdbcType="VARCHAR" property="realName" />
+    <resultMap id="UserResultMap" type="com.xiaohua.springbootpingjiao.entity.User">
+        <id property="user_Id" column="user_id"></id>
+        <result property="user_Name" column="user_name"></result>
+        <result property="user_Sex" column="user_sex"></result>
+        <result property="user_Account" column="user_account"></result>
+        <result property="user_Password" column="user_password"></result>
+        <result property="departments_Id" column="departments_id"></result>
+        <result property="class_Id" column="class_id"></result>
+        <result property="user_state" column="user_state"></result>
     </resultMap>
 
-    <select id="Sel" resultType="com.xiaohua.springbootpingjiao.entity.User">
-        select * from user where id = #{id}
+    <!--查询所有用户-->
+    <select id="selectAllUser" resultType="HashMap">
+        select * from user u left join departments d
+          on u.departments_id=d.departments_id left join userrole ur
+            on u.user_id=ur.user_id left join role r
+              on r.role_id=ur.role_id
+        where u.user_state = 0 limit #{pages},#{limit}
     </select>
+
+    <!--所有用户的总数-->
+    <select id="selectCount" resultType="HashMap">
+        select * from user u  where u.user_state = 0
+    </select>
+
+    <!--初始化密码-->
+    <update id="updateUserPassword" parameterType="com.xiaohua.springbootpingjiao.entity.User">
+        update user
+        set user_password="123456789"
+        where user_id = #{user_Id}
+    </update>
+
+    <!--删除用户，只是隐藏，user_state=1-->
+    <update id="updateUserState" parameterType="com.xiaohua.springbootpingjiao.entity.User">
+        update user
+        set user_state="1"
+        where user_id = #{user_Id}
+    </update>
+
+    <!--用户名的模糊查询-->
+    <select id="selectAccountUsers" resultType="HashMap">
+        select * from user u left join departments d
+          on u.departments_id=d.departments_id left join userrole ur
+            on u.user_id=ur.user_id left join role r
+              on r.role_id=ur.role_id
+        where u.user_state = 0
+          and u.user_account LIKE  concat('%',#{user_Account},'%')
+            and r.role_name LIKE  concat('%',#{role_name},'%')
+    </select>
+
+    <!--查询所有角色-->
+    <select id="selectAllRole" resultType="com.xiaohua.springbootpingjiao.entity.Role">
+        select * from role
+    </select>
+
+
+    <!--<resultMap id="BaseResultMap" type="com.xiaohua.springbootpingjiao.entity.User">-->
+        <!--<result column="id" jdbcType="INTEGER" property="id" />-->
+        <!--<result column="userName" jdbcType="VARCHAR" property="userName" />-->
+        <!--<result column="passWord" jdbcType="VARCHAR" property="passWord" />-->
+        <!--<result column="realName" jdbcType="VARCHAR" property="realName" />-->
+    <!--</resultMap>-->
+
+    <!--<select id="Sel" resultType="com.xiaohua.springbootpingjiao.entity.User">-->
+        <!--select * from user where id = #{id}-->
+    <!--</select>-->
 
 </mapper>

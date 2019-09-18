@@ -61,18 +61,19 @@
             if(layEvent === 'detail'){ //查看
                 //do somehing
                 //iframe层-父子操作
-                layer.open({
-                    type: 2,
-                    title:'已有权限',
-                    area: ['700px', '450px'],
-                    fixed: false, //不固定
-                    maxmin: true,
-                    content: '/roleManagement/checkPower',
-                    success:function (layero,index) {
-                        var iframe = window['layui-layer-iframe' + index];
-                        iframe.child(data)
-                    }
-                });
+                // layer.open({
+                //     type: 2,
+                //     title:'已有权限',
+                //     area: ['700px', '450px'],
+                //     fixed: false, //不固定
+                //     maxmin: true,
+                //     content: '/course/teach',
+                //     success:function (layero,index) {
+                //         var iframe = window['layui-layer-iframe' + index];
+                //         iframe.child(data)
+                //     }
+                // });
+                location.href = '/course/teach'
             } else if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除行么', function(index){
                     //向服务端发送删除指令
