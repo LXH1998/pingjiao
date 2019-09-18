@@ -14,8 +14,28 @@
     <update id="deleteTheCourse" parameterType="com.xiaohua.springbootpingjiao.entity.Courses">
         update  courses set courses_state = '1' where courses_id=#{courses_Id}
     </update>
-    <!-- 删除指定课程-->
-    <!--<delete id="deleteTheCourse" parameterType="com.xiaohua.springbootpingjiao.entity.Courses" >-->
-        <!--delete  from  courses where courses_id=#{courses_Id}-->
-    <!--</delete>-->
+    <!--查找所有授课信息-->
+    <!--<select id="SelectTeachAll" resultType="com.xiaohua.springbootpingjiao.entity.Teach">-->
+        <!--select * from Teach-->
+    <!--</select>-->
+    <!--查找所有授课信息-->
+    <resultMap type="com.xiaohua.springbootpingjiao.entity.Teach" id="SomeTeachMap">
+        <id property="teach_id" column="teach_id"/>
+        <collection property="classs"  ofType="com.xiaohua.springbootpingjiao.entity.Class">
+            <result property="class_Name" column="class_name"/>
+        </collection>
+        <collection property="users"  ofType="com.xiaohua.springbootpingjiao.entity.User">
+            <result property="user_Name" column="user_name"/>
+        </collection>
+        <collection property="coursess"  ofType="com.xiaohua.springbootpingjiao.entity.Courses">
+            <result property="courses_Name" column="courses_name"/>
+        </collection>
+    </resultMap>
+    <!--查询授课信息-->
+    <select id="SelectTeachAll" resultType="com.xiaohua.springbootpingjiao.entity.TeachData" >
+     select t.teach_id,c.class_name,u.user_name,courses.courses_name from Teach as t left join
+      class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
+      courses on courses.courses_id = t.courses_id
+    </select>
+
 </mapper>

@@ -1,8 +1,10 @@
 package com.xiaohua.springbootpingjiao.controller;
 
 import com.xiaohua.springbootpingjiao.entity.Courses;
+import com.xiaohua.springbootpingjiao.entity.Teach;
+import com.xiaohua.springbootpingjiao.entity.TeachData;
 import com.xiaohua.springbootpingjiao.service.CourseService;
-import com.xiaohua.springbootpingjiao.service.impl.UserService;
+//import com.xiaohua.springbootpingjiao.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,12 +28,12 @@ public class CourseController {
     @RequestMapping("/listDate")
     @ResponseBody
     public Map CourseListAll(){
-        List<Courses> CourseList = courseService.SelectCourse();
+        List<Courses> courseList = courseService.SelectCourse();
         Map result = new HashMap<>();
         result.put("code",0);
         result.put("msg","返回成功");
-        result.put("count",CourseList.size());
-        result.put("data",CourseList);
+        result.put("count",courseList.size());
+        result.put("data",courseList);
         return result;
     }
 //    @ResponseBody
@@ -62,5 +64,17 @@ public class CourseController {
     public String Courseteach(){
         return "admin/course/course_teach";
     }
+    //查询所以授课信息
+    @ResponseBody
+    @RequestMapping("/teachListDate")
+    public Map TeachListAll(){
+        List<TeachData> teachList = courseService.SelectTeach();
+        Map result = new HashMap<>();
+        result.put("code",0);
+        result.put("msg","返回成功");
+        result.put("data",teachList);
+        result.put("count",teachList.size());
 
+        return result;
+    }
 }
