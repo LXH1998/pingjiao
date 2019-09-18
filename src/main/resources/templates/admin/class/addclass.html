@@ -25,16 +25,10 @@
 <div class="layui-form-item">
     <label class="layui-form-label" >学　　院:</label>
 <div>
-    <div class="layui-inline" style="width: 250px;">
-        <select name="quiz2" >
+    <div class="layui-inline" style="width: 250px; " id="c">
+        <select name="quiz2" id="xueyuan">
+            <option value="">请选择学院</option>
 
-            <option value="" >请选择学院</option>
-
-            <option value="软件学院">软件学院</option>
-            <option value="电子学院" >电子学院</option>
-            <option value="土木学院">土木学院</option>
-            <option value="动画学院">动画学院</option>
-            <option value="智能学院">智能学院</option>
         </select>
     </div>
 
@@ -46,7 +40,7 @@
     <div class="layui-inline">
         <label class="layui-form-label">班级编号: </label>
         <div class="layui-input-inline">
-            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级编号" class="layui-input" style="width: 250px;">
+            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级编号" class="layui-input" style="width: 250px;" id="id">
         </div>
 
     </div>
@@ -55,12 +49,12 @@
     <div class="layui-inline">
         <label class="layui-form-label">班级名称: </label>
         <div class="layui-input-inline">
-            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级名称" class="layui-input" style="width: 250px;">
+            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级名称" class="layui-input" style="width: 250px;" id="name">
         </div>
 
     </div>
     <div style="text-align: center;margin-top: 40px;">
-        <button type="button" class="layui-btn" style="margin-left: 40px">添加</button>
+        <button type="button" class="layui-btn" style="margin-left: 40px" id="tj">添加</button>
         <button type="button" class="layui-btn layui-btn-warm"style="margin-left: 40px" id="quxiao">取消</button>
     </div>
 
@@ -78,13 +72,27 @@
 </body>
 
 <script>
+    var departments_id
     layui.use(['form', 'layedit', 'laydate','table'], function() {
         var form = layui.form
             , layer = layui.layer
             , layedit = layui.layedit
             , laydate = layui.laydate
             , table = layui.table;
+        form.on('select', function(data){
 
+            $.ajax({
+                url:"/class/departments_id",
+                dataType: 'json',
+                type: 'get',
+                data:{departments_Name:data.value},
+                success:function (e) {
+                    console.log(e.data[0])
+                    departments_id=e.data[0]
+                }
+            })
+            console.log(data.value); //得到被选中的值
+        });
         var index = parent.layer.getFrameIndex(window.name);
         $('#quxiao').click(function(){
             // var val = $('#name').val();
@@ -96,5 +104,46 @@
             parent.layer.close(index);
         });
     });
+    layui.use(['form', 'upload', 'layer'], function () {
+        $.ajax({
+            url: '/class/queryDepartments',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#xueyuan').append(new Option(item.departments_Name));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+    });
+    $("#tj").click(function () {
+        console.log(departments_id)
+
+        $.ajax({
+            url: '/class/insertClass',
+            dataType: 'json',
+            type: 'get',
+            data:{
+                class_Id:$("#id").val(),
+                class_Name:$("#name").val(),
+                departments_id:departments_id
+            },
+            success:function (e) {
+                if (e=true){
+                    layer.msg('添加成功', {icon: 6});
+                    parent.location.reload();
+                }else {
+                    layer.msg('操作失败', {icon: 5});
+                }
+
+            },
+            error:function () {
+                layer.msg('操作失败', {icon: 5});   
+            }
+
+        })
+    })
+
 </script>
 </html>

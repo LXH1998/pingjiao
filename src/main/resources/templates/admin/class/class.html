@@ -20,13 +20,9 @@
         <label class="layui-form-label">学院:</label>
 
         <div class="layui-input-inline">
-            <select name="quiz2">
+            <select name="quiz2" id="xueyuan" lay-search>
                 <option value="">请选择学院</option>
-                <option value="软件学院">软件学院</option>
-                <option value="电子学院" >电子学院</option>
-                <option value="土木学院">土木学院</option>
-                <option value="动画学院">动画学院</option>
-                <option value="智能学院">智能学院</option>
+
             </select>
 
 
@@ -55,7 +51,7 @@
 <div class="layui-btn-group demoTable">
     <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
     <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
-    <button class="layui-btn layui-btn-danger" data-type="isAll">批量删除</button>
+    <button class="layui-btn layui-btn-danger" data-type="isAll" >批量删除</button>
 </div>
 
 <table class="layui-table" lay-data="{ url:'/class/goclass', page:true, id:'idTest'}" lay-filter="demo">
@@ -92,7 +88,25 @@
             ,laydate = layui.laydate
             , table = layui.table;
 
+        var $ = layui.$, active = {
+            reload: function(){
+                var demoReload = $('#xuyuan');
 
+                //执行重载
+                table.reload('idTest', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:""
+                    ,where: {
+
+                        key: {
+                            id: demoReload.val()
+                        }
+                    }
+                }, 'data');
+            }
+        };
 
         //头工具栏事件
         // table.on('checkbox(demo)', function(obj){
@@ -113,6 +127,7 @@
                 layer.alert('编辑行：<br>'+ JSON.stringify(data))
             }
         });
+
 
         var $ = layui.$, active = {
             getCheckData: function(){ //获取选中数据
@@ -166,6 +181,9 @@
             // time:timee,
             content: '/class/goaddclass',
             end: function(){ //此处用于演示
+
+                   location.reload();
+
                 // var a=sessionStorage.getItem("check")
                 // if(account!=null){
                 //     layer.msg('登陆成功', { icon: 1 });
@@ -191,6 +209,37 @@
             }
         });
     })
+
+// $(function () {
+//     $.ajax({
+//         url: "/class/queryDepartments",
+//         type: "get",
+//         success:function (e) {
+//           //  console.log(e)
+//             // while (num <=e.matches.length) {
+//             for (keys in e.data) {
+//                 console.log(e.data[keys].departments_Name)
+//                 var a = `<option value=''>${e.data[keys].departments_Name}</option>`
+//                 $("#xueyuan").append(a)
+//
+//             }
+//         }
+//     })
+// })
+    layui.use(['form', 'upload', 'layer'], function () {
+        $.ajax({
+            url: '/class/queryDepartments',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#xueyuan').append(new Option(item.departments_Name));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+    });
+
 
 </script>
 
