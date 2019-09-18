@@ -79,4 +79,12 @@ public class ClassController {
     public String addStudent(){
         return "admin/class/addStudent";
     }
+    @RequestMapping("goindex")
+    public String goindex(){
+        return "index";
+    }
+    @RequestMapping("gclass")
+    public String gclass(){
+        return "admin/class/class";
+    }
 }
