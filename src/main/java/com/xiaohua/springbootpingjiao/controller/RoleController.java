@@ -19,6 +19,14 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
+    /**
+     * 主页
+     */
+    @RequestMapping("/goIndex")
+    public String goIndex(){
+        return "index";
+    }
+
     /***
      * 显示角色管理选项卡
      *
@@ -64,6 +72,25 @@ public class RoleController {
     }
 
     /**
+     * 角色查询
+     * @param role_Name
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/searchRole")
+    public Map searchRole(String role_Name){
+        Map result = new HashMap();
+
+        List<Role> roles = roleService.searchRole(role_Name);
+
+        result.put("code",0);
+        result.put("msg","返回成功");
+        result.put("count",roles.size());
+        result.put("data",roles);
+        return result;
+    }
+
+    /**
      * 增加角色
      * */
     @ResponseBody
@@ -97,6 +124,28 @@ public class RoleController {
         }else {
             result.put("result","操作失败");
         }
+        return result;
+    }
+
+    /**
+     * 批量删除
+     */
+    @ResponseBody
+    @RequestMapping("/deleteRoles")
+    public Map deleteRoles(String codeName){
+        Map result = new HashMap();
+        String a[]=codeName.split(",");
+        try {
+            for (int i=0;i<a.length;i++){
+                String role_Name = a[i];
+                roleService.deleteTheRole(role_Name);
+                result.put("code",1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            result.put("code", -1);
+        }
+
         return result;
     }
 
