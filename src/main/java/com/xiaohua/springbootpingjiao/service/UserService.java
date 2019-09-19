@@ -2,6 +2,7 @@ package com.xiaohua.springbootpingjiao.service;
 
 import com.xiaohua.springbootpingjiao.entity.Departments;
 import com.xiaohua.springbootpingjiao.entity.Role;
+import com.xiaohua.springbootpingjiao.entity.User;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,4 +22,10 @@ public interface UserService {
     List<HashMap> selectCount();
     List<Departments> selectAllDepartments();
     List<HashMap> selectAllClass(int departments_Id);
+    Boolean updateUserInformation(String user_Name,String user_Account,String user_Sex,int departments_Id,int class_Id,int user_Id);
+    Boolean updateUserRole(int role_Id,int user_Id);
+    Boolean insertUserInformation(String user_Name,String user_Account,String user_Sex,int departments_Id,int class_Id);
+    Boolean insertUserRole(int role_Id,int user_Id);
+    List<User> selectUserId(String user_Name, String user_Account);
+
 }
