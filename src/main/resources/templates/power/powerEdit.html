@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js//jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<body>
+<form action="" class="layui-form" method="post"   >
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限编号</label>
+        <div class="layui-input-block">
+            <input type="text" name="power_Id" id="power_Id"  disabled="disabled"  class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="power_Name" id="power_Name"    class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="power_url" id="power_url"    class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开关</label>
+        <div class="layui-input-block"  id="power_stateBut">
+            <input type="checkbox"  name="power_state"  id="power_state"  lay-skin="switch" lay-text="启用|禁用" lay-filter="lockDemo">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">上级功能</label>
+        <div class="layui-input-block">
+            <input type="text" name="power_parentid" id="power_parentid"  class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-block">
+            <input type="text" name="sort" id="sort"  class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label  class="layui-form-label">请填写描述</label>
+        <div class="layui-input-block">
+            <textarea name="" placeholder="请输入内容" class="layui-textarea" describe="describe" id="describe"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script>
+    var state = 0 ;
+    var flage = 0;
+    var form
+    layui.use(['form'], function () {
+         form = layui.form;
+        $ = layui.jquery;
+        form.render();
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            $.ajax({
+                url:'/powerBoot/updatePower',
+                method:'post',
+                data:{
+                    "power_Id":data.field.power_Id,
+                    "power_Name":data.field.power_Name,
+                    "power_url":data.field.power_url,
+                    "power_parentid":data.field.power_parentid,
+                    "power_state":state,
+                    "sort":data.field.sort,
+                    "describe":$("#describe").val()
+                },
+                dataType:'JSON',
+                success:function(res){
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //parent.location.reload(); //刷新父页面
+                        parent.layer.close(index);
+                },
+                error:function (data) {
+                }
+            }) ;
+           return false;   
+        });
+    });
+
+</script>
+
+
+</body>
+</html>

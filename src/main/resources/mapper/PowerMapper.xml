@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohua.springbootpingjiao.mapper.PowerMapper">
+<!--    查询power  ResultMap-->
+    <resultMap id="permissionsResultmap" type="com.xiaohua.springbootpingjiao.entity.Power">
+        <id property="power_Id" column="power_id"></id>
+        <result property="power_Name" column="power_name"></result>
+        <result property="power_url" column="power_url"></result>
+        <result property="power_parentid" column="power_parentid"></result>
+        <result property="power_state" column="power_state"></result>
+        <result property="describe" column="describe"></result>
+        <result property="sort" column="sort"></result>
+    </resultMap>
+
+<!--查询所有权限-->
+    <select id="queryPermissionsAll" resultMap="permissionsResultmap" parameterType="com.xiaohua.springbootpingjiao.entity.Paging">
+        SELECT  * FROM POWER WHERE power_state!=0 LIMIT #{pages},#{limits}
+    </select>
+
+<!--查询所有权限的条数-->
+    <select id="queryPowerCount" resultType="String">
+        SELECT  count(power_Id) FROM POWER WHERE power_state!=0
+    </select>
+
+<!-- 删除权限-->
+    <update id="deletePower" parameterType="String">
+        UPDATE POWER SET power_state = 0 WHERE power_id=#{power_id}
+    </update>
+<!--修改权限-->
+    <update id="updaePower" parameterType="com.xiaohua.springbootpingjiao.entity.Power">
+        UPDATE POWER SET power_name=#{power_Name},power_url=#{power_url} ,power_parentid=#{power_parentid} ,power_state = #{power_state} ,`describe` = #{describe}, sort = #{sort} WHERE power_id =#{power_Id}
+    </update>
+
+<!--权限模糊查询-->
+    <select id="queryFuzzyPower" parameterType="hashmap" resultMap="permissionsResultmap">
+            SELECT	* FROM POWER WHERE power_id LIKE "%${p}%" OR power_name LIKE "%${p}%" LIMIT ${page},${limit}
+    </select>
+
+    <!--权限模糊查询条数-->
+    <select id="fuzzPowerSize" parameterType="String" resultMap="permissionsResultmap">
+            SELECT	* FROM POWER WHERE power_id LIKE "%${p}%" OR power_name LIKE "%${p}%"
+    </select>
+
+
+<!-- 查询角色的权限-->
+    <select id="queryRolePower" parameterType="Integer" resultMap="permissionsResultmap">
+        SELECT p.power_id,power_name,power_url,power_parentid,p.power_state  FROM USER u ,userrole ur,rolepower rp,POWER p
+                WHERE u.`user_id`=ur.`user_id`
+                 AND ur.`role_id`=rp.`role_id`
+                 AND rp.`power_id`=p.`power_id`
+                 AND u.user_id=#{user_id} And p.power_state!=0 ORDER BY p.power_id, p.sort
+    </select>
+
+<!--添加权限-->
+    <insert id="insertPower" parameterType="com.xiaohua.springbootpingjiao.entity.Power">
+        INSERT	INTO POWER(`power_name`,`power_url`,`power_parentid`,`power_state`,`describe`,`sort`)
+            VALUE(#{power_Name},#{power_url},#{power_parentid},#{power_state},#{describe},#{sort})
+    </insert>
+
+<!--   修改权限状态 -->
+
+    <update id="updaePowerState" parameterType="com.xiaohua.springbootpingjiao.entity.Power">
+       UPDATE POWER SET power_state = #{power_state} WHERE power_id=#{power_id}
+    </update>
+
+<!--查询树状表格权限-->
+    <select id="queryTreePower" resultMap="permissionsResultmap">
+        select *  from power where  power_state!=0 ORDER BY power_id, sort ;
+    </select>
+</mapper>
