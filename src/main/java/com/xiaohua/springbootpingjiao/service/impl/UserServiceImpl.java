@@ -2,6 +2,7 @@ package com.xiaohua.springbootpingjiao.service.impl;
 
 import com.xiaohua.springbootpingjiao.entity.Departments;
 import com.xiaohua.springbootpingjiao.entity.Role;
+import com.xiaohua.springbootpingjiao.entity.User;
 import com.xiaohua.springbootpingjiao.mapper.UserMapper;
 import com.xiaohua.springbootpingjiao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +68,46 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<HashMap> selectAllClass(int departments_Id) {
         return userMapper.selectAllClass(departments_Id);
+    }
+
+    @Override
+    public Boolean updateUserInformation(String user_Name, String user_Account, String user_Sex, int departments_Id, int class_Id, int user_Id) {
+        int userResult = userMapper.updateUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id,user_Id);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean updateUserRole(int role_Id, int user_Id) {
+        int userResult = userMapper.updateUserRole(role_Id,user_Id);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean insertUserInformation(String user_Name, String user_Account, String user_Sex, int departments_Id, int class_Id) {
+        int userResult = userMapper.insertUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean insertUserRole(int role_Id, int user_Id) {
+        int userResult = userMapper.insertUserRole(role_Id,user_Id);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<User> selectUserId(String user_Name, String user_Account) {
+        return userMapper.selectUserId(user_Name,user_Account);
     }
 }
