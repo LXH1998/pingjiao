@@ -26,6 +26,12 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.selectOnePageRoles(thePage,limit);
     }
 
+//    角色查询（模糊查询）
+    @Override
+    public List<Role> searchRole(String role_Name) {
+        return roleMapper.searchRole(role_Name);
+    }
+
 
     //    新增角色
     @Override
