@@ -22,13 +22,13 @@ public class Role{
 
     private String role_Name;
 
-    private String status;
+    private String role_State;
 
-    public String getStatus() {
-        return status;
+    public String getRole_State() {
+        return role_State;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setRole_State(String role_State) {
+        this.role_State = role_State;
     }
 }

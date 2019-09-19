@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在线评教系统---权限管理模块</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js//jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<body>
+
+<div class="demoTable"  >
+    搜索：
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="demoReload" autocomplete="off">
+    </div>
+    <button class="layui-btn" data-type="reload">搜索</button>
+    <button class="layui-btn" data-type="insert" id="insertPower">添加权限</button>
+</div>
+
+
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+<script type="text/html" id="checkboxTpl">
+    <input type="checkbox"   value="{{d.power_Id}}" name="power_state"  id="power_state"  lay-skin="switch" lay-text="启用|维护" lay-filter="lockDemo" {{ d.power_state =="1"?"checked":""}}>
+</script>
+<script type="text/html" id="barDemo">
+<!--    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+    <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+</body>
+
+<script>
+    layui.use('table', function(){
+        var table_data=new Array();
+        var table = layui.table;
+        var form = layui.form;
+        table.render({
+            elem: '#test'
+            ,title: '权限表'
+            ,url:'/powerBoot/queryPower'
+            ,page:true
+            ,limit:5
+            ,id: 'testReload'
+            ,limits: [5,10,20]
+            ,cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    ,{field:'power_Id', title: '权限编号', sort: true}
+                    ,{field:'power_Name',  title: '权限名称'}
+                    ,{field:'power_url', title: '权限地址', sort: true}
+                    ,{field:'power_state', title:'权限状态', templet: '#checkboxTpl',width:100, unresize: true}
+                    ,{field:'power_parentid',title: '上级功能',width:100,}
+                    ,{field:'describe', width:120,title: '描述',width:200,}
+                    ,{field:'sort', width:100,title: '排序'}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo'}
+                ]
+            ]
+            , success: function (res) {
+                console.log(res)
+            }
+            ,done: function(res, curr, count){
+
+            }
+        });
+
+        form.on('switch(lockDemo)', function (data) {
+            var x = data.elem.checked;//判断开关状态
+            var contexts = "";
+            var state = 0;
+            var power_Id = this.value;
+            if (x==true) {
+                contexts = "启用";
+                state=1;
+            } else {
+                contexts = "维护";
+                state=2;
+            }
+            layer.open({
+                content: '你确定要修改权限状态'
+                , btn: ['确定', '取消']
+                , yes: function (index, layero) {
+                    data.elem.checked = x;
+                    $.ajax({
+                        type: "post"
+                        ,url: "/powerBoot/updaePowerState"
+                        ,data: {
+                            "power_id": power_Id,
+                            "state":state
+                        }
+                        ,success:function (res) {
+                            console.log(res)
+                        }
+                    })
+                    form.render();
+                    layer.close(index);
+                }
+                , btn2: function (index, layero) {
+                    //按钮【按钮二】的回调
+                    data.elem.checked = !x;
+                    form.render();
+                    layer.close(index);
+
+                }
+                , cancel: function () {
+                    //右上角关闭回调
+                    data.elem.checked = !x;
+                    form.render();
+                    //return false 开启该代码可禁止点击该按钮关闭
+                }
+            })
+        })
+
+
+
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        $('#insertPower').on('click', function(){
+            layer.open({
+                type: 2
+                ,skin: 'layui-layer-rim' //加上边框
+                ,maxmin: true //开启最大化最小化按钮
+                ,area: ["500px","500px"]
+                ,title: "goPowerEdit"
+                ,content:"/powerBoot/goPowerInsert"
+                ,success: function (layero,index) {
+                }
+            })
+        });
+
+        layui.$, active = {
+            reload: function(){
+                var demoReload = $('#demoReload');
+                console.log(demoReload.val())
+                //执行重载
+                table.reload('testReload', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/powerBoot/queryFuzzyPower"
+                    ,where: {
+                            p: demoReload.val(),
+                    }
+                });
+            }
+        };
+
+
+        table.on("tool(test)",function (obj) {
+            var data = obj.data;
+            if (obj.event ==='del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    console.log(obj)
+                    console.log(obj.data)
+                    delPower(obj.data.power_Id)
+                    location.reload();
+                });
+            }else if(obj.event === 'edit'){
+                console.log("点击修改按钮")
+                var editPower  = [];
+                layer.open({
+                    type: 2
+                    ,skin: 'layui-layer-rim' //加上边框
+                    ,maxmin: true //开启最大化最小化按钮
+                    ,area: ["500px","500px"]
+                    ,title: "goPowerEdit"
+                    ,content:"/powerBoot/goPowerEdit"
+                    ,success: function (layero,index) {
+                        var body = layer.getChildFrame('body',index);
+                        // var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数child传参
+                        // iframe.inputDataHandle(obj);
+                        var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                        body.find("#power_Id").val(obj.data.power_Id)
+                        body.find("#power_Name").val(obj.data.power_Name)
+                        body.find("#power_url").val(obj.data.power_url)
+                        body.find("#sort").val(obj.data.sort)
+                        body.find("#power_parentid").val(obj.data.power_parentid)
+                        body.find("#describe").text(obj.data.describe)
+                        body.find("#power_state").prop("checked",obj.data.power_state == "1"?"checked":"");
+
+
+
+                    }
+                })
+            }
+        })
+    });
+    function  delPower(power_Id){
+        $.ajax({
+            type: "post"
+            ,url: "/powerBoot/deletePower"
+            ,data: {
+                "power_id": power_Id
+            }
+            ,success:function (res) {
+                console.log(res)
+            }
+        })
+    }
+
+
+</script>
+
+</html>

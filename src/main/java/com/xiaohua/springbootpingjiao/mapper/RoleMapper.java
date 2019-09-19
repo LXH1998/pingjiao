@@ -17,6 +17,8 @@ public interface RoleMapper {
 
 //    角色查询（模糊查询）
     public List<Role> searchRole(String role_Name);
+//    角色查询（模糊查询-显示每页数据条数）
+    public List<Role> searchTheOnePageRole(String role_Name,int thePage,int limit);
 
 //    新增角色
     public int selectTheRole(String role_Name);
