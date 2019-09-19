@@ -63,7 +63,11 @@ public class CourseController {
     public String Courseteach(){
         return "admin/course/course_teach";
     }
-    //查询所以授课信息
+    @RequestMapping("/test")
+    public String test(){
+        return "admin/course/list";
+    }
+    //查询所有授课信息
     @ResponseBody
     @RequestMapping("/teachListDate")
     public Map TeachListAll(){
@@ -73,7 +77,40 @@ public class CourseController {
         result.put("msg","返回成功");
         result.put("data",teachList);
         result.put("count",teachList.size());
-
         return result;
     }
+    //判断课程是否存在
+//    @ResponseBody
+//    @RequestMapping("/insertRole")
+//    public Map insertRole(String courses_Name){
+//        int coursesIf = courseService.SelectCourseOne(courses_Name);
+//        Map result = new HashMap();
+//        if(coursesIf == 0)
+//        {
+//            result.put("result","T");
+//        }else
+//        {
+//            result.put("result","F");
+//        }
+//        return result;
+//    }
+    //增加课程
+    @ResponseBody
+    @RequestMapping("/insertCourse")
+    public Map insertCourse(String course_Name){
+        int coursesIf = courseService.SelectCourseOne(course_Name);
+        Map result = new HashMap();
+        if (coursesIf==0){
+            int insertResult = courseService.insertCourses(course_Name);
+            if (insertResult == 1){
+                result.put("result","操作成功");
+            }else {
+                result.put("result","操作失败");
+            }
+        }else{
+            result.put("result","角色已存在");
+        }
+        return result;
+    }
+
 }

@@ -8,11 +8,21 @@
 <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <body>
-<div class="layui-btn-group demoTable">
-    <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
-    <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
-    <button class="layui-btn" data-type="isAll">验证是否全选</button>
-</div>
+<!--表单-->
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">添加课程：</label>
+        <div class="layui-input-block">
+            <input type="text" name="course_Name" required  lay-verify="required" placeholder="请输入课程" autocomplete="off" class="layui-input" style="width: 150px;float: left;margin-right: 5px">
+            <button class="layui-btn" lay-submit lay-filter="formCourse">添加</button>
+        </div>
+    </div>
+</form>
+<!--<div class="layui-btn-group demoTable">-->
+    <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+    <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+    <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+<!--</div>-->
 <table id="demo" lay-filter="test"></table>
 
 <script type="text/html" id="barDemo">
@@ -131,7 +141,40 @@
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
+    });
+    //课程添加表单监听
+    layui.use(['form','table'], function(){
+        var form = layui.form;
+        var table = layui.table;
+        //监听提交执行AJAX  获取数据后对表格重载
+        form.on('submit(formCourse)', function(data){
+            // console.log(data.field);
+            // console.log(JSON.stringify(data.field));
+            $.ajax({
+                url:'/course/insertCourse',
+                data:data.field,
+                success:function (res) {
+                    // console.log("成功")
+                    // layer.msg("成功")
+                    if (res.result == '操作成功') {
+                        layer.msg(res.result);
+                        //    操作成功执行方法重载
+                        table.reload('demo', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
 
+                    }else{
+                        layer.msg(res.result);
+                    }
+                },
+                error:function () {
+                    console.log("异常")
+                }
+            })
+            return false;
+        });
     });
 
 </script>
