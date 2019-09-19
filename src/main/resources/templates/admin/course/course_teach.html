@@ -51,6 +51,7 @@
     }
 </style>
 <script type="text/javascript">
+    var course_Name;
     layui.use('table', function(){
         var table = layui.table;
 
@@ -76,11 +77,10 @@
         table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-
+            console.log(data)
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
             $("#id").html("填充代码");
-            console.log(tr)
-            console.log(tr[0].innerHTML)
+            // console.log(tr[0].innerHTML)  获取DOM结构
 
             if(layEvent === 'detail'){ //查看
                 //do somehing
@@ -122,16 +122,21 @@
                     })
                 });
             } else if(layEvent === 'edit'){ //编辑
-                console.log($(this).parent().innerHTML)
-                //do something
-                // if(obj.event === 'setSign'){
-                //
-                //     this.innerHTML='<div id="aa">这是内容</div>';
-                //     // console.log(this.innerHTML)
-                //     this.className+=data.sign;
-                //     this.style.background = "red";
-                //
-                // };
+                courses_Name = data.courses_Name;
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['450px', '360px'],
+                    shade: 0.8,
+                    closeBtn: 1,
+                    shadeClose: true,
+                    // time:timee,
+                    content: '/course/editTeach',
+                    end: function(){ //此处用于演示
+
+                        location.reload();
+                    }
+                });
                 //同步更新缓存对应的值
                 obj.update({
                     username: '123'
