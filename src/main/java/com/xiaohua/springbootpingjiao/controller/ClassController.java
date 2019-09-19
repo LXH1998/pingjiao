@@ -36,12 +36,14 @@ public class ClassController {
 
     @ResponseBody
     @RequestMapping("/goclass")
-    public HashMap ClassData(){
+    public HashMap ClassData(int page,int limit){
+        int pages = (page-1)*limit;
         HashMap result = new HashMap();
-        List<HashMap> classes = classService.selectAllClass();
+        List<HashMap> classes = classService.selectAllClass(pages,limit);
+        List<Class> classList = classService.selectAllClassCount();
         result.put("code",0);
         result.put("msg","");
-        result.put("count",classes.size());
+        result.put("count",classList.size());
         result.put("data",classes);
         return result;
     }
@@ -106,6 +108,25 @@ public class ClassController {
         return  false;
 
     }
+    /***
+     * 指定院系班级编号重载
+     * @param
+     * @return
+     */
+
+    @ResponseBody
+    @RequestMapping("/classincd")
+    public  HashMap selectClassWhereCdId(String class_Id,String departments_id){
+        HashMap result = new HashMap();
+        List<HashMap> classes = classService.selectClassWhereCdId(class_Id,departments_id);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",classes.size());
+        result.put("data",classes);
+        return result;
+    }
+
+
     @RequestMapping("goaddclass")
     public String goclass(){
         return "admin/class/addclass";

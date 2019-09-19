@@ -17,8 +17,13 @@ public class ClassServiceImpl implements ClassService {
     public ClassMapper classMapper;
 
     @Override
-    public List<HashMap> selectAllClass() {
-        return classMapper.selectAllClass();
+    public List<HashMap> selectAllClass(int pages, int limit) {
+        return classMapper.selectAllClass(pages,limit);
+    }
+
+    @Override
+    public List<Class> selectAllClassCount() {
+        return classMapper.selectAllClassCount();
     }
 
     /***
@@ -51,6 +56,15 @@ public class ClassServiceImpl implements ClassService {
             return true;
         }
         return false;
+    }
+    /***
+     * 指定院系班级编号重载
+     * @param
+     * @return
+     */
+    @Override
+    public List<HashMap> selectClassWhereCdId(String class_Id, String departments_id) {
+        return classMapper.selectClassWhereCdId(class_Id,departments_id);
     }
 
     @Override

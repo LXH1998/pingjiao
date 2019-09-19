@@ -20,7 +20,7 @@
         <label class="layui-form-label">学院:</label>
 
         <div class="layui-input-inline">
-            <select name="quiz2" id="xueyuan" lay-search>
+            <select name="quiz2" id="xueyuan" lay-search="">
                 <option value="">请选择学院</option>
 
             </select>
@@ -90,7 +90,17 @@
                 $("#shoushuo").bind("input propertychange",function(){
                     if (departments_id!=undefined) {
 
-                        //指定院系的迷糊查询
+                        table.reload('idTest', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            },
+                            url:"/class/classincd"
+                            ,where: {
+                                class_Id:$(this).val(),
+                                departments_id:departments_id
+                            }
+                        }, 'data');
+                        //指定院系的模糊查询
                     }else {
             table.reload('idTest', {
                 page: {
@@ -135,7 +145,7 @@
                     }
                 }
             })
-         //   console.log(data.value); //得到被选中的值
+            console.log(data.value); //得到被选中的值
         });
 
         var $ = layui.$, active = {
