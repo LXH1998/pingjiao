@@ -26,11 +26,10 @@
     </div>
     角色:
     <div class="layui-form layui-inline" style="width: 200px">
-        <select id="role_name" name="role_name" lay-verify="required">
+        <select id="role_name" name="role_name"  lay-search>
             <option value=""></option>
         </select>
     </div>
-    <button class="layui-btn" data-type="reload">搜索</button>
     <button type="button" class="layui-btn" id="addUser">
         <i class="layui-icon">&#xe608;</i> 添加
     </button>
@@ -78,11 +77,35 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
+<!--<script>-->
+    <!--layui.use(['form','table'], function(){-->
+        <!--var table = layui.table;-->
+        <!--var form = layui.form-->
+    <!---->
+            <!--var user_account = $('#user_account');-->
+            <!--var role_name = $('#role_name');-->
+
+            <!--//执行重载-->
+            <!--table.reload("idTest",{-->
+                <!--page: {-->
+                    <!--curr: 1 //重新从第 1 页开始-->
+                <!--}-->
+                <!--,url:"/userAdministration/selectAccountUsers"-->
+                <!--,where: {-->
+                    <!--user_Account: user_account.val()-->
+                    <!--,role_name:role_name.val()-->
+                <!--}-->
+            <!--});-->
+
+    <!--})-->
+
+<!--</script>-->
 
 
 <script>
     layui.use('table', function(){
         var table = layui.table;
+        var form = layui.form
         //监听工具条
         table.on('tool(demo)', function(obj){
             var data = obj.data;
@@ -133,24 +156,46 @@
         });
 
         // 重载
-        var $ = layui.$, active = {
-            reload: function(){
-                var user_account = $('#user_account');
-                var role_name = $('#role_name');
 
-                //执行重载
-                table.reload("idTest",{
-                    page: {
-                        curr: 1 //重新从第 1 页开始
-                    }
-                    ,url:"/userAdministration/selectAccountUsers"
-                    ,where: {
-                        user_Account: user_account.val()
-                        ,role_name:role_name.val()
-                    }
-                });
-            }
-        };
+
+
+        $("#user_account").bind("input propertychange",function () {
+            var user_account = $('#user_account');
+            var role_name = $('#role_name');
+
+            //执行重载
+            table.reload("idTest",{
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,url:"/userAdministration/selectAccountUsers"
+                ,where: {
+                    user_Account: user_account.val()
+                    ,role_name:role_name.val()
+                }
+            });
+        })
+
+        form.on('select',function (data) {
+            var user_account = $('#user_account');
+            var role_name = $('#role_name');
+
+            //执行重载
+            table.reload("idTest",{
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                ,url:"/userAdministration/selectAccountUsers"
+                ,where: {
+                    user_Account: user_account.val()
+                    ,role_name:role_name.val()
+                }
+            });
+        })
+
+
+
+        //添加用户
         $("#addUser").click(function (ev) {
             ev.preventDefault()
             layer.open({
@@ -168,10 +213,6 @@
         })
 
 
-        $('.demoTable .layui-btn').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
-        });
     });
 </script>
 
