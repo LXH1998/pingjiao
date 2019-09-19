@@ -131,8 +131,10 @@
             },
             success:function (e) {
                 if (e=true){
-                    layer.msg('添加成功', {icon: 6});
-                    parent.location.reload();
+                    layer.msg('添加成功', {icon: 1},function () {
+
+                    });
+
                 }else {
                     layer.msg('操作失败', {icon: 5});
                 }
