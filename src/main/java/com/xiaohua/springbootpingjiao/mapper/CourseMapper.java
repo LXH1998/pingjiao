@@ -14,9 +14,11 @@ public interface CourseMapper {
     int SelectCourseOne(String courses_Name);
     //删除指定课程
     int deleteTheCourse(int id);
+    //查找所有角色为教师的信息
+    List<User> SelectTeachUser();
     //新增课程
     int insertCourses(String courses_Name);
-    //查询授课信息
+    //查询授课信
    List<TeachData> SelectTeachAll();
 
 }

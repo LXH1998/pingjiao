@@ -3,6 +3,7 @@ package com.xiaohua.springbootpingjiao.service.impl;
 import com.xiaohua.springbootpingjiao.entity.Courses;
 import com.xiaohua.springbootpingjiao.entity.Teach;
 import com.xiaohua.springbootpingjiao.entity.TeachData;
+import com.xiaohua.springbootpingjiao.entity.User;
 import com.xiaohua.springbootpingjiao.mapper.CourseMapper;
 import com.xiaohua.springbootpingjiao.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public int insertCourses(String courses_Name) {
         return courseMapper.insertCourses(courses_Name);
+    }
+
+    @Override
+    public List<User> SelectTeachUser() {
+        return courseMapper.SelectTeachUser();
     }
 }
