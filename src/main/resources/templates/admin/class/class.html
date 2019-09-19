@@ -20,7 +20,7 @@
         <label class="layui-form-label">学院:</label>
 
         <div class="layui-input-inline">
-            <select name="quiz2" id="xueyuan" lay-search="">
+            <select lay-search name="quiz2" id="xueyuan" >
                 <option value="">请选择学院</option>
 
             </select>
@@ -86,6 +86,10 @@
             ,$=layui.jquery
             , table = layui.table;
 
+        
+        $("#a").click(function () {
+            location.href = "class/goaddstudent";
+        })
 
                 $("#shoushuo").bind("input propertychange",function(){
                     if (departments_id!=undefined) {

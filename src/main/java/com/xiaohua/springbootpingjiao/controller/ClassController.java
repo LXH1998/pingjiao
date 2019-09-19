@@ -58,25 +58,29 @@ public class ClassController {
     }
     @ResponseBody
     @RequestMapping("/classindepartments")
-    public  HashMap selectClassWhereDepartments(String departments_id){
+    public  HashMap selectClassWhereDepartments(String departments_id,int page,int limit){
+        int pages = (page-1)*limit;
         HashMap result = new HashMap();
-        List<HashMap> classes = classService.selectClassWhereDepartId(departments_id);
+        List<HashMap> classes = classService.selectClassWhereDepartId(departments_id,pages,limit);
+        List<HashMap> classlist = classService.selectClassWhereDepartIdCount(departments_id);
         result.put("code",0);
         result.put("msg","");
-        result.put("count",classes.size());
+        result.put("count",classlist.size());
         result.put("data",classes);
         return result;
     }
 
     @ResponseBody
     @RequestMapping("/classinclassid")
-    public  HashMap selectClassWhereClassid(String class_Id){
+    public  HashMap selectClassWhereClassid(String class_Id,int page,int limit){
+        int pages = (page-1)*limit;
         HashMap result = new HashMap();
         List<HashMap> classes = classService.selectClassWhereClassId(class_Id);
+        List<HashMap> classelist = classService.selectClassWhereClassIdlist(class_Id,pages,limit);
         result.put("code",0);
         result.put("msg","");
         result.put("count",classes.size());
-        result.put("data",classes);
+        result.put("data",classelist);
         return result;
     }
 
@@ -116,13 +120,16 @@ public class ClassController {
 
     @ResponseBody
     @RequestMapping("/classincd")
-    public  HashMap selectClassWhereCdId(String class_Id,String departments_id){
+    public  HashMap selectClassWhereCdId(String class_Id,String departments_id,int page,int limit){
+        int pages = (page-1)*limit;
         HashMap result = new HashMap();
         List<HashMap> classes = classService.selectClassWhereCdId(class_Id,departments_id);
+
+        List<HashMap> classlist = classService.selectClassWhereCdIdlist(class_Id,departments_id,pages,limit);
         result.put("code",0);
         result.put("msg","");
         result.put("count",classes.size());
-        result.put("data",classes);
+        result.put("data",classlist);
         return result;
     }
 
@@ -142,5 +149,9 @@ public class ClassController {
     @RequestMapping("gclass")
     public String gclass(){
         return "admin/class/class";
+    }
+    @RequestMapping("login")
+    public String login(){
+        return "login";
     }
 }
