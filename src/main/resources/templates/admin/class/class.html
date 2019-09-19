@@ -11,7 +11,7 @@
 <body>
 
 <div style="width: 100%;">
-    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" style="line-height:0.5em;margin-top:1px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:20px">ဂ</i></a>
 </div>
 <form class="layui-form   " action="">
 
@@ -22,6 +22,7 @@
         <div class="layui-input-inline">
             <select name="quiz2" id="xueyuan" lay-search>
                 <option value="">请选择学院</option>
+
             </select>
 
 
@@ -75,6 +76,8 @@
 <!--         ,url:' ../static/b.json'-->
 
 <script>
+
+    var departments_id
     layui.use(['form', 'layedit', 'laydate','table','jquery'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -84,7 +87,11 @@
             , table = layui.table;
 
 
-        $("#shoushuo").bind("input propertychange",function(){
+                $("#shoushuo").bind("input propertychange",function(){
+                    if (departments_id!=undefined) {
+
+                        //指定院系的迷糊查询
+                    }else {
             table.reload('idTest', {
                 page: {
                     curr: 1 //重新从第 1 页开始
@@ -93,7 +100,7 @@
                 ,where: {
                     class_Id:$(this).val()
                 }
-            }, 'data');
+            }, 'data');}
 
             console.log($(this).val())
         })
@@ -107,7 +114,8 @@
                 data:{departments_Name:data.value},
                 success:function (e) {
                     // console.log(e.data[0])
-                    // departments_id=e.data[0]
+                    departments_id=e.data[0]
+                    if (e.data[0]!=undefined){
                     table.reload('idTest', {
                         page: {
                             curr: 1 //重新从第 1 页开始
@@ -116,10 +124,18 @@
                         ,where: {
                             departments_id:e.data[0]
                         }
-                    }, 'data');
+                    }, 'data');}else {
+                        table.reload('idTest', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            },
+                            url:"/class/goclass"
+
+                        }, 'data')
+                    }
                 }
             })
-            console.log(data.value); //得到被选中的值
+         //   console.log(data.value); //得到被选中的值
         });
 
         var $ = layui.$, active = {
@@ -139,9 +155,43 @@
         table.on('tool(demo)', function(obj){
             var data = obj.data;
 
-            if(obj.event === 'detail'){
-                layer.msg('ID：'+ data.id + ' 的查看操作');
-            } else if(obj.event === 'del'){
+            if(obj.event === 'detail'){//详情
+
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['1000px', '600px'],
+                    shade: 0.8,
+                    closeBtn: 1,
+                    shadeClose: true,
+                    // time:timee,
+                    content: '/class/goaddstudent',
+                    end: function(){ //此处用于演示
+                        console.log("jingru")
+                        if (departments_id!=null) {
+                            table.reload('idTest', {
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                },
+                                url:"/class/classindepartments"
+                                ,where: {
+                                    departments_id:departments_id
+                                }
+                            }, 'data');}else {
+                            table.reload('idTest', {
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                },
+                                url:"/class/goclass"
+
+                            }, 'data')
+                        }
+
+
+                    }
+                });
+
+            } else if(obj.event === 'del'){//删除
                 layer.confirm('确认删除', function(index){
                     obj.del();
                     $.ajax({
@@ -197,62 +247,48 @@
             var type = $(this).data('type');
             active[type] ? active[type].call(this) : '';
         });
+        $("#add").click(function(){
+            console.log("aa")
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['450px', '360px'],
+                shade: 0.8,
+                closeBtn: 1,
+                shadeClose: true,
+                // time:timee,
+                content: '/class/goaddclass',
+                end: function(){ //此处用于演示
+                    console.log("jingru")
+                    if (departments_id!=null) {
+                    table.reload('idTest', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        url:"/class/classindepartments"
+                        ,where: {
+                            departments_id:departments_id
+                        }
+                    }, 'data');}else {
+                        table.reload('idTest', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            },
+                            url:"/class/goclass"
+
+                        }, 'data')
+                    }
+
+
+                }
+            });
+        })
+
 
     });
-// $("#add").click(function () {
-//     console.log("aa")
-//     layer.open({
-//         type: 2,
-//         area: ['700px', '450px'],
-//         fixed: false, //不固定
-//         maxmin: true,
-//         content: 'class/goaddclass'
-//     });
-// })
 
 
 
-    $("#add").click(function(){
-        console.log("aa")
-        layer.open({
-            type: 2,
-            title: false,
-            area: ['450px', '360px'],
-            shade: 0.8,
-            closeBtn: 1,
-            shadeClose: true,
-            // time:timee,
-            content: '/class/goaddclass',
-            end: function(){ //此处用于演示
-
-                   location.reload();
-
-
-                // var a=sessionStorage.getItem("check")
-                // if(account!=null){
-                //     layer.msg('登陆成功', { icon: 1 });
-                // }
-
-                // setTimeout(function () {location.reload();}, 2000)
-                // console.log(a)
-
-//     if (a == 1) {
-
-
-//             $(".check2").css("display", "block")
-//
-
-//         }
-
-//         if (a == 2) {
-//             $(".check1").css("display", "block")
-//             $(".check2").show()
-//             layer.msg('登陆成功', { icon: 1 });
-//         }
-
-            }
-        });
-    })
 
 // $(function () {
 //     $.ajax({

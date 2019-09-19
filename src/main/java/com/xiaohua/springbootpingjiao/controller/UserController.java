@@ -2,6 +2,7 @@ package com.xiaohua.springbootpingjiao.controller;
 
 import com.xiaohua.springbootpingjiao.entity.Departments;
 import com.xiaohua.springbootpingjiao.entity.Role;
+import com.xiaohua.springbootpingjiao.entity.User;
 import com.xiaohua.springbootpingjiao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,7 @@ import java.util.Map;
  **/
 
 @Controller
-@RequestMapping("/testBoot")
+@RequestMapping("/userAdministration")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -106,6 +107,38 @@ public class UserController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping("updateUserInformationRole")
+    public Map updateUserInformationRole(String user_Name, String user_Account, String user_Sex,
+                                     int departments_Id, int class_Id, int role_ID, int user_Id) {
+        Map result = new HashMap();
+        if(userService.updateUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id,user_Id)
+                &&userService.updateUserRole(role_ID,user_Id)){
+            result.put("data",1);
+        }else{
+            result.put("data",0);
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("insertUserInformationRole")
+    public Map insertUserInformationRole(String user_Name, String user_Account, String user_Sex,
+                                         int departments_Id, int class_Id, int role_ID) {
+        Map result = new HashMap();
+        if(userService.insertUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id)){
+            List<User> userList = userService.selectUserId(user_Name,user_Account);
+            int user_id = userList.get(0).getUser_Id();
+            if (userService.insertUserRole(role_ID,user_id)){
+                result.put("data",1);
+            }else{
+                result.put("data",0);
+            }
+        }else{
+            result.put("data",0);
+        }
+        return result;
+    }
 
 
     @RequestMapping("goUserInterface")
@@ -116,6 +149,11 @@ public class UserController {
     @RequestMapping("GoUpdateUser")
     public String GoUpdateUser(){
         return "admin/user/updateUser";
+    }
+
+    @RequestMapping("GoAddUser")
+    public String GoAddUser(){
+        return "admin/user/addUser";
     }
 
 }

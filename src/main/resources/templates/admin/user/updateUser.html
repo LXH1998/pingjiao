@@ -35,7 +35,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">用户所属</label>
         <div class="layui-input-inline" style="width: 30%">
-            <select name="quiz1" id="quiz1">
+            <select name="quiz1" id="quiz1" lay-filter="quiz1">
                 <option value="">请选择角色</option>
             </select>
         </div>
@@ -43,7 +43,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label"></label>
         <div class="layui-input-inline" style="width: 30%">
-            <select name="quiz2" id="quiz2">
+            <select name="quiz2" id="quiz2" lay-filter="quiz2">
                 <option value="">请选择院系</option>
 
             </select>
@@ -60,7 +60,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button type="submit" class="layui-btn">立即提交</button>
+            <button type="submit" class="layui-btn" id="Submission">立即提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -68,6 +68,7 @@
 <script>
     function inputDataHandle(obj){
         console.log(obj)
+        var user_id = obj.data.user_id;
         var user_name = obj.data.user_name;
         var user_account = obj.data.user_account;
         var user_sex = obj.data.user_sex;
@@ -81,10 +82,10 @@
         $('#user_account').val(user_account)
 
         layui.use(['form', 'upload', 'layer'], function () {
-
-            //生成角色
+            var form = layui.form;
+            //生成角色，并赋予初始值
             $.ajax({
-                url: '/testBoot/selectAllRole',
+                url: '/userAdministration/selectAllRole',
                 dataType: 'json',
                 type: 'get',
                 success: function (data) {
@@ -96,9 +97,9 @@
                 }
             })
 
-            //生成院系
+            //生成院系，并赋予初始值
             $.ajax({
-                url: '/testBoot/selectAllDepartments',
+                url: '/userAdministration/selectAllDepartments',
                 dataType: 'json',
                 type: 'get',
                 success: function (data) {
@@ -110,13 +111,25 @@
                 }
             })
 
-            console.log(role_name)
-            console.log(departments_id)
-            //生成班级
+            //生成班级,并赋予初始值
             if(role_name == "学生"){
                 $('#changeClass').css("display","block")
                 $.ajax({
-                    url: '/testBoot/selectAllClass',
+                    url: '/userAdministration/selectAllClass',
+                    dataType: 'json',
+                    type: 'get',
+                    data:{departments_Id:departments_id},
+                    success: function (data) {
+                        $.each(data.data, function (index,item) {
+                            $('#quiz3').append(new Option(item.class_id,item.class_id));// 下拉菜单里添加元素
+                        });
+                        $("#quiz3 option[value='"+class_id+"']").prop("selected",true);
+                        layui.form.render("select");
+                    }
+                })
+            }else{
+                $.ajax({
+                    url: '/userAdministration/selectAllClass',
                     dataType: 'json',
                     type: 'get',
                     data:{departments_Id:departments_id},
@@ -130,13 +143,81 @@
                 })
             }
 
-
-            var form = layui.form;
+            //性别赋予初始值
             $("input[name=sex][value=男]").prop("checked", user_sex == "男" ? true : false);
             $("input[name=sex][value=女]").prop("checked", user_sex == "女" ? true : false);
 
+            //角色下拉框change事件，判断是否为学生显示班级
+            //角色下拉框change事件，判断是否为学生显示班级
+            form.on('select(quiz1)', function(data){
+                if($("#quiz1").find("option:selected").text()=="学生"){
+                    $('#changeClass').css("display","block")
+                }else{
+                    $('#changeClass').css("display","none")
+                }
+            });
+
+            //选择院系，得到班级
+            form.on('select(quiz2)', function(data) {
+                $('#quiz3').empty()
+                var departments_id = data.value
+                $.ajax({
+                    url: '/userAdministration/selectAllClass',
+                    dataType: 'json',
+                    type: 'get',
+                    data: {departments_Id:departments_id},
+                    success: function (data) {
+                        $.each(data.data, function (index, item) {
+
+                            $('#quiz3').append(new Option(item.class_id, item.class_id));// 下拉菜单里添加元素
+                        });
+                        layui.form.render("select");
+                    }
+                })
+            })
+
             form.render(); //更新全部
 
+            //提交事件
+            $("#Submission").click(function (ev) {
+                ev.preventDefault()
+                var update_name = $("#user_name").val()
+                var update_account = $("#user_account").val()
+                var update_sex = $("input[name=sex]:checked").val()
+                var update_role = $("#quiz1").val()
+                var update_departments = $("#quiz2").val()
+                var update_class = $("#quiz3").val()
+                var role_name = $("#quiz1").find("option:selected").text();
+
+
+                if(update_class==""){
+                    update_class = 0
+                }
+                if($("#quiz1").find("option:selected").text() != "学生"){
+                    update_class = 0
+                }
+                $.ajax({
+                    url:"/userAdministration/updateUserInformationRole",
+                    type:"get",
+                    data:{
+                        user_Name:update_name,
+                        user_Account:update_account,
+                        user_Sex:update_sex,
+                        departments_Id:update_departments,
+                        class_Id:update_class,
+                        role_ID:update_role,
+                        user_Id:user_id
+                    },
+                    success:function (res) {
+                        if (res.data == 1){
+                            var index = parent.layer.getFrameIndex(window.name)
+                            parent.location.reload()
+                            parent.layer.close(index)
+                        }
+                    }
+                })
+
+            })
 
         });
 
@@ -144,7 +225,6 @@
 
     }
 
-    <!--动态生成下拉框-->
 
 
 
