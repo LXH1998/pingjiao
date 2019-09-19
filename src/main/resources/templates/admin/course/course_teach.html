@@ -15,8 +15,17 @@
 </div>
 <table id="demo" lay-filter="test"></table>
 
+<script type="text/html" id="selectGxmc" >
+    <select name='jtcyGxmc' lay-verify='' lay-search=''>
+        <option value=""></option>
+        <option value="父子">父子</option>
+        <option value="母子">母子</option>
+        <option value="姐弟">姐弟</option>
+        <option value="弟弟">弟弟</option>
+    </select>
+</script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">权限</a>
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-xs" lay-event="detail">授课详情</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 
@@ -30,8 +39,17 @@
 <!--<script type="text/html" id="xuhao">-->
 <!--{{d.LAY_TABLE_INDEX+1}}-->
 <!--</script>-->
+<style>
 
-
+    /* 防止下拉框的下拉列表被隐藏---必须设置--- */
+    .layui-table-cell {            overflow: visible !important;        }
+    /* 使得下拉框与单元格刚好合适 */
+    td .layui-form-select{
+        margin-top: -10px;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+</style>
 <script type="text/javascript">
     layui.use('table', function(){
         var table = layui.table;
@@ -45,21 +63,25 @@
             ,cols: [
                 [ //表头
                     {field: 'teach_id', templet: '#xuhao',title: '课程ID', width:'20%', sort: true, fixed: 'left', align: 'center'},
+                    // {field: 'electGxmc', title: '下拉框', width: '20%',align: 'center',templet:'#selectGxmc'},
                     {field: 'courses_Name', title: '课程名', width: '20%',align: 'center'}
-                    ,{field: 'class_Name', title: '班级', width:'20%', align: 'center'}
+                    ,{field: 'class_Name', title: '班级', width:'20%', event: 'setSign' ,align: 'center'}
                     ,{field: 'user_Name', title: '授课教师', width:'20%', align: 'center'}
                     ,{title: '操作', width: '20%', align: 'center', toolbar: '#barDemo'}
                 ]
             ]
         });
 
-
         //监听工具条
         table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+            $("#id").html("填充代码");
             console.log(tr)
+            console.log(tr[0].innerHTML)
+
             if(layEvent === 'detail'){ //查看
                 //do somehing
                 //iframe层-父子操作
@@ -100,8 +122,16 @@
                     })
                 });
             } else if(layEvent === 'edit'){ //编辑
+                console.log($(this).parent().innerHTML)
                 //do something
-
+                // if(obj.event === 'setSign'){
+                //
+                //     this.innerHTML='<div id="aa">这是内容</div>';
+                //     // console.log(this.innerHTML)
+                //     this.className+=data.sign;
+                //     this.style.background = "red";
+                //
+                // };
                 //同步更新缓存对应的值
                 obj.update({
                     username: '123'

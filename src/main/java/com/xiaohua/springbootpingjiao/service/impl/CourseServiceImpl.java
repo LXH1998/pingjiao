@@ -37,4 +37,14 @@ public class CourseServiceImpl implements CourseService {
     public List<TeachData> SelectTeach() {
         return courseMapper.SelectTeachAll();
     }
+
+    @Override
+    public int SelectCourseOne(String courses_Name) {
+        return courseMapper.SelectCourseOne(courses_Name);
+    }
+
+    @Override
+    public int insertCourses(String courses_Name) {
+        return courseMapper.insertCourses(courses_Name);
+    }
 }

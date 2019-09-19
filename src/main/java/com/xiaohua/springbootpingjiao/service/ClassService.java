@@ -13,4 +13,7 @@ public interface ClassService {
     List<Departments> queryAllDepartments();
     List<Departments> selectDepartId(String departments_Name);
     boolean insertClass(Class c);
+    List<HashMap> selectClassWhereDepartId(String departments_id);
+    List<HashMap> selectClassWhereClassId(String class_Id);
+    boolean deleteClass(Class c);
 }
