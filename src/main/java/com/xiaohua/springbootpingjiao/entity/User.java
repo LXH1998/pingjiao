@@ -1,5 +1,7 @@
 package com.xiaohua.springbootpingjiao.entity;
 
+import java.util.List;
+
 public class User{
     private Integer user_Id;
     private String user_Name;
@@ -10,8 +12,16 @@ public class User{
     private Integer class_Id;
     private String user_state;
     private Departments departments;
-    private Userrole userrole;
     private Role role;
+    private List<Userrole> userroleList;
+
+    public List<Userrole> getUserroleList() {
+        return userroleList;
+    }
+
+    public void setUserroleList(List<Userrole> userroleList) {
+        this.userroleList = userroleList;
+    }
 
     public Departments getDepartments() {
         return departments;
@@ -21,13 +31,6 @@ public class User{
         this.departments = departments;
     }
 
-    public Userrole getUserrole() {
-        return userrole;
-    }
-
-    public void setUserrole(Userrole userrole) {
-        this.userrole = userrole;
-    }
 
     public Role getRole() {
         return role;

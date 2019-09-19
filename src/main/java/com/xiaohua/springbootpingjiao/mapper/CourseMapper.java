@@ -10,9 +10,13 @@ import java.util.List;
 public interface CourseMapper {
     //查询所有课程
     List<Courses> SelectCourseAll();
+    //查询具体某一门课程是否存在
+    int SelectCourseOne(String courses_Name);
     //删除指定课程
     int deleteTheCourse(int id);
-    //删除指定课程
-//   List<Teach> SelectTeachAll();
+    //新增课程
+    int insertCourses(String courses_Name);
+    //查询授课信息
    List<TeachData> SelectTeachAll();
+
 }

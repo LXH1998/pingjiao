@@ -11,9 +11,8 @@
 
 <!--头部工具栏-->
 <div class="layui-btn-group demoTable" style="margin: 10px 0 0 10px">
-    <button class="layui-btn layui-btn-sm" data-type="getCheckData">添加权限</button>
-    <button class="layui-btn  layui-btn-sm layui-btn-danger" data-type="getCheckLength">批量删除</button>
-    <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+    <button class="layui-btn layui-btn-sm" data-type="goAddPower">添加权限</button>
+    <button class="layui-btn  layui-btn-sm layui-btn-danger" data-type="batchDelete">批量删除</button>
 </div>
 
 <table id="demo" lay-filter="test"></table>
@@ -42,8 +41,6 @@
 
         layui.use('table', function(){
             var table = layui.table;
-            // child();
-            // console.log(roleID);
 
             //数据表表头
             table.render({
@@ -72,23 +69,8 @@
                 var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
                 var powerId = data.power_Id; //获得属性role_ID的值
 
-                if(layEvent === 'detail'){ //添加权限
-                    //do somehing
-                    //iframe层-父子操作
-                    layer.open({
-                        type: 2,
-                        title:'已有权限',
-                        area: ['700px', '450px'],
-                        fixed: false, //不固定
-                        maxmin: true,
-                        content: '/roleManagement/checkPower',
-                        success:function (layero,index) {
-                            var iframe = window['layui-layer-iframe' + index];
-                            iframe.child(data)
-                        }
-                    });
-                } else if(layEvent === 'del'){ //删除
-                    layer.confirm('真的删除行么', function(index){
+                if(layEvent === 'del'){ //删除
+                    layer.confirm('真的删除该权限么', function(index){
                         //向服务端发送删除指令
                         $.ajax({
                             url:'/roleManagement/deleteThePower',
@@ -114,77 +96,73 @@
                             }
                         })
                     });
-                } else if(layEvent === 'edit'){ //查看已有权限
-                    //do something
-
-                    layer.open({
-                        type: 2,
-                        title:'可添加权限',
-                        area: ['700px', '450px'],
-                        fixed: false, //不固定
-                        maxmin: true,
-                        content: '/roleManagement/goAddPower',
-                        success:function (layero,index) {
-                            var iframe = window['layui-layer-iframe' + index];
-                            iframe.child(data)
-                        }
-                    });
-
-                    //同步更新缓存对应的值
-                    obj.update({
-                        username: '123'
-                        ,title: 'xxx'
-                    });
-                } else if(layEvent === 'LAYTABLE_TIPS'){
-                    layer.alert('Hi，头部工具栏扩展的右侧图标。');
                 }
             });
 
             //头部按钮
             var $ = layui.$, active = {
-                getCheckData: function(){ //获取选中数据
-                    var checkStatus = table.checkStatus('demo')
-                        ,data = checkStatus.data;
-                    layer.alert(JSON.stringify(data));
+                goAddPower: function(){ //弹出添加权限窗口，关闭角色权限窗口
+                    // var checkStatus = table.checkStatus('demo')
+                    //     ,data = checkStatus.data;
+                    // layer.alert(JSON.stringify(data));
+                    // console.log(data);
+
+                    //iframe层-父子操作
+                    layer.open({
+                        type: 2
+                        ,title:'审批详情'
+                        ,offset: 'r'//弹出层位置
+                        ,content: '/roleManagement/goAddPower'
+                        ,btn: ['同意']//按钮
+                        ,area: ['40%', '100%']//宽高
+                        ,btnAlign: 'c'//按钮对齐方式
+                        ,maxmin:true//支持最大最小化
+                        ,scrollbar: false//屏蔽滚动条
+                        ,shade: 0.1 //遮罩
+                        ,shadeClose:true//点击遮罩关闭
+                        ,yes: function(index){
+                            layer.close(index);
+                            handling('consent');//同意
+
+                        }
+                    });
                 }
-                ,getCheckLength: function(){ //获取选中数目
+                ,batchDelete: function(){ //批量删除角色权限
                     var checkStatus = table.checkStatus('demo')
                         ,data = checkStatus.data;
                     // layer.msg('选中了：'+ data.length + ' 个');
 
-                    //角色批量删除（未完成）
                     if (data.length == 0){
                         layer.msg("请选择将要删除的数据行", {icon: 2});
-                    }else {
-                        var codeId = "";
-                        for(i=0;i<data.length;i++){
-                            codeId += data[i].role_ID+",";
-                            console.log(typeof codeId);
-                        }
-                        parent.layer.msg('删除中...', {icon: 16,shade: 0.3,time:5000});
-
-                        // layer.confirm("您确定要删除吗？"+codeId,function(){
-                        //     $.ajax({
-                        //         type:"POST",
-                        //         url: './json/servertheme.json',
-                        //         data:{"id":codeId},
-                        //         success:function (data) {
-                        //             layer.closeAll('loading');
-                        //             if(data.code==1){
-                        //                 parent.layer.msg('删除成功！', {icon: 1,time:2000,shade:0.2});
-                        //                 location.reload(true);
-                        //             }else{
-                        //                 parent.layer.msg('删除失败！', {icon: 2,time:3000,shade:0.2});
-                        //             }
-                        //         }
-                        //     })
-                        // })
+                        return ;
                     }
+                    var codeId="";
+                    for(var i=0;i<data.length;i++){
+                        codeId += data[i].power_Id+",";
+                        console.log(codeId);
+                        console.log(roleID);
                     }
 
-                ,isAll: function(){ //验证是否全选
-                    var checkStatus = table.checkStatus('demo');
-                    layer.msg(checkStatus.isAll ? '全选': '未全选')
+                    layer.confirm("您确定要删除吗？",function(){
+                        $.ajax({
+                            type:"POST",
+                            url: '/roleManagement/deleteThePowers',
+                            data:{
+                                "codeId":codeId,
+                                "role_Id":roleID
+                            },
+                            success:function (data) {
+                                layer.closeAll('loading');
+                                if(data.code==1){
+                                    layer.msg("删除成功", { shift: -1 , time: 1200 , icon: 1}, function () {
+                                        location.reload(true);
+                                    });
+                                }else{
+                                    layer.msg('删除失败', {icon: 2,time:3000,shade:0.2});
+                                }
+                            }
+                        })
+                    })
                 }
             };
             $('.demoTable .layui-btn').on('click', function(){

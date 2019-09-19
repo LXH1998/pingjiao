@@ -7,25 +7,35 @@
 <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
 <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
+<!--<style>-->
+    <!--.layui-table-cell{-->
+        <!--height:20px;-->
+        <!--line-height: 20px;-->
+    <!--}-->
+<!--</style>-->
 <body>
 
 <!--表单-->
-<form class="layui-form">
-    <div class="layui-form-item">
-        <label class="layui-form-label">添加角色：</label>
-        <div class="layui-input-block">
-            <input type="text" name="role_Name" required  lay-verify="required" placeholder="请输入角色名" autocomplete="off" class="layui-input" style="width: 150px;float: left;margin-right: 5px">
+<form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">搜索</label>
+            <div class="layui-input-inline">
+                <input id="search" type="text" name="password" placeholder="搜索角色" class="layui-input">
+            </div>
+            <label class="layui-form-label">添加角色</label>
+            <div class="layui-input-inline">
+                <input type="text" name="role_Name" required lay-verify="required" placeholder="输入角色名" class="layui-input">
+            </div>
             <button class="layui-btn" lay-submit lay-filter="formDemo">添加</button>
         </div>
-    </div>
+
 </form>
 
 <!--头部工具栏-->
 <div class="layui-btn-group demoTable">
-    <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
-    <button class="layui-btn layui-btn-danger" data-type="getCheckLength">批量删除</button>
-    <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+    <button class="layui-btn layui-btn-danger " data-type="batchDelete">批量删除</button>
 </div>
+
 
 <!--数据表格-->
 <table id="demo" lay-filter="test"></table>
@@ -33,7 +43,7 @@
 <!--行内工具条-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail">权限</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">添加权限</a>
+    <a class="layui-btn layui-btn-xs" lay-event="add">添加权限</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 
     <!-- 这里同样支持 laytpl 语法，如： -->
@@ -53,6 +63,7 @@
         var table = layui.table;
 
         //监听表格复选框选择
+        var content='';
         table.on('checkbox(test)', function(obj){
             console.log(obj.checked); //当前是否选中状态
             console.log(obj.data); //选中行的相关数据
@@ -74,6 +85,8 @@
                     ,{title: '操作', fixed:'right', width: '30%', align: 'center', toolbar: '#barDemo'}
                 ]
             ]
+            // ,limits : [ 5,6,7,8,9,10 ] //控制多少行一页（默认五条一页）
+            // ,limit : 5 //每页默认显示的数量
         });
 
 
@@ -84,7 +97,7 @@
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
             var roleName = data.role_Name; //获得属性role_Name的值
 
-            if(layEvent === 'detail'){ //添加权限
+            if(layEvent === 'detail'){ //查看角色权限
                 //do somehing
                 //iframe层-父子操作
                 layer.open({
@@ -93,14 +106,15 @@
                     area: ['700px', '450px'],
                     fixed: false, //不固定
                     maxmin: true,
+                    scrollbar: false,
                     content: '/roleManagement/checkPower',
                     success:function (layero,index) {
                         var iframe = window['layui-layer-iframe' + index];
                         iframe.child(data)
                     }
                 });
-            } else if(layEvent === 'del'){ //删除
-                layer.confirm('真的删除行么', function(index){
+            } else if(layEvent === 'del'){ //删除角色
+                layer.confirm('真的删除该角色么', function(index){
                     //向服务端发送删除指令
                     $.ajax({
                         url:'/roleManagement/deleteTheRole',
@@ -110,15 +124,6 @@
                         },
                         success:function (res) {
                             if (res.result=="操作成功"){
-                                // obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                // layer.close(index);
-                                // layer.msg(res.result)
-                                // //    操作成功执行方法重载
-                                // table.reload('demo', {
-                                //     page: {
-                                //         curr: 1 //重新从第 1 页开始
-                                //     }
-                                // });
 
                                 //操作成功后继续显示当前页数据
                                 $(".layui-laypage-btn").click();
@@ -132,7 +137,7 @@
                         }
                     })
                 });
-            } else if(layEvent === 'edit'){ //查看已有权限
+            } else if(layEvent === 'add'){ //添加角色权限
                 //do something
 
                 layer.open({
@@ -161,47 +166,38 @@
 
         //头部按钮
         var $ = layui.$, active = {
-            getCheckData: function(){ //获取选中数据
-                var checkStatus = table.checkStatus('demo')
-                    ,data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
-            }
-            ,getCheckLength: function(){ //获取选中数目
+            batchDelete: function(){ //批量删除
                 var checkStatus = table.checkStatus('demo')
                     ,data = checkStatus.data;
                 // layer.msg('选中了：'+ data.length + ' 个');
 
-                //角色批量删除（未完成）
                 if (data.length == 0){
                     layer.msg("请选择将要删除的数据行", {icon: 2});
+                    return ;
                 }
-                var codeId = "";
-                for(i=0;i<data.length;i++){
-                    codeId += data[i].role_ID+",";
-                    console.log(typeof codeId);
+                var codeName="";
+                for(var i=0;i<data.length;i++){
+                    codeName += data[i].role_Name+",";
+                    // console.log(codeId);
                 }
-                parent.layer.msg('删除中...', {icon: 16,shade: 0.3,time:5000});
 
-                // layer.confirm("您确定要删除吗？"+codeId,function(){
-                //     $.ajax({
-                //         type:"POST",
-                //         url: './json/servertheme.json',
-                //         data:{"id":codeId},
-                //         success:function (data) {
-                //             layer.closeAll('loading');
-                //             if(data.code==1){
-                //                 parent.layer.msg('删除成功！', {icon: 1,time:2000,shade:0.2});
-                //                 location.reload(true);
-                //             }else{
-                //                 parent.layer.msg('删除失败！', {icon: 2,time:3000,shade:0.2});
-                //             }
-                //         }
-                //     })
-                // })
-            }
-            ,isAll: function(){ //验证是否全选
-                var checkStatus = table.checkStatus('demo');
-                layer.msg(checkStatus.isAll ? '全选': '未全选')
+                layer.confirm("您确定要删除吗？",function(){
+                    $.ajax({
+                        type:"POST",
+                        url: '/roleManagement/deleteRoles',
+                        data:{"codeName":codeName},
+                        success:function (data) {
+                            layer.closeAll('loading');
+                            if(data.code==1){
+                                layer.msg("删除成功", { shift: -1 , time: 1200 , icon: 1}, function () {
+                                    location.reload(true);
+                                });
+                            }else{
+                                layer.msg('删除失败', {icon: 2,time:3000,shade:0.2});
+                            }
+                        }
+                    })
+                })
             }
         };
 
@@ -226,6 +222,7 @@
         //监听提交
         form.on('submit(formDemo)', function(data){
             // var rolename = JSON.stringify(data.field);
+            console.log(data.field);
             $.ajax({
                 url:'/roleManagement/insertRole',
                 data:data.field,
@@ -251,7 +248,36 @@
             })
             return false;
         });
+
+
+        //角色搜索
+        $("#search").bind("input propertychange",function(){
+            var role_Name = $(this).val();
+            // 数据表表头
+            table.render({
+                elem: '#demo'
+                // ,height: 400
+                ,url: '/roleManagement/searchRole' //数据接口
+                ,where:{
+                    role_Name:role_Name
+                }
+                ,page: true //开启分页
+                ,cols: [
+                    [
+                        {type: 'checkbox', fixed: 'left', width:'10%'}
+                        //表头
+                        ,{field: 'role_ID', templet: '#xuhao',title: '序号', width:'10%', sort: true, align: 'center'}
+                        ,{field: 'role_Name', title: '角色', width:'50%', align: 'center'}
+                        ,{title: '操作', fixed:'right', width: '30%', align: 'center', toolbar: '#barDemo'}
+                    ]
+                ]
+            });
+            return false;
+        })
+
     });
+
+
 </script>
 </body>
 </html>

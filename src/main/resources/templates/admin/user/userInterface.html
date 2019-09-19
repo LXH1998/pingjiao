@@ -7,7 +7,6 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>在线评教系统</title>
     <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
     <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
@@ -15,7 +14,7 @@
 <body>
 <!--<div style="margin-bottom: 5px;">-->
 
-    <!--<ins class="adsbygoogle" style="display:inline-block;width:970px;height:90px" data-ad-client="ca-pub-6111334333458862" data-ad-slot="3820120620"></ins>-->
+<!--<ins class="adsbygoogle" style="display:inline-block;width:970px;height:90px" data-ad-client="ca-pub-6111334333458862" data-ad-slot="3820120620"></ins>-->
 
 <!--</div>-->
 
@@ -32,13 +31,16 @@
         </select>
     </div>
     <button class="layui-btn" data-type="reload">搜索</button>
+    <button type="button" class="layui-btn" id="addUser">
+        <i class="layui-icon">&#xe608;</i> 添加
+    </button>
 </div>
 
 <!--动态生成角色下拉框-->
 <script>
     layui.use(['form', 'upload', 'layer'], function () {
         $.ajax({
-            url: '/testBoot/selectAllRole',
+            url: '/userAdministration/selectAllRole',
             dataType: 'json',
             type: 'get',
             success: function (data) {
@@ -55,13 +57,13 @@
 <script type="text/html" id="xuHao">
     {{d.LAY_INDEX}}
 </script>
-<table class="layui-table" lay-data="{width:1100,url:'/testBoot/selectAllUser', page:true, id:'idTest'}" lay-filter="demo">
+<table class="layui-table" lay-data="{width:1100,url:'/userAdministration/selectAllUser', page:true, id:'idTest'}" lay-filter="demo">
     <thead>
     <tr>
         <th lay-data="{field: '序号',templet: '#xuHao',sort: true,width:80}">序号</th>
         <th lay-data="{field:'user_name',width:160}">姓名</th>
         <th lay-data="{field:'user_sex',width:90}">性别</th>
-        <th lay-data="{field:'user_account',sort: true,width:160}">用户名</th>
+        <th lay-data="{field:'user_account',sort: true,width:160}">账号</th>
         <th lay-data="{field:'departments_name',width:160}">所属院系</th>
         <th lay-data="{field:'role_name',width:160}">用户角色</th>
         <th lay-data="{title:'操作', toolbar: '#barDemo'}"></th>
@@ -79,21 +81,20 @@
 
 
 <script>
-
     layui.use('table', function(){
         var table = layui.table;
         //监听工具条
         table.on('tool(demo)', function(obj){
             var data = obj.data;
             if(obj.event === 'detail'){//初始化密码
-                layer.confirm('真的初始化么', function(index){
+                layer.confirm('初始化密码为123456789', function(index){
                     $.ajax({
-                        url:"/testBoot/updateUserPassword",
+                        url:"/userAdministration/updateUserPassword",
                         type:"get",
                         data:{user_Id:data.user_id},
                         success:function (res) {
                             if(res.data == 1){
-                                layer.msg('初始化成功');
+                                layer.msg('初始化成功',{icon:1});
                             }
                         }
                     })
@@ -103,7 +104,7 @@
             } else if(obj.event === 'del'){//删除用户
                 layer.confirm('真的删除该用户嘛', function(index){
                     $.ajax({
-                        url:"/testBoot/updateUserState",
+                        url:"/userAdministration/updateUserState",
                         type:"get",
                         data:{user_Id:data.user_id},
                         success:function (res) {
@@ -114,18 +115,17 @@
                     })
                 });
             } else if(obj.event === 'edit'){
-                layer.alert('编辑行：<br>'+ JSON.stringify(data))
                 layer.open({
                     type:2
                     ,skin:'layui-layer-rim'//加上边框
                     ,maxmin: true //开启最大化最小化按钮
                     ,area: ["500px","500px"]
-                    ,title: "goPowerEdit"
-                    ,content:"/testBoot/GoUpdataUser"
+                    ,title: "修改用户信息"
+                    ,content:"/userAdministration/GoUpdateUser"
                     ,success: function (layero,index) {
                         var body = layer.getChildFrame('body', index);
                         var iframe = window['layui-layer-iframe' + index];
-                        // 向子页面的全局函数child传参
+                        // 向子页面的全局函数
                         iframe.inputDataHandle(obj);
                     }
                 })
@@ -143,7 +143,7 @@
                     page: {
                         curr: 1 //重新从第 1 页开始
                     }
-                    ,url:"/testBoot/selectAccountUsers"
+                    ,url:"/userAdministration/selectAccountUsers"
                     ,where: {
                         user_Account: user_account.val()
                         ,role_name:role_name.val()
@@ -151,6 +151,22 @@
                 });
             }
         };
+        $("#addUser").click(function (ev) {
+            ev.preventDefault()
+            layer.open({
+                type:2
+                ,skin:'layui-layer-rim'//加上边框
+                ,maxmin: true //开启最大化最小化按钮
+                ,area: ["500px","500px"]
+                ,title: "增加用户信息"
+                ,content:"/userAdministration/GoAddUser"
+                ,success: function (layero,index) {
+                    var body = layer.getChildFrame('body', index);
+                    var iframe = window['layui-layer-iframe' + index];
+                }
+            })
+        })
+
 
         $('.demoTable .layui-btn').on('click', function(){
             var type = $(this).data('type');
