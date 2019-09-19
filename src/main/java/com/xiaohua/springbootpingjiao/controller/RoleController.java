@@ -201,6 +201,29 @@ public class RoleController {
     }
 
     /**
+     * 批量添加角色权限
+     */
+    @ResponseBody
+    @RequestMapping("/insertThePowers")
+    public Map insertThePowers(String codeId,int role_Id){
+        Map result = new HashMap();
+        String a[]=codeId.split(",");
+        try {
+            for (int i=0;i<a.length;i++){
+                String powerId = a[i];
+                int power_Id = Integer.valueOf(powerId);
+                roleService.insertRolePower(role_Id,power_Id);
+                result.put("code",1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            result.put("code", -1);
+        }
+
+        return result;
+    }
+
+    /**
      * 删除角色权限
      */
     @ResponseBody
@@ -215,4 +238,29 @@ public class RoleController {
         }
         return result;
     }
+
+    /**
+     * 批量删除角色权限
+     */
+    @ResponseBody
+    @RequestMapping("/deleteThePowers")
+    public Map deleteThePowers(String codeId,int role_Id){
+        Map result = new HashMap();
+        String a[]=codeId.split(",");
+        try {
+            for (int i=0;i<a.length;i++){
+                String powerId = a[i];
+                int power_Id = Integer.valueOf(powerId);
+                roleService.deleteThePower(role_Id,power_Id);
+                result.put("code",1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            result.put("code", -1);
+        }
+
+        return result;
+    }
+
+
 }

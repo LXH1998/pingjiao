@@ -8,6 +8,11 @@
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <body>
+<!--头部工具栏-->
+<div class="layui-btn-group demoTable" style="margin: 10px 0 0 10px">
+    <button class="layui-btn  layui-btn-sm" data-type="batchAdd">批量添加</button>
+</div>
+
 <table id="demo" lay-filter="test"></table>
 
 <script type="text/html" id="barDemo">
@@ -28,9 +33,6 @@
     var roleID;
     function child(obj){
         roleID=obj.role_ID;
-        // role_Name=obj.role_Name;
-        // console.log(obj);
-        // console.log(roleID);
 
         layui.use('table', function(){
             var table = layui.table;
@@ -64,22 +66,7 @@
                 var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
                 var powerId = data.power_Id; //获得属性role_ID的值
 
-                if(layEvent === 'detail'){ //添加权限
-                    //do somehing
-                    //iframe层-父子操作
-                    layer.open({
-                        type: 2,
-                        title:'已有权限',
-                        area: ['700px', '450px'],
-                        fixed: false, //不固定
-                        maxmin: true,
-                        content: '/roleManagement/checkPower',
-                        success:function (layero,index) {
-                            var iframe = window['layui-layer-iframe' + index];
-                            iframe.child(data)
-                        }
-                    });
-                } else if(layEvent === 'add'){ //删除
+                if(layEvent === 'add'){ //添加权限
                     layer.confirm('真的删除行么', function(index){
                         //向服务端发送删除指令
                         $.ajax({
@@ -106,30 +93,53 @@
                             }
                         })
                     });
-                } else if(layEvent === 'edit'){ //查看已有权限
-                    //do something
-
-                    layer.open({
-                        type: 2,
-                        title:'可添加权限',
-                        area: ['700px', '450px'],
-                        fixed: false, //不固定
-                        maxmin: true,
-                        content: '/roleManagement/goAddPower',
-                        success:function (layero,index) {
-                            var iframe = window['layui-layer-iframe' + index];
-                            iframe.child(data)
-                        }
-                    });
-
-                    //同步更新缓存对应的值
-                    obj.update({
-                        username: '123'
-                        ,title: 'xxx'
-                    });
-                } else if(layEvent === 'LAYTABLE_TIPS'){
-                    layer.alert('Hi，头部工具栏扩展的右侧图标。');
                 }
+            });
+
+            //头部按钮
+            var $ = layui.$, active = {
+                batchAdd: function(){ //批量添加角色权限
+                    var checkStatus = table.checkStatus('demo')
+                        ,data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    console.log(data)
+                    if (data.length == 0){
+                        layer.msg("请选择将要添加的数据行", {icon: 2});
+                        return ;
+                    }
+                    var codeId="";
+                    for(var i=0;i<data.length;i++){
+                        codeId += data[i].power_Id+",";
+                        console.log(codeId);
+                        console.log(roleID);
+                    }
+                    // layer.msg('删除中...', {icon: 16,shade: 0.3,time:5000});
+
+                    layer.confirm("您确定要添加吗？",function(){
+                        $.ajax({
+                            type:"POST",
+                            url: '/roleManagement/insertThePowers',
+                            data:{
+                                "codeId":codeId,
+                                "role_Id":roleID
+                            },
+                            success:function (data) {
+                                layer.closeAll('loading');
+                                if(data.code==1){
+                                    layer.msg("添加成功", { shift: -1 , time: 1200 , icon: 1}, function () {
+                                        location.reload(true);
+                                    });
+                                }else{
+                                    layer.msg('添加失败', {icon: 2,time:3000,shade:0.2});
+                                }
+                            }
+                        })
+                    })
+                }
+            };
+            $('.demoTable .layui-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
             });
 
         });

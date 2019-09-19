@@ -4,6 +4,15 @@ public class Rolepower{
     private Integer rolepower_Id;
     private Integer role_Id;
     private Integer power_Id;
+    private String power_state;
+
+    public String getPower_state() {
+        return power_state;
+    }
+
+    public void setPower_state(String power_state) {
+        this.power_state = power_state;
+    }
 
     public Integer getRolepower_Id() {
         return rolepower_Id;

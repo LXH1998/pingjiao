@@ -15,7 +15,7 @@
 
     <!--查询所有角色-->
     <select id="selectAllRoles" resultMap="allRolesMap">
-        select * from role where status=1;
+        select * from role where role_state=1;
     </select>
     <resultMap id="allRolesMap" type="com.xiaohua.springbootpingjiao.entity.Role">
         <result column="role_id" property="role_ID"></result>
@@ -24,21 +24,21 @@
     </resultMap>
     <!--查询一页角色数据-->
     <select id="selectOnePageRoles" resultMap="allRolesMap">
-        select * from role where status=1 limit #{thePage},#{limit};
+        select * from role where role_state=1 limit #{thePage},#{limit};
     </select>
 
     <!--角色查询（模糊查询）-->
     <select id="searchRole" parameterType="String" resultMap="allRolesMap">
-        select * from role where role_name like CONCAT('%',#{role_Name},'%') and status=1;
+        select * from role where role_name like CONCAT('%',#{role_Name},'%') and role_state=1;
     </select>
     <!--角色查询（模糊查询-每页显示数据条数）-->
     <select id="searchTheOnePageRole"  resultMap="allRolesMap">
-        select * from role where role_name like CONCAT('%',#{role_Name},'%') and status=1 limit #{thePage},#{limit};
+        select * from role where role_name like CONCAT('%',#{role_Name},'%') and role_state=1 limit #{thePage},#{limit};
     </select>
 
     <!--新增角色（1.1、查询是否存在相同角色）-->
     <select id="selectTheRole" parameterType="String" resultType="int">
-        select IFNULL(MAX(role_id),0) AS role_id from role where role_name=#{role_Name} and status=1;
+        select IFNULL(MAX(role_id),0) AS role_id from role where role_name=#{role_Name} and role_state=1;
     </select>
     <!--新增角色（1.2.1、如果角色不存在，插入角色）-->
     <insert id="insertRole" parameterType="String">
@@ -47,7 +47,7 @@
 
     <!--删除角色-->
     <update id="deleteTheRole" parameterType="String">
-        update role set status='0' where role_name=#{role_Name} and status=1;
+        update role set role_state='0' where role_name=#{role_Name} and role_state=1;
     </update>
 
     <!--查看权限-->
@@ -58,7 +58,7 @@
                       on r.role_id = rp.role_id
                  join power p
                       on p.power_id = rp.power_id
-        where r.role_id=#{role_ID} and rp.status=1;
+        where r.role_id=#{role_ID} and rp.power_state=1;
     </select>
     <resultMap id="thePowerMap" type="com.xiaohua.springbootpingjiao.entity.Power">
         <id property="power_Id" column="power_id"></id>
@@ -73,17 +73,17 @@
                       on r.role_id = rp.role_id
                  join power p
                       on p.power_id = rp.power_id
-        where r.role_id=#{role_ID} and rp.status=1 limit #{thePage},#{limit};
+        where r.role_id=#{role_ID} and rp.power_state=1 limit #{thePage},#{limit};
     </select>
 
 
     <!--增加角色权限（1.1、查看未授权权限）-->
     <select id="selectUnauthorizedPower" parameterType="int" resultMap="thePowerMap">
-        select * from power  where power_id not in(select power_id from rolepower where role_id=#{role_ID} and status=1)
+        select * from power  where power_id not in(select power_id from rolepower where role_id=#{role_ID} and power_state=1)
     </select>
     <!--增加角色权限（1.1、每页显示几条数据）-->
     <select id="selectOnePageUnauthorizedPower" parameterType="int" resultMap="thePowerMap">
-        select * from power  where power_id not in(select power_id from rolepower where role_id=#{role_ID} and status=1) limit #{thePage},#{limit}
+        select * from power  where power_id not in(select power_id from rolepower where role_id=#{role_ID} and power_state=1) limit #{thePage},#{limit}
     </select>
     <!--增加角色权限（1.2.1、增加角色权限）-->
     <insert id="insertRolePower" parameterType="int">
@@ -93,6 +93,7 @@
 
     <!--删除角色权限-->
     <update id="deleteThePower" parameterType="int">
-        update  rolepower set status='0' where role_id=#{role_Id} and power_id=#{power_Id} and status=1;
+        update  rolepower set power_state='0' where role_id=#{role_Id} and power_id=#{power_Id} and power_state=1;
     </update>
+
 </mapper>

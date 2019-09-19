@@ -7,6 +7,12 @@
 <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
 <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
+<!--<style>-->
+    <!--.layui-table-cell{-->
+        <!--height:20px;-->
+        <!--line-height: 20px;-->
+    <!--}-->
+<!--</style>-->
 <body>
 
 <!--表单-->
@@ -27,7 +33,7 @@
 
 <!--头部工具栏-->
 <div class="layui-btn-group demoTable">
-    <button class="layui-btn layui-btn-danger " data-type="getCheckLength"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+    <button class="layui-btn layui-btn-danger " data-type="batchDelete">批量删除</button>
 </div>
 
 
@@ -37,7 +43,7 @@
 <!--行内工具条-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail">权限</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit">添加权限</a>
+    <a class="layui-btn layui-btn-xs" lay-event="add">添加权限</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 
     <!-- 这里同样支持 laytpl 语法，如： -->
@@ -57,11 +63,12 @@
         var table = layui.table;
 
         //监听表格复选框选择
-        // table.on('checkbox(test)', function(obj){
-        //     console.log(obj.checked); //当前是否选中状态
-        //     console.log(obj.data); //选中行的相关数据
-        //     console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
-        // });
+        var content='';
+        table.on('checkbox(test)', function(obj){
+            console.log(obj.checked); //当前是否选中状态
+            console.log(obj.data); //选中行的相关数据
+            console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
+        });
 
         //数据表表头
         table.render({
@@ -99,6 +106,7 @@
                     area: ['700px', '450px'],
                     fixed: false, //不固定
                     maxmin: true,
+                    scrollbar: false,
                     content: '/roleManagement/checkPower',
                     success:function (layero,index) {
                         var iframe = window['layui-layer-iframe' + index];
@@ -129,7 +137,7 @@
                         }
                     })
                 });
-            } else if(layEvent === 'edit'){ //添加角色权限
+            } else if(layEvent === 'add'){ //添加角色权限
                 //do something
 
                 layer.open({
@@ -158,7 +166,7 @@
 
         //头部按钮
         var $ = layui.$, active = {
-            getCheckLength: function(){ //批量删除
+            batchDelete: function(){ //批量删除
                 var checkStatus = table.checkStatus('demo')
                     ,data = checkStatus.data;
                 // layer.msg('选中了：'+ data.length + ' 个');
@@ -172,7 +180,6 @@
                     codeName += data[i].role_Name+",";
                     // console.log(codeId);
                 }
-                // layer.msg('删除中...', {icon: 16,shade: 0.3,time:5000});
 
                 layer.confirm("您确定要删除吗？",function(){
                     $.ajax({
@@ -191,10 +198,6 @@
                         }
                     })
                 })
-            }
-            ,isAll: function(){ //验证是否全选
-                var checkStatus = table.checkStatus('demo');
-                layer.msg(checkStatus.isAll ? '全选': '未全选')
             }
         };
 
@@ -272,58 +275,6 @@
             return false;
         })
 
-
-
-        // form.on('submit(search)', function(data){
-        //     console.log(data.field);
-        //     // var rolename = JSON.stringify(data.field);
-        //     // $.ajax({
-        //     //     url:'/roleManagement/searchRole',
-        //     //     data:data.field,
-        //     //     success:function (res) {
-        //     //         // console.log("成功")
-        //     //         // layer.msg("成功")
-        //     //         if (res.msg == '返回成功') {
-        //     //             layer.msg("操作成功");
-        //     //             //    操作成功执行方法重载
-        //     //             table.reload('demo', {
-        //     //                 page: {
-        //     //                     curr: 1 //重新从第 1 页开始
-        //     //                 }
-        //     //             });
-        //     //
-        //     //         }else{
-        //     //             layer.msg("操作失败");
-        //     //         }
-        //     //     },
-        //     //     error:function () {
-        //     //         console.log("异常")
-        //     //     }
-        //     // })
-        //     console.log(data.field.role_Name)
-        //
-        //     //数据表表头
-        //     table.render({
-        //         elem: '#demo'
-        //         // ,height: 400
-        //         ,url: '/roleManagement/searchRole' //数据接口
-        //         ,where:{
-        //             role_Name:data.field.role_Name
-        //         }
-        //         ,page: true //开启分页
-        //         ,cols: [
-        //             [
-        //                 {type: 'checkbox', fixed: 'left', width:'10%'}
-        //                 //表头
-        //                 ,{field: 'role_ID', templet: '#xuhao',title: '序号', width:'10%', sort: true, align: 'center'}
-        //                 ,{field: 'role_Name', title: '角色', width:'50%', align: 'center'}
-        //                 ,{title: '操作', fixed:'right', width: '30%', align: 'center', toolbar: '#barDemo'}
-        //             ]
-        //         ]
-        //     });
-        //
-        //     return false;
-        // });
     });
 
 
