@@ -36,6 +36,9 @@ public class ClassServiceImpl implements ClassService {
         return classMapper.selectDepartId(departments_Name);
     }
 
+
+
+
     /***
      * 插入班级
      * @param c
@@ -48,5 +51,24 @@ public class ClassServiceImpl implements ClassService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean deleteClass(Class c) {
+        int result = classMapper.deleteClass(c);
+        if (result > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<HashMap> selectClassWhereClassId(String class_Id) {
+        return classMapper.selectClassWhereClassId(class_Id);
+    }
+
+    @Override
+    public List<HashMap> selectClassWhereDepartId(String departments_id) {
+        return classMapper.selectClassWhereDepartId(departments_id);
     }
 }

@@ -13,7 +13,7 @@
 <div style="width: 100%;">
     <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:30px">ဂ</i></a>
 </div>
-<form class="layui-form" action="">
+<form class="layui-form   " action="">
 
 
     <div class="layui-form-item">
@@ -28,9 +28,9 @@
 
         </div>
         <div class="layui-inline">
-            <label class="layui-form-label">班级编号 </label>
+            <label class="layui-form-label">班级编号: </label>
             <div class="layui-input-inline">
-                <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级编号" class="layui-input">
+                <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级编号" class="layui-input" id="shoushuo">
             </div>
             <button type="button" class="layui-btn layui-btn-normal" id="a">   <i class="layui-icon">&#xe615;</i>搜索</button>
         </div>
@@ -38,12 +38,7 @@
             <i class="layui-icon">&#xe608;</i> 添加
         </button>
 
-
     </div>
-
-
-
-
 
 </form>
 
@@ -81,30 +76,59 @@
 <!--         ,url:' ../static/b.json'-->
 
 <script>
-    layui.use(['form', 'layedit', 'laydate','table'], function(){
+    layui.use(['form', 'layedit', 'laydate','table','jquery'], function(){
         var form = layui.form
             ,layer = layui.layer
             ,layedit = layui.layedit
             ,laydate = layui.laydate
+            ,$=layui.jquery
             , table = layui.table;
+
+
+        $("#shoushuo").bind("input propertychange",function(){
+            table.reload('idTest', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                url:"/class/classinclassid"
+                ,where: {
+                    class_Id:$(this).val()
+                }
+            }, 'data');
+
+            console.log($(this).val())
+        })
+
+        form.on('select', function(data){
+
+            $.ajax({
+                url:"/class/departments_id",
+                dataType: 'json',
+                type: 'get',
+                data:{departments_Name:data.value},
+                success:function (e) {
+                    // console.log(e.data[0])
+                    // departments_id=e.data[0]
+                    table.reload('idTest', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        url:"/class/classindepartments"
+                        ,where: {
+                            departments_id:e.data[0]
+                        }
+                    }, 'data');
+                }
+            })
+            console.log(data.value); //得到被选中的值
+        });
 
         var $ = layui.$, active = {
             reload: function(){
                 var demoReload = $('#xuyuan');
 
                 //执行重载
-                table.reload('idTest', {
-                    page: {
-                        curr: 1 //重新从第 1 页开始
-                    },
-                    url:""
-                    ,where: {
 
-                        key: {
-                            id: demoReload.val()
-                        }
-                    }
-                }, 'data');
             }
         };
 
@@ -115,12 +139,30 @@
         //监听工具条
         table.on('tool(demo)', function(obj){
             var data = obj.data;
+
             if(obj.event === 'detail'){
                 layer.msg('ID：'+ data.id + ' 的查看操作');
             } else if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
+                layer.confirm('确认删除', function(index){
                     obj.del();
+                    $.ajax({
+                        url:"/class/deleteClass",
+                        dataType: 'json',
+                        type: 'get',
+                        data:{class_Id:data.class_id},
+                        success:function (e) {
+                            if (e==true) {
+                                layer.msg('删除成功', {icon: 1});
+                            }else {
+                                layer.msg('操作失败', {icon: 2});
+                            }
+                        },
+                        error:function () {
+                            layer.msg('操作失败', {icon: 2});
+                        }
 
+                    })
+                    console.log(data.class_id)
                     layer.close(index);
                 });
             } else if(obj.event === 'edit'){
@@ -168,6 +210,8 @@
 //         content: 'class/goaddclass'
 //     });
 // })
+
+
 
     $("#add").click(function(){
         console.log("aa")

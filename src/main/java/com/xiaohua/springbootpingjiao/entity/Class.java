@@ -6,7 +6,16 @@ public class Class{
     private Integer class_Id;
     private String class_Name;
     private Integer departments_id;
+    private  Integer class_amount;
     private Departments departments;
+
+    public Integer getClass_amount() {
+        return class_amount;
+    }
+
+    public void setClass_amount(Integer class_amount) {
+        this.class_amount = class_amount;
+    }
 
     public Departments getDepartments() {
         return departments;
