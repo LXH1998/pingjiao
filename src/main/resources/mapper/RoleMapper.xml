@@ -31,7 +31,10 @@
     <select id="searchRole" parameterType="String" resultMap="allRolesMap">
         select * from role where role_name like CONCAT('%',#{role_Name},'%') and status=1;
     </select>
-
+    <!--角色查询（模糊查询-每页显示数据条数）-->
+    <select id="searchTheOnePageRole"  resultMap="allRolesMap">
+        select * from role where role_name like CONCAT('%',#{role_Name},'%') and status=1 limit #{thePage},#{limit};
+    </select>
 
     <!--新增角色（1.1、查询是否存在相同角色）-->
     <select id="selectTheRole" parameterType="String" resultType="int">

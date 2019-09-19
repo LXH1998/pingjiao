@@ -21,16 +21,13 @@
                 <input type="text" name="role_Name" required lay-verify="required" placeholder="输入角色名" class="layui-input">
             </div>
             <button class="layui-btn" lay-submit lay-filter="formDemo">添加</button>
-            <!--头部工具栏-->
-
         </div>
 
 </form>
 
+<!--头部工具栏-->
 <div class="layui-btn-group demoTable">
-    <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
     <button class="layui-btn layui-btn-danger " data-type="getCheckLength"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
-    <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
 </div>
 
 
@@ -93,7 +90,7 @@
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
             var roleName = data.role_Name; //获得属性role_Name的值
 
-            if(layEvent === 'detail'){ //添加权限
+            if(layEvent === 'detail'){ //查看角色权限
                 //do somehing
                 //iframe层-父子操作
                 layer.open({
@@ -108,8 +105,8 @@
                         iframe.child(data)
                     }
                 });
-            } else if(layEvent === 'del'){ //删除
-                layer.confirm('真的删除行么', function(index){
+            } else if(layEvent === 'del'){ //删除角色
+                layer.confirm('真的删除该角色么', function(index){
                     //向服务端发送删除指令
                     $.ajax({
                         url:'/roleManagement/deleteTheRole',
@@ -132,7 +129,7 @@
                         }
                     })
                 });
-            } else if(layEvent === 'edit'){ //查看已有权限
+            } else if(layEvent === 'edit'){ //添加角色权限
                 //do something
 
                 layer.open({
@@ -253,7 +250,6 @@
         //角色搜索
         $("#search").bind("input propertychange",function(){
             var role_Name = $(this).val();
-
             // 数据表表头
             table.render({
                 elem: '#demo'
