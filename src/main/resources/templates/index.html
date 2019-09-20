@@ -40,53 +40,18 @@
         </ul>
     </div>
 
-    <div class="layui-side layui-bg-black">
-        <div class="layui-side-scroll">
-            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-                <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">所有商品</a>
-                    <dl class="layui-nav-child">
 
-                        <dd> <a data-url="/testBoot/goA" data-id="11" data-title="选项A" href="#" class="site-demo-active" data-type="tabAdd">选项A</a></dd>
-                        <dd> <a data-url="/course/list" data-id="13" data-title="课程管理" href="#" class="site-demo-active" data-type="tabAdd">选项C</a></dd>
-                        <dd> <a data-url="/course/teach" data-id="14" data-title="授课管理" href="#" class="site-demo-active" data-type="tabAdd">选项D</a></dd>
-                        <dd> <a data-url="/roleManagement/goRole" data-id="15" data-title="角色管理" href="#" class="site-demo-active" data-type="tabAdd">角色管理</a></dd>
-                        <dd> <a data-url="/class/gclass" data-id="16" data-title="班级管理" href="#" class="site-demo-active" data-type="tabAdd">班级管理</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="javascript:;">列表三</a></dd>
-                        <dd><a href="">超链接</a></dd>
-                    </dl>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">解决方案</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
-                        <dd><a href="">超链接</a></dd>
-                    </dl>
-                </li>
-                <li class="layui-nav-item"><a href="">云市场</a></li>
-                <li class="layui-nav-item">
-                    <a data-url="/userAdministration/goUserInterface" data-id="20" data-title="用户管理" href="#" class="site-demo-active" data-type="tabAdd">
-                        用户管理
-                    </a>
-                </li>
-            </ul>
+
+    <div class="layui-side layui-bg-black " id="admin-side">
+        <div class="layui-side-scroll" id="navbar_side" lay-filter="side">
+            <ul class="layui-nav layui-nav-tree" id="nav"  lay-filter="demo"></ul>
         </div>
     </div>
 
     <div class="layui-body">
-        <!-- 内容主体区域 -->
-
+        <!-- 容主体区域 -->
         <!--<div style="padding: 15px;">内容主体区域</div>-->
         <div class="layui-tab" lay-filter="demo" lay-allowclose="true">
-
-
-
-
-        <div class="layui-tab" lay-filter="demo" lay-allowclose="true" >
-
             <ul class="layui-tab-title">
             </ul>
             <ul class="rightmenu" style="display: none;position: absolute;">
@@ -110,7 +75,6 @@
     }).use('navbar', function() {
         var element = layui.element;
         var navbar = layui.navbar();
-
         $.ajax({
             url: '/powerBoot/menu',
             type: 'GET',
@@ -129,8 +93,6 @@
                 xuanran();
             }
         });
-
-
         //给选中的页签添加选中样式（解决刷新失效问题）
         var url = window.location.href.replace("//", "");
         var relUrl = url.substring(url.lastIndexOf("/") + 1);
@@ -155,7 +117,6 @@
             }
         })
     });
-
     function xuanran() {
         layui.use(['element', 'layer', 'jquery'], function () {
             var element = layui.element;
@@ -186,7 +147,6 @@
                 //最后不管是否新增tab，最后都转到要打开的选项页面上
                 active.tabChange(dataid.attr("data-id"));
             });
-
             var active = {
                 //在这里给active绑定几项事件，后面可通过active调用这些事件
                 tabAdd: function (url, id, name) {
@@ -207,14 +167,12 @@
                     element.tabDelete("demo", id);//删除
                 }
             };
-
             function FrameWH() {
                 var h = $(window).height();
                 $("iframe").css("height", h + "px");
             }
         });
     }
-
 </script></div>
 </body>
 </html>

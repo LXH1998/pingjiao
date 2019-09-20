@@ -154,4 +154,7 @@ public class ClassController {
     public String login(){
         return "login";
     }
+    @RequestMapping("classDetails")
+    public String details(){ return "admin/class/classDetails"; }
+
 }
