@@ -181,7 +181,7 @@ public class PowerController {
         Power p = new Power();
         p.setPower_Id(power_id);
         p.setPower_state(state);
-        boolean result = service.insertPower(p);
+        boolean result = service.updaePowerState(p);
         if (result){
             return ResponseWrapper.updataPowerSucces();
         }

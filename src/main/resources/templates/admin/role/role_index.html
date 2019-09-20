@@ -9,10 +9,13 @@
 </head>
 <!--<style>-->
     <!--.layui-table-cell{-->
-        <!--height:20px;-->
-        <!--line-height: 20px;-->
+        <!--height:15px;-->
+        <!--line-height: 15px;-->
     <!--}-->
 <!--</style>-->
+<style>
+    body{overflow-y: scroll;} /* 禁止刷新后出现横向滚动条 */
+</style>
 <body>
 
 <!--表单-->
@@ -33,7 +36,7 @@
 
 <!--头部工具栏-->
 <div class="layui-btn-group demoTable">
-    <button class="layui-btn layui-btn-danger " data-type="batchDelete">批量删除</button>
+    <button class="layui-btn layui-btn-danger " data-type="batchDelete"><i class="layui-icon layui-icon-delete">&#xe640;</i>批量删除</button>
 </div>
 
 
@@ -73,7 +76,8 @@
         //数据表表头
         table.render({
             elem: '#demo'
-            // ,height: 400
+            // ,height: '100%'
+            // ,width:'100%'
             ,url: '/roleManagement/allRoles' //数据接口
             ,page: true //开启分页
             ,cols: [
@@ -82,7 +86,7 @@
                     //表头
                     ,{field: 'role_ID', templet: '#xuhao',title: '序号', width:'10%', sort: true, align: 'center'}
                     ,{field: 'role_Name', title: '角色', width:'50%', align: 'center'}
-                    ,{title: '操作', fixed:'right', width: '30%', align: 'center', toolbar: '#barDemo'}
+                    ,{title: '操作', fixed:'right', align: 'center', toolbar: '#barDemo'}
                 ]
             ]
             // ,limits : [ 5,6,7,8,9,10 ] //控制多少行一页（默认五条一页）

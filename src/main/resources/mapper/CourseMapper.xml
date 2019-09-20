@@ -18,7 +18,11 @@
     <insert id="insertCourses" parameterType="String">
         INSERT INTO courses (courses_name) VALUES (#{courses_Name})
     </insert>
-
+    <!--查找所有教师ID和NAME-->
+    <select id="SelectTeachUser" resultType="com.xiaohua.springbootpingjiao.entity.User">
+       select u.user_Id,u.user_Name from user as u join userrole as ur on u.user_id =
+       ur.user_id where ur.role_id = (select role_id from role where role_name ='教师' and role_state='1')
+    </select>
     <!--修改课程状态量为删除-->
     <update id="deleteTheCourse" parameterType="com.xiaohua.springbootpingjiao.entity.Courses">
         update  courses set courses_state = '0' where courses_id=#{courses_Id}

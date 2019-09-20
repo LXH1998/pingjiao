@@ -3,6 +3,7 @@ package com.xiaohua.springbootpingjiao.controller;
 import com.xiaohua.springbootpingjiao.entity.Courses;
 import com.xiaohua.springbootpingjiao.entity.Teach;
 import com.xiaohua.springbootpingjiao.entity.TeachData;
+import com.xiaohua.springbootpingjiao.entity.User;
 import com.xiaohua.springbootpingjiao.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/*
+ * 课程信息处理层
+ */
 @Controller
 @RequestMapping("/course")
 public class CourseController {
@@ -112,5 +115,24 @@ public class CourseController {
         }
         return result;
     }
-
+    //跳转到授课修改界面
+    @RequestMapping("/editTeach")
+    public String editTeach(){
+        return "admin/course/course_EditTeach";
+    }
+    /**
+     * 查找所有角色为教师的信息
+     * */
+    @ResponseBody
+    @RequestMapping("/teachUser")
+    public Map selectTeachUser(){
+        List<User> teachUsers = courseService.SelectTeachUser();
+        Map result = new HashMap();
+        if (teachUsers.size()==0){
+            result.put("data","NULL");
+        }else {
+            result.put("data",teachUsers);
+        }
+        return result;
+    }
 }
