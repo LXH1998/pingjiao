@@ -98,6 +98,11 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
+    public List<HashMap> selectUserinClass(String class_Id) {
+        return classMapper.selectUserinClass(class_Id);
+    }
+
+    @Override
     public List<HashMap> selectClassWhereClassIdlist(String class_Id, int pages, int limit) {
         return classMapper.selectClassWhereClassIdlist(class_Id,pages,limit);
     }

@@ -133,6 +133,25 @@ public class ClassController {
         return result;
     }
 
+    /***
+     * 指定班级查找学生
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/userinclass")
+    public  HashMap selectUserinClass(String class_Id){
+        HashMap result = new HashMap();
+        List<HashMap> classes = classService.selectUserinClass(class_Id);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",classes.size());
+        result.put("data",classes);
+        return result;
+    }
+
+
+
 
     @RequestMapping("goaddclass")
     public String goclass(){

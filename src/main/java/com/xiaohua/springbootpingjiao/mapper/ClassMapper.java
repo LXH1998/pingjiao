@@ -25,6 +25,9 @@ public interface ClassMapper {
     //指定院系的班级编号重载
     List<HashMap> selectClassWhereCdId(String class_Id,String departments_id);
     List<HashMap> selectClassWhereCdIdlist(String class_Id,String departments_id,int pages,int limit);
+//指定班级查找学生
+List<HashMap>  selectUserinClass(String class_Id);
+
 
     int deleteClass(Class c);
 

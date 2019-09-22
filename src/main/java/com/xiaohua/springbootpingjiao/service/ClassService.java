@@ -23,5 +23,9 @@ public interface ClassService {
 
     List<HashMap> selectClassWhereCdId(String class_Id,String departments_id);
     List<HashMap> selectClassWhereCdIdlist(String class_Id,String departments_id,int pages,int limit);
+
+    List<HashMap>  selectUserinClass(String class_Id);
+
+
     boolean deleteClass(Class c);
 }
