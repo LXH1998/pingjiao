@@ -25,7 +25,7 @@
     </select>
     <!--修改课程状态量为删除-->
     <update id="deleteTheCourse" parameterType="com.xiaohua.springbootpingjiao.entity.Courses">
-        update  courses set courses_state = '0' where courses_id=#{courses_Id}
+        update courses set courses_state = '0' where courses_id=#{courses_Id}
     </update>
     <!--查找所有授课信息-->
     <!--<select id="SelectTeachAll" resultType="com.xiaohua.springbootpingjiao.entity.Teach">-->
@@ -45,10 +45,24 @@
         </collection>
     </resultMap>
     <!--查询授课信息-->
-    <select id="SelectTeachAll" resultType="com.xiaohua.springbootpingjiao.entity.TeachData" >
+    <select id="SelectTeachAll"  resultType="com.xiaohua.springbootpingjiao.entity.TeachData" >
      select t.teach_id,c.class_name,u.user_name,courses.courses_name from Teach as t left join
       class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
       courses on courses.courses_id = t.courses_id
     </select>
+    <!--查询具体一门授课信息-->
+    <select id="SelectTeachOne" parameterType="com.xiaohua.springbootpingjiao.entity.Courses" resultType="com.xiaohua.springbootpingjiao.entity.TeachData" >
+     select t.teach_id,c.class_name,u.user_name,courses.courses_name from Teach as t left join
+      class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
+      courses on courses.courses_id = t.courses_id where courses.courses_name = #{courses_name}
+    </select>
 
+    <!--修改授课信息-->
+    <update id="EditTeach" parameterType="com.xiaohua.springbootpingjiao.entity.Teach" >
+        update teach set user_id = #{user_Id},class_id=#{class_ID} where teach_id=#{teach_id}
+    </update>
+    <!--新增授课信息-->
+    <insert id="AddTeach" parameterType="com.xiaohua.springbootpingjiao.entity.Teach" >
+        INSERT INTO teach (user_id,courses_id,class_id) VALUES (#{user_Id},#{courses_Id},#{class_ID})
+    </insert>
 </mapper>
