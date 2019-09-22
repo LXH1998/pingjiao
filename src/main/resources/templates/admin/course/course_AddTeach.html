@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>修改授课</title>
+    <title>增加授课</title>
     <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
     <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
@@ -19,27 +19,29 @@
 <body>
 
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
-    <legend>赋值和取值</legend>
+    <legend>新增授课信息</legend>
 </fieldset>
 
 <form class="layui-form" action="" lay-filter="example">
     <div class="layui-form-item">
         <label class="layui-form-label">课    程</label>
         <div class="layui-input-block">
-            <input type="text" name="course"  readonly lay-verify="title" autocomplete="off" id="course" class="layui-input">
+            <select name="course" lay-verify="required" data-method="" id="course" lay-search >
+                <option value="">请选择课程</option>
+            </select>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">班    级</label>
         <div class="layui-input-block">
             <select name="teach" lay-verify="required" data-method="" id="class" lay-search >
-                <option value=""></option>
+                <option value="">请选择班级</option>
             </select>
         </div>
         <label class="layui-form-label">教   师</label>
         <div class="layui-input-block">
             <select name="class"  data-Uid="张三" id="teach" lay-search lay-verify="required">
-                <option value=""></option>
+                <option value="">请选择教师</option>
             </select>
         </div>
     </div>
@@ -64,15 +66,16 @@
             ,laydate = layui.laydate;
         //监听提交
         form.on('submit(demo1)', function(data){
+            console.log(data.field)
             // 跳转到后台修改授课信息
             $.ajax({
-                url: '/course/editTheTeach',
+                url: '/course/addTeachInfo',
                 dataType: 'json',
                 type: 'get',
-                data:{teach_id:parent.teach_id,user_Id:data.field.class,class_ID:data.field.teach},
+                data:{courses_Id:data.field.course,user_Id:data.field.class,class_ID:data.field.teach},
                 success: function (data) {
                         layer.alert(data.result, {
-                            title: '修改信息',yes:function(){
+                            title: '提示信息',yes:function(){
                                 if (data.result = "操作成功") {
                                     var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
                                     parent.layer.close(index);		//关闭窗口
@@ -90,6 +93,19 @@
         });
     });
     layui.use(['form', 'upload', 'layer'], function () {
+        //为课程下拉框赋值
+        $.ajax({
+            url: '/course/listDate',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#course').append(new Option(item.courses_Name,item.courses_Id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+        //为班级下拉框赋值
         $.ajax({
             url: '/class/goclass',
             dataType: 'json',
@@ -101,6 +117,7 @@
                 layui.form.render("select");
             }
         })
+        //为教师下拉框赋值
         $.ajax({
             url: '/course/teachUser',
             dataType: 'json',

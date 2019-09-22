@@ -8,22 +8,22 @@
 <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <body>
-<div class="layui-btn-group demoTable">
-    <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
-    <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
-    <button class="layui-btn" data-type="isAll">验证是否全选</button>
-</div>
+<form class="layui-form" action="">
+    <div class="demoTable"  >
+        课程:
+        <!--lay-search-->
+        <div class="layui-inline">
+            <select name="quiz2" id="course" >
+                <option value="">请选择课程</option>
+            </select>
+        </div>
+        <button type="button" class="layui-btn layui-btn-normal" id="a">   <i class="layui-icon">&#xe615;</i>搜索</button>
+        <button type="button" class="layui-btn"   id="add">
+            <i class="layui-icon">&#xe608;</i> 添加
+        </button>
+    </div>
+</form>
 <table id="demo" lay-filter="test"></table>
-
-<script type="text/html" id="selectGxmc" >
-    <select name='jtcyGxmc' lay-verify='' lay-search=''>
-        <option value=""></option>
-        <option value="父子">父子</option>
-        <option value="母子">母子</option>
-        <option value="姐弟">姐弟</option>
-        <option value="弟弟">弟弟</option>
-    </select>
-</script>
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-xs" lay-event="detail">授课详情</a>
@@ -34,11 +34,6 @@
     <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
     {{#  } }}
 </script>
-
-<!--序号自增-->
-<!--<script type="text/html" id="xuhao">-->
-<!--{{d.LAY_TABLE_INDEX+1}}-->
-<!--</script>-->
 <style>
 
     /* 防止下拉框的下拉列表被隐藏---必须设置--- */
@@ -52,8 +47,26 @@
 </style>
 <script type="text/javascript">
     var course_Name;
-    layui.use('table', function(){
-        var table = layui.table;
+    var teach_id;
+    layui.use(['form', 'layedit', 'laydate','table','jquery'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,$=layui.jquery
+            , table = layui.table;
+        //初始化课程下拉框
+        $.ajax({
+            url: '/course/listDate',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#course').append(new Option(item.courses_Name,item.courses_Id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
 
         //数据表表头
         table.render({
@@ -122,7 +135,9 @@
                     })
                 });
             } else if(layEvent === 'edit'){ //编辑
+                console.log(data)
                 courses_Name = data.courses_Name;
+                teach_id = data.teach_id
                 layer.open({
                     type: 2,
                     title: false,
@@ -142,32 +157,43 @@
                     username: '123'
                     ,title: 'xxx'
                 });
-            } else if(layEvent === 'LAYTABLE_TIPS'){
-                layer.alert('Hi，头部工具栏扩展的右侧图标。');
             }
         });
-//头部按钮
-        var $ = layui.$, active = {
-            getCheckData: function(){ //获取选中数据
-                var checkStatus = table.checkStatus('idTest')
-                    ,data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
-            }
-            ,getCheckLength: function(){ //获取选中数目
-                var checkStatus = table.checkStatus('idTest')
-                    ,data = checkStatus.data;
-                layer.msg('选中了：'+ data.length + ' 个');
-            }
-            ,isAll: function(){ //验证是否全选
-                var checkStatus = table.checkStatus('idTest');
-                layer.msg(checkStatus.isAll ? '全选': '未全选')
-            }
-        };
+        //添加页面跳出
+        $("#add").click(function(){
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['450px', '360px'],
+                shade: 0.8,
+                closeBtn: 1,
+                shadeClose: true,
+                content: '/course/addTeach',
+                end: function(){ //此处用于演示
 
-        $('.demoTable .layui-btn').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
+                    location.reload();
+                }
+            });
         });
+        //搜索框
+        form.on('select', function(data){
+           var courses_name = $('#course option:selected').text();
+            table.reload('demo', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                url:"/course/oneTeachListData"
+                ,where: {
+                    courses_name:courses_name
+                }
+            });
+            //   console.log(data.value); //得到被选中的值
+        });
+
+        // $('.demoTable .layui-btn').on('click', function(){
+        //     var type = $(this).data('type');
+        //     active[type] ? active[type].call(this) : '';
+        // });
 
     });
 
