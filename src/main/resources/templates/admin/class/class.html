@@ -20,7 +20,7 @@
         <label class="layui-form-label">学院:</label>
 
         <div class="layui-input-inline">
-            <select name="quiz2" id="xueyuan" lay-search>
+            <select  name="quiz2" id="xueyuan" lay-search>
                 <option value="">请选择学院</option>
 
             </select>
@@ -86,11 +86,25 @@
             ,$=layui.jquery
             , table = layui.table;
 
+        
+        $("#a").click(function () {
+            location.href = "class/goaddstudent";
+        })
 
                 $("#shoushuo").bind("input propertychange",function(){
                     if (departments_id!=undefined) {
 
-                        //指定院系的迷糊查询
+                        table.reload('idTest', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            },
+                            url:"/class/classincd"
+                            ,where: {
+                                class_Id:$(this).val(),
+                                departments_id:departments_id
+                            }
+                        }, 'data');
+                        //指定院系的模糊查询
                     }else {
             table.reload('idTest', {
                 page: {
@@ -135,7 +149,7 @@
                     }
                 }
             })
-         //   console.log(data.value); //得到被选中的值
+            console.log(data.value); //得到被选中的值
         });
 
         var $ = layui.$, active = {
@@ -154,7 +168,7 @@
         //监听工具条
         table.on('tool(demo)', function(obj){
             var data = obj.data;
-
+console.log(data)
             if(obj.event === 'detail'){//详情
 
                 layer.open({
@@ -163,6 +177,7 @@
                     area: ['1000px', '600px'],
                     shade: 0.8,
                     closeBtn: 1,
+                    offset: '100px',
                     shadeClose: true,
                     // time:timee,
                     content: '/class/goaddstudent',
@@ -214,8 +229,21 @@
                     console.log(data.class_id)
                     layer.close(index);
                 });
-            } else if(obj.event === 'edit'){
-                layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            } else if(obj.event === 'edit'){//编辑
+
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['1000px', '600px'],
+                    shade: 0.8,
+                    closeBtn: 1,
+                    offset: '100px',
+                    shadeClose: true,
+                    // time:timee,
+                    content: '/class/goaddstudent',
+
+                });
+
             }
         });
 
@@ -252,10 +280,14 @@
             layer.open({
                 type: 2,
                 title: false,
-                area: ['450px', '360px'],
-                shade: 0.8,
-                closeBtn: 1,
-                shadeClose: true,
+                area: ['33em', '27em'],
+                shade: 0.3,
+                closeBtn: 2,
+                shadeClose: false,
+                offset: '100px',
+                title:'新增班级',
+                anim: 1,
+                resize:true,
                 // time:timee,
                 content: '/class/goaddclass',
                 end: function(){ //此处用于演示
