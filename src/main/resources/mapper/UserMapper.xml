@@ -11,37 +11,18 @@
         <result property="departments_Id" column="departments_id"></result>
         <result property="class_Id" column="class_id"></result>
         <result property="user_state" column="user_state"></result>
-        <collection property="departments" ofType="com.xiaohua.springbootpingjiao.entity.Departments" column="departments_id">
-            <id property="departments_Id" column="departments_id"></id>
-            <result property="departments_Name" column="departments_Name"></result>
-        </collection>
-        <collection property="userroleList" ofType="com.xiaohua.springbootpingjiao.entity.Userrole" column="user_id">
-            <id property="userrole_Id" column="userrole_id"></id>
-            <result property="user_Id" column="user_id"></result>
-            <result property="role_Id" column="role_id"></result>
-        </collection>
-        <collection property="roles" ofType="com.xiaohua.springbootpingjiao.entity.Role" column="role_id">
-            <id property="role_ID" column="role_id"></id>
-            <result property="role_Name" column="role_name"></result>
-            <result property="role_State" column="role_state"></result>
-        </collection>
-        <collection property="classes" ofType="com.xiaohua.springbootpingjiao.entity.Class" column="class_id">
-            <id property="class_Id" column="class_id"></id>
-            <result property="class_Name" column="class_name"></result>
-            <result property="departments_id" column="departments_id"></result>
-            <result property="class_amount" column="class_amount"></result>
-        </collection>
     </resultMap>
 
     <!--查询所有用户-->
     <select id="selectAllUser" resultType="HashMap">
         select * from user u left join departments d
-          on u.departments_id=d.departments_id left join userrole ur
-            on u.user_id=ur.user_id left join role r
-              on r.role_id=ur.role_id left join class c
-                on c.class_id=u.class_id
+          on u.departments_id=d.departments_id left join class c
+            on c.class_id=u.class_id
         where u.user_state = 1 limit #{pages},#{limit}
     </select>
+    <!--left join userrole ur-->
+    <!--on u.user_id=ur.user_id left join role r-->
+    <!--on r.role_id=ur.role_id-->
 
     <!--所有用户的总数-->
     <select id="selectCount" resultType="HashMap">
@@ -72,7 +53,7 @@
         where u.user_state = 1
           and u.user_account LIKE  concat('%',#{user_Account},'%')
           and r.role_name LIKE  concat('%',#{role_name},'%')
-        limit #{pages},#{limit}
+        group by u.user_id limit #{pages},#{limit}
     </select>
     <!--模糊查询总数-->
     <select id="selectAccountUsersCount" resultType="HashMap">
@@ -125,15 +106,19 @@
         select * from user where user_name=#{user_Name} and user_account=#{user_Account}
     </select>
     
-    <!--<resultMap id="BaseResultMap" type="com.xiaohua.springbootpingjiao.entity.User">-->
-    <!--<result column="id" jdbcType="INTEGER" property="id" />-->
-    <!--<result column="userName" jdbcType="VARCHAR" property="userName" />-->
-    <!--<result column="passWord" jdbcType="VARCHAR" property="passWord" />-->
-    <!--<result column="realName" jdbcType="VARCHAR" property="realName" />-->
-    <!--</resultMap>-->
+    <!--查询该用户的所拥有的角色-->
+    <select id="selectUserHaveRole" resultType="HashMap">
+        select * from userrole ur left join role r
+          on ur.role_id=r.role_id
+        where ur.user_id=#{user_id}
+    </select>
 
-    <!--<select id="Sel" resultType="com.xiaohua.springbootpingjiao.entity.User">-->
-    <!--select * from user where id = #{id}-->
-    <!--</select>-->
+    <!--删除用户的所有角色然后插入新角色-->
+    <delete id="deleteUserIdRole" parameterType="com.xiaohua.springbootpingjiao.entity.Userrole">
+        delete from userrole where user_id=#{user_Id}
+    </delete>
+    <insert id="insertUserIdRole" parameterType="com.xiaohua.springbootpingjiao.entity.Userrole">
+        INSERT INTO userrole(user_id,role_id) values(#{user_Id},#{role_ID})
+    </insert>
 
 </mapper>

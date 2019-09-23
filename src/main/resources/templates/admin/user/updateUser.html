@@ -98,13 +98,24 @@
 
             $.ajax({
                 url: '/userAdministration/selectAllRole',
+                async: false,
                 dataType: 'json',
                 type: 'get',
                 success: function (data) {
                     $.each(data.data, function (index,item) {
                         $('#userRole').append('<span><input lay-filter="role" type="checkbox" name="'+item.role_ID+'" value="'+item.role_ID+'" title="'+item.role_Name+'" lay-skin="primary"></span>');// 下拉菜单里添加元素
                     });
-                    $("#userRole input[value='"+role_id+"']").prop("checked",true);
+                    $.ajax({
+                        url:"/userAdministration/selectUserHaveRole",
+                        type:"get",
+                        data:{user_id:user_id},
+                        async: false,
+                        success:function (res) {
+                            $.each(res.data,function (index,item) {
+                                $("#userRole input[value='"+item.role_id+"']").prop("checked",true);
+                            })
+                        }
+                    })
                     layui.form.render();
                 }
             })
@@ -127,7 +138,7 @@
                 return $(elem).attr('title');
             }).get().join(',');
             //生成班级,并赋予初始值
-            if(role_name.search("学生") == -1){
+            if(role_name.search("学生") != -1){
                 $('#changeClass').css("display","block")
                 $.ajax({
                     url: '/userAdministration/selectAllClass',
@@ -164,17 +175,10 @@
 
             //角色复选框change事件，判断是否为学生显示班级
             form.on('checkbox(role)', function(data){
-                //获取role_id的值
-                var role_id = $("#userRole input:checkbox:checked").map(function (index, elem) {
-                    return $(elem).val();
-                }).get().join(',');
-                console.log(role_id)
-
                 //获取role_name的值
                 var role_name = $("#userRole input:checkbox:checked").map(function (index, elem) {
                     return $(elem).attr('title');
                 }).get().join(',');
-                console.log(role_name)
 
                 if(role_name.search("学生") != -1){
                     $('#changeClass').css("display","block")
@@ -206,14 +210,13 @@
             //提交事件
             $("#Submission").click(function (ev) {
                 ev.preventDefault()
-                var update_name = $("#user_name").val
+                var update_name = $("#user_name").val()
                 var update_account = $("#user_account").val()
                 var update_sex = $("input[name=sex]:checked").val()
-                var update_role = $("#quiz1").val()
                 var update_departments = $("#quiz2").val()
                 var update_class = $("#quiz3").val()
-                var role_name = $("#userRole input:checkbox:checked").map(function (index, elem) {
-                    return $(elem).attr('title');
+                var update_role = $("#userRole input:checkbox:checked").map(function (index, elem) {
+                    return $(elem).val();
                 }).get().join(',');
 
 
@@ -223,26 +226,35 @@
                 if(role_name.search("学生") == -1){
                     update_class = 0
                 }
-                // $.ajax({
-                //     url:"/userAdministration/updateUserInformationRole",
-                //     type:"get",
-                //     data:{
-                //         user_Name:update_name,
-                //         user_Account:update_account,
-                //         user_Sex:update_sex,
-                //         departments_Id:update_departments,
-                //         class_Id:update_class,
-                //         role_ID:update_role,
-                //         user_Id:user_id
-                //     },
-                //     success:function (res) {
-                //         if (res.data == 1){
-                //             var index = parent.layer.getFrameIndex(window.name)
-                //             parent.layer.close(index)
-                //
-                //         }
-                //     }
-                // })
+                console.log(user_id)
+                console.log(update_name)
+                console.log(update_account)
+                console.log(update_sex)
+                console.log(update_role)
+                console.log(update_departments)
+                console.log(update_class)
+
+
+                $.ajax({
+                    url:"/userAdministration/updateUserInformationRole",
+                    type:"get",
+                    data:{
+                        user_Name:update_name,
+                        user_Account:update_account,
+                        user_Sex:update_sex,
+                        departments_Id:update_departments,
+                        class_Id:update_class,
+                        role_Id:update_role,
+                        user_Id:user_id
+                    },
+                    success:function (res) {
+                        if (res.data == 1){
+                            var index = parent.layer.getFrameIndex(window.name)
+                            parent.layer.close(index)
+
+                        }
+                    }
+                })
 
             })
 

@@ -9,10 +9,6 @@ public class User{
     private Integer departments_Id;
     private Integer class_Id;
     private String user_state;
-    private Userrole userroleList;
-    private Departments departments;
-    private Role roles;
-    private Class classes;
 
     public Integer getUser_Id() {
         return user_Id;
@@ -76,37 +72,5 @@ public class User{
 
     public void setUser_state(String user_state) {
         this.user_state = user_state;
-    }
-
-    public Userrole getUserroleList() {
-        return userroleList;
-    }
-
-    public void setUserroleList(Userrole userroleList) {
-        this.userroleList = userroleList;
-    }
-
-    public Departments getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(Departments departments) {
-        this.departments = departments;
-    }
-
-    public Role getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Role roles) {
-        this.roles = roles;
-    }
-
-    public Class getClasses() {
-        return classes;
-    }
-
-    public void setClasses(Class classes) {
-        this.classes = classes;
     }
 }

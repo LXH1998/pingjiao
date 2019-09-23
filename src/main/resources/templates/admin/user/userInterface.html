@@ -64,7 +64,7 @@
         <th lay-data="{field:'user_sex',width:90}">性别</th>
         <th lay-data="{field:'user_account',sort: true,width:160}">账号</th>
         <th lay-data="{field:'departments_name',width:160}">所属院系</th>
-        <th lay-data="{field:'role_name',width:160}">用户角色</th>
+        <!--<th lay-data="{field:'role_name',width:160}">用户角色</th>-->
         <th lay-data="{title:'操作', toolbar: '#barDemo'}"></th>
     </tr>
     </thead>
@@ -154,16 +154,29 @@
                         iframe.inputDataHandle(obj);
                     },
                     end:function () {
-                        table.reload("idTest",{
-                            page: {
-                                curr: 1 //重新从第 1 页开始
-                            }
-                            ,url:"/userAdministration/selectAccountUsers"
-                            ,where: {
-                                user_Account: user_account.val()
-                                ,role_name:role_name.val()
-                            }
-                        });
+                        console.log(user_account.val())
+                        console.log(role_name.val())
+                        if(user_account.val()==""&&role_name.val()==""){
+                            table.reload("idTest",{
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                                ,url:"/userAdministration/selectAllUser"
+
+                            });
+                        }else {
+                            table.reload("idTest",{
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                                ,url:"/userAdministration/selectAccountUsers"
+                                ,where: {
+                                    user_Account: user_account.val()
+                                    ,role_name:role_name.val()
+                                }
+                            });
+                        }
+
                     }
                 })
             }
@@ -177,16 +190,27 @@
             var role_name = $('#role_name');
 
             //执行重载
-            table.reload("idTest",{
-                page: {
-                    curr: 1 //重新从第 1 页开始
-                }
-                ,url:"/userAdministration/selectAccountUsers"
-                ,where: {
-                    user_Account: user_account.val()
-                    ,role_name:role_name.val()
-                }
-            });
+            if(user_account.val()==""&&role_name.val()==""){
+                table.reload("idTest",{
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/userAdministration/selectAllUser"
+
+                });
+            }else {
+                table.reload("idTest",{
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/userAdministration/selectAccountUsers"
+                    ,where: {
+                        user_Account: user_account.val()
+                        ,role_name:role_name.val()
+                    }
+                });
+            }
+
         })
 
         form.on('select',function (data) {
@@ -194,16 +218,27 @@
             var role_name = $('#role_name');
 
             //执行重载
-            table.reload("idTest",{
-                page: {
-                    curr: 1 //重新从第 1 页开始
-                }
-                ,url:"/userAdministration/selectAccountUsers"
-                ,where: {
-                    user_Account: user_account.val()
-                    ,role_name:role_name.val()
-                }
-            });
+            if(user_account.val()==""&&role_name.val()==""){
+                table.reload("idTest",{
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/userAdministration/selectAllUser"
+
+                });
+            }else{
+                table.reload("idTest",{
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/userAdministration/selectAccountUsers"
+                    ,where: {
+                        user_Account: user_account.val()
+                        ,role_name:role_name.val()
+                    }
+                });
+            }
+
         })
 
 
@@ -225,16 +260,27 @@
                     var iframe = window['layui-layer-iframe' + index];
                 },
                 end:function () {
-                    table.reload("idTest",{
-                        page: {
-                            curr: 1 //重新从第 1 页开始
-                        }
-                        ,url:"/userAdministration/selectAccountUsers"
-                        ,where: {
-                            user_Account: user_account.val()
-                            ,role_name:role_name.val()
-                        }
-                    });
+                    if(user_account.val()==""&&role_name.val()==""){
+                        table.reload("idTest",{
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,url:"/userAdministration/selectAllUser"
+
+                        });
+                    }else{
+                        table.reload("idTest",{
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,url:"/userAdministration/selectAccountUsers"
+                            ,where: {
+                                user_Account: user_account.val()
+                                ,role_name:role_name.val()
+                            }
+                        });
+                    }
+
                 }
             })
         })

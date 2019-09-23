@@ -31,4 +31,7 @@ public interface UserMapper {
     int insertUserInformation(String user_Name,String user_Account,String user_Sex,int departments_Id,int class_Id);
     int insertUserRole(int role_Id,int user_Id);
     List<User> selectUserId(String user_Name,String user_Account);
+    List<HashMap> selectUserHaveRole(int user_id);
+    int deleteUserIdRole(int user_Id);
+    int insertUserIdRole(int user_Id,int role_ID);
 }

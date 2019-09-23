@@ -117,4 +117,27 @@ public class UserServiceImpl implements UserService {
     public List<User> selectUserId(String user_Name, String user_Account) {
         return userMapper.selectUserId(user_Name,user_Account);
     }
+
+    @Override
+    public List<HashMap> selectUserHaveRole(int user_id) {
+        return userMapper.selectUserHaveRole(user_id);
+    }
+
+    @Override
+    public Boolean deleteUserIdRole(int user_Id) {
+        int userResult = userMapper.deleteUserIdRole(user_Id);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean insertUserIdRole(int user_Id, int role_ID) {
+        int userResult = userMapper.insertUserIdRole(user_Id,role_ID);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
+    }
 }
