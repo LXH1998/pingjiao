@@ -17,7 +17,8 @@ public interface UserService {
     List<HashMap> selectAllUser(int pages,int limit);
     Boolean updateUserPassword(int user_Id);
     Boolean updateUserState(int user_Id);
-    List<HashMap> selectAccountUsers(String user_Account,String role_name);
+    List<HashMap> selectAccountUsers(String user_Account,String role_name,int pages,int limit);
+    List<HashMap> selectAccountUsersCount(String user_Account,String role_name);
     List<Role> selectAllRole();
     List<HashMap> selectCount();
     List<Departments> selectAllDepartments();

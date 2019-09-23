@@ -70,12 +70,14 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping("selectAccountUsers")
-    public Map selectAccountUsers(String user_Account,String role_name){
+    public Map selectAccountUsers(String user_Account,String role_name,int page,int limit){
+        int pages=(page-1)*limit;
         Map result=new HashMap();
-        List<HashMap> users = userService.selectAccountUsers(user_Account,role_name);
+        List<HashMap> users = userService.selectAccountUsers(user_Account,role_name,pages,limit);
+        List<HashMap> count = userService.selectAccountUsersCount(user_Account,role_name);
         result.put("code",0);
         result.put("msg","");
-        result.put("count",users.size());
+        result.put("count",count.size());
         result.put("data",users);
         return result;
     }

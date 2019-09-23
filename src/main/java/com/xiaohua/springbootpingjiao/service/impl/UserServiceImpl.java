@@ -46,9 +46,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<HashMap> selectAccountUsers(String user_Account,String role_name) {
-        return userMapper.selectAccountUsers(user_Account,role_name);
+    public List<HashMap> selectAccountUsers(String user_Account, String role_name, int pages, int limit) {
+        return userMapper.selectAccountUsers(user_Account,role_name,pages,limit);
     }
+
+    @Override
+    public List<HashMap> selectAccountUsersCount(String user_Account, String role_name) {
+        return userMapper.selectAccountUsersCount(user_Account,role_name);
+    }
+
+
 
     @Override
     public List<Role> selectAllRole() {

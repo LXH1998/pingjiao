@@ -20,7 +20,7 @@
 
 <!--搜索框-->
 <div class="demoTable">
-    用户名：
+    账号：
     <div class="layui-inline">
         <input class="layui-input" name="id" id="user_account" autocomplete="off">
     </div>
@@ -109,6 +109,9 @@
         //监听工具条
         table.on('tool(demo)', function(obj){
             var data = obj.data;
+            console.log("obj"+obj);
+            console.log("obj.data"+obj.data);
+            console.log(data.user_Id)
             if(obj.event === 'detail'){//初始化密码
                 layer.confirm('初始化密码为123456789', function(index){
                     $.ajax({
@@ -138,6 +141,8 @@
                     })
                 });
             } else if(obj.event === 'edit'){
+                var user_account = $('#user_account');
+                var role_name = $('#role_name');
                 layer.open({
                     type:2
                     ,skin:'layui-layer-rim'//加上边框
@@ -150,13 +155,24 @@
                         var iframe = window['layui-layer-iframe' + index];
                         // 向子页面的全局函数
                         iframe.inputDataHandle(obj);
+                    },
+                    end:function () {
+                        table.reload("idTest",{
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,url:"/userAdministration/selectAccountUsers"
+                            ,where: {
+                                user_Account: user_account.val()
+                                ,role_name:role_name.val()
+                            }
+                        });
                     }
                 })
             }
         });
 
         // 重载
-
 
 
         $("#user_account").bind("input propertychange",function () {
@@ -198,6 +214,8 @@
         //添加用户
         $("#addUser").click(function (ev) {
             ev.preventDefault()
+            var user_account = $('#user_account');
+            var role_name = $('#role_name');
             layer.open({
                 type:2
                 ,skin:'layui-layer-rim'//加上边框
@@ -208,10 +226,26 @@
                 ,success: function (layero,index) {
                     var body = layer.getChildFrame('body', index);
                     var iframe = window['layui-layer-iframe' + index];
+                },
+                end:function () {
+                    table.reload("idTest",{
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        ,url:"/userAdministration/selectAccountUsers"
+                        ,where: {
+                            user_Account: user_account.val()
+                            ,role_name:role_name.val()
+                        }
+                    });
                 }
             })
         })
 
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
 
     });
 </script>
