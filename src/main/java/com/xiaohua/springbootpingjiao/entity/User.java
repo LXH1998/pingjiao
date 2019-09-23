@@ -1,7 +1,5 @@
 package com.xiaohua.springbootpingjiao.entity;
 
-import java.util.List;
-
 public class User{
     private Integer user_Id;
     private String user_Name;
@@ -11,50 +9,10 @@ public class User{
     private Integer departments_Id;
     private Integer class_Id;
     private String user_state;
+    private Userrole userroleList;
     private Departments departments;
-    private Role role;
-    private List<Userrole> userroleList;
-
-    public List<Userrole> getUserroleList() {
-        return userroleList;
-    }
-
-    public void setUserroleList(List<Userrole> userroleList) {
-        this.userroleList = userroleList;
-    }
-
-    public Departments getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(Departments departments) {
-        this.departments = departments;
-    }
-
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public String getUser_Sex() {
-        return user_Sex;
-    }
-
-    public void setUser_Sex(String user_Sex) {
-        this.user_Sex = user_Sex;
-    }
-
-    public String getUser_state() {
-        return user_state;
-    }
-
-    public void setUser_state(String user_state) {
-        this.user_state = user_state;
-    }
+    private Role roles;
+    private Class classes;
 
     public Integer getUser_Id() {
         return user_Id;
@@ -70,6 +28,14 @@ public class User{
 
     public void setUser_Name(String user_Name) {
         this.user_Name = user_Name;
+    }
+
+    public String getUser_Sex() {
+        return user_Sex;
+    }
+
+    public void setUser_Sex(String user_Sex) {
+        this.user_Sex = user_Sex;
     }
 
     public String getUser_Account() {
@@ -102,5 +68,45 @@ public class User{
 
     public void setClass_Id(Integer class_Id) {
         this.class_Id = class_Id;
+    }
+
+    public String getUser_state() {
+        return user_state;
+    }
+
+    public void setUser_state(String user_state) {
+        this.user_state = user_state;
+    }
+
+    public Userrole getUserroleList() {
+        return userroleList;
+    }
+
+    public void setUserroleList(Userrole userroleList) {
+        this.userroleList = userroleList;
+    }
+
+    public Departments getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(Departments departments) {
+        this.departments = departments;
+    }
+
+    public Role getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Role roles) {
+        this.roles = roles;
+    }
+
+    public Class getClasses() {
+        return classes;
+    }
+
+    public void setClasses(Class classes) {
+        this.classes = classes;
     }
 }

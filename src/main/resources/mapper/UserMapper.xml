@@ -11,15 +11,35 @@
         <result property="departments_Id" column="departments_id"></result>
         <result property="class_Id" column="class_id"></result>
         <result property="user_state" column="user_state"></result>
+        <collection property="departments" ofType="com.xiaohua.springbootpingjiao.entity.Departments" column="departments_id">
+            <id property="departments_Id" column="departments_id"></id>
+            <result property="departments_Name" column="departments_Name"></result>
+        </collection>
+        <collection property="userroleList" ofType="com.xiaohua.springbootpingjiao.entity.Userrole" column="user_id">
+            <id property="userrole_Id" column="userrole_id"></id>
+            <result property="user_Id" column="user_id"></result>
+            <result property="role_Id" column="role_id"></result>
+        </collection>
+        <collection property="roles" ofType="com.xiaohua.springbootpingjiao.entity.Role" column="role_id">
+            <id property="role_ID" column="role_id"></id>
+            <result property="role_Name" column="role_name"></result>
+            <result property="role_State" column="role_state"></result>
+        </collection>
+        <collection property="classes" ofType="com.xiaohua.springbootpingjiao.entity.Class" column="class_id">
+            <id property="class_Id" column="class_id"></id>
+            <result property="class_Name" column="class_name"></result>
+            <result property="departments_id" column="departments_id"></result>
+            <result property="class_amount" column="class_amount"></result>
+        </collection>
     </resultMap>
 
     <!--查询所有用户-->
     <select id="selectAllUser" resultType="HashMap">
         select * from user u left join departments d
-                                       on u.departments_id=d.departments_id left join userrole ur
-                                                                                      on u.user_id=ur.user_id left join role r
-                                                                                                                        on r.role_id=ur.role_id left join class c
-                                                                                                                                                          on c.class_id=u.class_id
+          on u.departments_id=d.departments_id left join userrole ur
+            on u.user_id=ur.user_id left join role r
+              on r.role_id=ur.role_id left join class c
+                on c.class_id=u.class_id
         where u.user_state = 1 limit #{pages},#{limit}
     </select>
 

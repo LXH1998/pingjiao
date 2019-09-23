@@ -126,19 +126,26 @@ public class UserController {
     @ResponseBody
     @RequestMapping("insertUserInformationRole")
     public Map insertUserInformationRole(String user_Name, String user_Account, String user_Sex,
-                                         int departments_Id, int class_Id, int role_ID) {
+                                         int departments_Id, int class_Id, String role_Id) {
         Map result = new HashMap();
-        if(userService.insertUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id)){
-            List<User> userList = userService.selectUserId(user_Name,user_Account);
-            int user_id = userList.get(0).getUser_Id();
-            if (userService.insertUserRole(role_ID,user_id)){
-                result.put("data",1);
+        String a[]=role_Id.split(",");
+        for (int i=0;i<a.length;i++){
+            String role_id = a[i];
+            System.out.println(role_id);
+            int role_ID = Integer.parseInt(role_id);
+            if(userService.insertUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id)){
+                List<User> userList = userService.selectUserId(user_Name,user_Account);
+                int user_id = userList.get(0).getUser_Id();
+                if (userService.insertUserRole(role_ID,user_id)){
+                    result.put("data",1);
+                }else{
+                    result.put("data",0);
+                }
             }else{
                 result.put("data",0);
             }
-        }else{
-            result.put("data",0);
         }
+
         return result;
     }
 
