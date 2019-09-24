@@ -28,7 +28,11 @@ public interface ClassMapper {
 //指定班级查找学生
 List<HashMap>  selectUserinClass(String class_Id);
 
-
+//删除班级
     int deleteClass(Class c);
+
+    //判断班级是否纯在
+    List<HashMap>classHave(String class_Id);
+
 
 }

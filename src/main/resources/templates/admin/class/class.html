@@ -82,8 +82,10 @@
 <!--         ,url:' ../static/b.json'-->
 
 <script>
-
-    var departments_id
+var classid
+var classname
+var departmentsname
+var departments_id
     layui.use(['form', 'layedit', 'laydate','table','jquery'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -155,7 +157,7 @@
                     }
                 }
             })
-            console.log(data.value); //得到被选中的值
+          //  console.log(data.value); //得到被选中的值
         });
 
         var $ = layui.$, active = {
@@ -176,7 +178,10 @@
             var data = obj.data;
 
             if(obj.event === 'detail'){//详情
-// console.log(data)
+        console.log(data)
+                classid=data.class_id
+                classname=data.class_name
+                departmentsname=data.departments_name
                 layer.open({
                     type: 2,
                     area: ['100%', '100%'],

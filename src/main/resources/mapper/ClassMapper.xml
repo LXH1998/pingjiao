@@ -82,8 +82,17 @@ WHERE class.class_id like concat('%',#{class_Id},'%') and  class.class_amount=1 
                    where role.role_id=7 and user.class_id=#{class_Id}
 </select>
 
+<!--删除班级-->
     <update id="deleteClass" parameterType="com.xiaohua.springbootpingjiao.entity.Class">
         UPDATE class SET class_amount = 0 WHERE class_id =#{class_Id}
     </update>
+
+
+    <!--判断是否纯在-->
+
+    <select id="classHave" resultType="HashMap">
+    select class_id,class_name from class where class_amount=1 and class_id=#{class_Id}
+    </select>
+
 
 </mapper>

@@ -74,6 +74,16 @@ public class ClassServiceImpl implements ClassService {
     }
 
 
+    @Override
+    public boolean classHave(String class_Id) {
+
+         List<HashMap> result = classMapper.classHave(class_Id);
+         if (result.isEmpty()){
+             return true;
+         }
+         return false;
+    }
+
     /***
      * @param
      * @return
