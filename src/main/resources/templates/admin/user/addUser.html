@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>修改用户信息</title>
+    <title>用户信息</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -34,26 +34,26 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">用户所属</label>
-        <div class="layui-input-inline" style="width: 30%">
-            <select name="quiz1" id="quiz1" lay-filter="quiz1">
-                <option value="">请选择角色</option>
-            </select>
+        <label class="layui-form-label">用户角色</label>
+        <div class="layui-input-inline" style="width: 70%" id="userRole">
+            <!--<select name="quiz1" id="quiz1" lay-filter="quiz1" lay-search>-->
+            <!--<option value="">请选择角色</option>-->
+            <!--</select>-->
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label"></label>
+        <label class="layui-form-label">用户院系</label>
         <div class="layui-input-inline" style="width: 30%">
-            <select name="quiz2" id="quiz2" lay-filter="quiz2">
+            <select name="quiz2" id="quiz2" lay-filter="quiz2" lay-search>
                 <option value="">请选择院系</option>
 
             </select>
         </div>
     </div>
     <div class="layui-form-item" id="changeClass" style="display: none">
-        <label class="layui-form-label"></label>
+        <label class="layui-form-label">用户班级</label>
         <div class="layui-input-inline" style="width: 30%">
-            <select name="quiz3" id="quiz3" >
+            <select name="quiz3" id="quiz3" lay-search>
                 <option value="">请选择班级</option>
 
             </select>
@@ -70,18 +70,29 @@
     layui.use(['form', 'upload', 'layer'], function () {
         var form = layui.form;
         //生成角色
+        // $.ajax({
+        //     url: '/userAdministration/selectAllRole',
+        //     dataType: 'json',
+        //     type: 'get',
+        //     success: function (data) {
+        //         $.each(data.data, function (index,item) {
+        //             $('#quiz1').append(new Option(item.role_Name,item.role_ID));// 下拉菜单里添加元素
+        //         });
+        //         layui.form.render("select");
+        //     }
+        // })
+
         $.ajax({
             url: '/userAdministration/selectAllRole',
             dataType: 'json',
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index,item) {
-                    $('#quiz1').append(new Option(item.role_Name,item.role_ID));// 下拉菜单里添加元素
+                    $('#userRole').append('<span><input type="checkbox" lay-filter="role" name="check[role]" value="'+item.role_ID+'" title="'+item.role_Name+'" lay-skin="primary"></span>');// 下拉菜单里添加元素
                 });
-                layui.form.render("select");
+                layui.form.render();
             }
         })
-
         //生成院系
         $.ajax({
             url: '/userAdministration/selectAllDepartments',
@@ -98,9 +109,20 @@
 
 
 
-        //角色下拉框change事件，判断是否为学生显示班级
-        form.on('select(quiz1)', function(data){
-            if($("#quiz1").find("option:selected").text()=="学生"){
+        //角色复选框change事件，判断是否为学生显示班级
+        form.on('checkbox(role)', function(data){
+            //获取role_id的值
+            var role_id = $("#userRole input:checkbox:checked").map(function (index, elem) {
+                return $(elem).val();
+            }).get().join();
+            console.log(role_id)
+
+            //获取role_name的值
+            var role_name = $("#userRole input:checkbox:checked").map(function (index, elem) {
+                return $(elem).attr('title');
+            }).get().join(',');
+
+            if(role_name.search("学生") != -1){
                 $('#changeClass').css("display","block")
             }else{
                 $('#changeClass').css("display","none")
@@ -134,7 +156,6 @@
             var update_name = $("#user_name").val()
             var update_account = $("#user_account").val()
             var update_sex = $("input[name=sex]:checked").val()
-            var update_role = $("#quiz1").val()
             var update_departments = $("#quiz2").val()
             var update_class = $("#quiz3").val()
 
@@ -142,12 +163,13 @@
                 update_class = 0
             }
 
-            console.log(update_name)
-            console.log(update_account)
-            console.log(update_sex)
+            var update_role = $("#userRole input:checkbox:checked").map(function (index, elem) {
+                return $(elem).val();
+            }).get().join(',');
+
+
             console.log(update_role)
-            console.log(update_departments)
-            console.log(update_class)
+
 
             $.ajax({
                 url:"/userAdministration/insertUserInformationRole",
@@ -158,12 +180,11 @@
                     user_Sex:update_sex,
                     departments_Id:update_departments,
                     class_Id:update_class,
-                    role_ID:update_role
+                    role_Id:update_role
                 },
                 success:function (res) {
                     if (res.data == 1){
                         var index = parent.layer.getFrameIndex(window.name)
-                        parent.location.reload()
                         parent.layer.close(index)
                     }
                 }

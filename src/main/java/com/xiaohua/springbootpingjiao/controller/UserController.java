@@ -70,12 +70,14 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping("selectAccountUsers")
-    public Map selectAccountUsers(String user_Account,String role_name){
+    public Map selectAccountUsers(String user_Account,String role_name,int page,int limit){
+        int pages=(page-1)*limit;
         Map result=new HashMap();
-        List<HashMap> users = userService.selectAccountUsers(user_Account,role_name);
+        List<HashMap> users = userService.selectAccountUsers(user_Account,role_name,pages,limit);
+        List<HashMap> count = userService.selectAccountUsersCount(user_Account,role_name);
         result.put("code",0);
         result.put("msg","");
-        result.put("count",users.size());
+        result.put("count",count.size());
         result.put("data",users);
         return result;
     }
@@ -110,11 +112,21 @@ public class UserController {
     @ResponseBody
     @RequestMapping("updateUserInformationRole")
     public Map updateUserInformationRole(String user_Name, String user_Account, String user_Sex,
-                                     int departments_Id, int class_Id, int role_ID, int user_Id) {
+                                     int departments_Id, int class_Id, String role_Id, int user_Id) {
         Map result = new HashMap();
-        if(userService.updateUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id,user_Id)
-                &&userService.updateUserRole(role_ID,user_Id)){
-            result.put("data",1);
+        userService.deleteUserIdRole(user_Id);
+        if(userService.updateUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id,user_Id)){
+            String a[]=role_Id.split(",");
+            for (int i=0;i<a.length;i++) {
+                String role_id = a[i];
+                System.out.println(role_id);
+                int role_ID = Integer.parseInt(role_id);
+                if(userService.insertUserIdRole(user_Id,role_ID)){
+                    result.put("data",1);
+                }else{
+                    result.put("data",0);
+                }
+            }
         }else{
             result.put("data",0);
         }
@@ -124,19 +136,26 @@ public class UserController {
     @ResponseBody
     @RequestMapping("insertUserInformationRole")
     public Map insertUserInformationRole(String user_Name, String user_Account, String user_Sex,
-                                         int departments_Id, int class_Id, int role_ID) {
+                                         int departments_Id, int class_Id, String role_Id) {
         Map result = new HashMap();
-        if(userService.insertUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id)){
-            List<User> userList = userService.selectUserId(user_Name,user_Account);
-            int user_id = userList.get(0).getUser_Id();
-            if (userService.insertUserRole(role_ID,user_id)){
-                result.put("data",1);
+        String a[]=role_Id.split(",");
+        for (int i=0;i<a.length;i++){
+            String role_id = a[i];
+            System.out.println(role_id);
+            int role_ID = Integer.parseInt(role_id);
+            if(userService.insertUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id)){
+                List<User> userList = userService.selectUserId(user_Name,user_Account);
+                int user_id = userList.get(0).getUser_Id();
+                if (userService.insertUserRole(role_ID,user_id)){
+                    result.put("data",1);
+                }else{
+                    result.put("data",0);
+                }
             }else{
                 result.put("data",0);
             }
-        }else{
-            result.put("data",0);
         }
+
         return result;
     }
 
@@ -156,4 +175,12 @@ public class UserController {
         return "admin/user/addUser";
     }
 
+    @ResponseBody
+    @RequestMapping("selectUserHaveRole")
+    public Map selectUserHaveRole(int user_id){
+        Map result=new HashMap();
+        List<HashMap> users = userService.selectUserHaveRole(user_id);
+        result.put("data",users);
+        return result;
+    }
 }
