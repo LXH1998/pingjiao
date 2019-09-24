@@ -36,12 +36,14 @@ public class ClassController {
 
     @ResponseBody
     @RequestMapping("/goclass")
-    public HashMap ClassData(){
+    public HashMap ClassData(int page,int limit){
+        int pages = (page-1)*limit;
         HashMap result = new HashMap();
-        List<HashMap> classes = classService.selectAllClass();
+        List<HashMap> classes = classService.selectAllClass(pages,limit);
+        List<Class> classList = classService.selectAllClassCount();
         result.put("code",0);
         result.put("msg","");
-        result.put("count",classes.size());
+        result.put("count",classList.size());
         result.put("data",classes);
         return result;
     }
@@ -56,25 +58,29 @@ public class ClassController {
     }
     @ResponseBody
     @RequestMapping("/classindepartments")
-    public  HashMap selectClassWhereDepartments(String departments_id){
+    public  HashMap selectClassWhereDepartments(String departments_id,int page,int limit){
+        int pages = (page-1)*limit;
         HashMap result = new HashMap();
-        List<HashMap> classes = classService.selectClassWhereDepartId(departments_id);
+        List<HashMap> classes = classService.selectClassWhereDepartId(departments_id,pages,limit);
+        List<HashMap> classlist = classService.selectClassWhereDepartIdCount(departments_id);
         result.put("code",0);
         result.put("msg","");
-        result.put("count",classes.size());
+        result.put("count",classlist.size());
         result.put("data",classes);
         return result;
     }
 
     @ResponseBody
     @RequestMapping("/classinclassid")
-    public  HashMap selectClassWhereClassid(String class_Id){
+    public  HashMap selectClassWhereClassid(String class_Id,int page,int limit){
+        int pages = (page-1)*limit;
         HashMap result = new HashMap();
         List<HashMap> classes = classService.selectClassWhereClassId(class_Id);
+        List<HashMap> classelist = classService.selectClassWhereClassIdlist(class_Id,pages,limit);
         result.put("code",0);
         result.put("msg","");
         result.put("count",classes.size());
-        result.put("data",classes);
+        result.put("data",classelist);
         return result;
     }
 
@@ -106,6 +112,54 @@ public class ClassController {
         return  false;
 
     }
+    /***
+     * 指定院系班级编号重载
+     * @param
+     * @return
+     */
+
+    @ResponseBody
+    @RequestMapping("/classincd")
+    public  HashMap selectClassWhereCdId(String class_Id,String departments_id,int page,int limit){
+        int pages = (page-1)*limit;
+        HashMap result = new HashMap();
+        List<HashMap> classes = classService.selectClassWhereCdId(class_Id,departments_id);
+
+        List<HashMap> classlist = classService.selectClassWhereCdIdlist(class_Id,departments_id,pages,limit);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",classes.size());
+        result.put("data",classlist);
+        return result;
+    }
+
+    /***
+     * 指定班级查找学生
+     * @param
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/userinclass")
+    public  HashMap selectUserinClass(String class_Id){
+        HashMap result = new HashMap();
+        List<HashMap> classes = classService.selectUserinClass(class_Id);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",classes.size());
+        result.put("data",classes);
+        return result;
+    }
+
+
+    //查找班级是否纯在
+    @ResponseBody
+    @RequestMapping("/classhave")
+    public  boolean classHave(String class_Id){
+        boolean have=classService.classHave(class_Id);
+        return have;
+    }
+
+
     @RequestMapping("goaddclass")
     public String goclass(){
         return "admin/class/addclass";
@@ -122,4 +176,11 @@ public class ClassController {
     public String gclass(){
         return "admin/class/class";
     }
+    @RequestMapping("login")
+    public String login(){
+        return "login";
+    }
+    @RequestMapping("classDetails")
+    public String details(){ return "admin/class/classDetails"; }
+
 }

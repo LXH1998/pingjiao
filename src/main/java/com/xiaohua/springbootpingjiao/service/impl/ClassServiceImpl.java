@@ -17,8 +17,13 @@ public class ClassServiceImpl implements ClassService {
     public ClassMapper classMapper;
 
     @Override
-    public List<HashMap> selectAllClass() {
-        return classMapper.selectAllClass();
+    public List<HashMap> selectAllClass(int pages, int limit) {
+        return classMapper.selectAllClass(pages,limit);
+    }
+
+    @Override
+    public List<Class> selectAllClassCount() {
+        return classMapper.selectAllClassCount();
     }
 
     /***
@@ -53,6 +58,37 @@ public class ClassServiceImpl implements ClassService {
         return false;
     }
 
+
+    /***
+     * 指定院系班级编号重载和分页
+     * @param
+     * @return
+     */
+    @Override
+    public List<HashMap> selectClassWhereCdId(String class_Id, String departments_id) {
+        return classMapper.selectClassWhereCdId(class_Id,departments_id);
+    }
+    @Override
+    public List<HashMap> selectClassWhereCdIdlist(String class_Id, String departments_id, int pages, int limit) {
+        return classMapper.selectClassWhereCdIdlist(class_Id,departments_id,pages,limit);
+    }
+
+
+    @Override
+    public boolean classHave(String class_Id) {
+
+         List<HashMap> result = classMapper.classHave(class_Id);
+         if (result.isEmpty()){
+             return true;
+         }
+         return false;
+    }
+
+    /***
+     * @param
+     * @return
+     */
+
     @Override
     public boolean deleteClass(Class c) {
         int result = classMapper.deleteClass(c);
@@ -61,14 +97,35 @@ public class ClassServiceImpl implements ClassService {
         }
         return false;
     }
-
+    /***
+     * 班级编号重载和分页
+     * @param
+     * @return
+     */
     @Override
     public List<HashMap> selectClassWhereClassId(String class_Id) {
         return classMapper.selectClassWhereClassId(class_Id);
     }
 
     @Override
-    public List<HashMap> selectClassWhereDepartId(String departments_id) {
-        return classMapper.selectClassWhereDepartId(departments_id);
+    public List<HashMap> selectUserinClass(String class_Id) {
+        return classMapper.selectUserinClass(class_Id);
+    }
+
+    @Override
+    public List<HashMap> selectClassWhereClassIdlist(String class_Id, int pages, int limit) {
+        return classMapper.selectClassWhereClassIdlist(class_Id,pages,limit);
+    }
+
+
+    @Override
+    public List<HashMap> selectClassWhereDepartId(String departments_id,int pages,int limit) {
+        return classMapper.selectClassWhereDepartId(departments_id,pages,limit);
+    }
+
+
+    @Override
+    public List<HashMap> selectClassWhereDepartIdCount(String departments_id) {
+        return classMapper.selectClassWhereDepartIdCount(departments_id);
     }
 }

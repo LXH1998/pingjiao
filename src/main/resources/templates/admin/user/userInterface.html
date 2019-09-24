@@ -20,7 +20,7 @@
 
 <!--搜索框-->
 <div class="demoTable">
-    用户名：
+    账号：
     <div class="layui-inline">
         <input class="layui-input" name="id" id="user_account" autocomplete="off">
     </div>
@@ -64,7 +64,7 @@
         <th lay-data="{field:'user_sex',width:90}">性别</th>
         <th lay-data="{field:'user_account',sort: true,width:160}">账号</th>
         <th lay-data="{field:'departments_name',width:160}">所属院系</th>
-        <th lay-data="{field:'role_name',width:160}">用户角色</th>
+        <!--<th lay-data="{field:'role_name',width:160}">用户角色</th>-->
         <th lay-data="{title:'操作', toolbar: '#barDemo'}"></th>
     </tr>
     </thead>
@@ -138,6 +138,8 @@
                     })
                 });
             } else if(obj.event === 'edit'){
+                var user_account = $('#user_account');
+                var role_name = $('#role_name');
                 layer.open({
                     type:2
                     ,skin:'layui-layer-rim'//加上边框
@@ -150,6 +152,31 @@
                         var iframe = window['layui-layer-iframe' + index];
                         // 向子页面的全局函数
                         iframe.inputDataHandle(obj);
+                    },
+                    end:function () {
+                        console.log(user_account.val())
+                        console.log(role_name.val())
+                        if(user_account.val()==""&&role_name.val()==""){
+                            table.reload("idTest",{
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                                ,url:"/userAdministration/selectAllUser"
+
+                            });
+                        }else {
+                            table.reload("idTest",{
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                                ,url:"/userAdministration/selectAccountUsers"
+                                ,where: {
+                                    user_Account: user_account.val()
+                                    ,role_name:role_name.val()
+                                }
+                            });
+                        }
+
                     }
                 })
             }
@@ -158,22 +185,32 @@
         // 重载
 
 
-
         $("#user_account").bind("input propertychange",function () {
             var user_account = $('#user_account');
             var role_name = $('#role_name');
 
             //执行重载
-            table.reload("idTest",{
-                page: {
-                    curr: 1 //重新从第 1 页开始
-                }
-                ,url:"/userAdministration/selectAccountUsers"
-                ,where: {
-                    user_Account: user_account.val()
-                    ,role_name:role_name.val()
-                }
-            });
+            if(user_account.val()==""&&role_name.val()==""){
+                table.reload("idTest",{
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/userAdministration/selectAllUser"
+
+                });
+            }else {
+                table.reload("idTest",{
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/userAdministration/selectAccountUsers"
+                    ,where: {
+                        user_Account: user_account.val()
+                        ,role_name:role_name.val()
+                    }
+                });
+            }
+
         })
 
         form.on('select',function (data) {
@@ -181,16 +218,27 @@
             var role_name = $('#role_name');
 
             //执行重载
-            table.reload("idTest",{
-                page: {
-                    curr: 1 //重新从第 1 页开始
-                }
-                ,url:"/userAdministration/selectAccountUsers"
-                ,where: {
-                    user_Account: user_account.val()
-                    ,role_name:role_name.val()
-                }
-            });
+            if(user_account.val()==""&&role_name.val()==""){
+                table.reload("idTest",{
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/userAdministration/selectAllUser"
+
+                });
+            }else{
+                table.reload("idTest",{
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,url:"/userAdministration/selectAccountUsers"
+                    ,where: {
+                        user_Account: user_account.val()
+                        ,role_name:role_name.val()
+                    }
+                });
+            }
+
         })
 
 
@@ -198,6 +246,8 @@
         //添加用户
         $("#addUser").click(function (ev) {
             ev.preventDefault()
+            var user_account = $('#user_account');
+            var role_name = $('#role_name');
             layer.open({
                 type:2
                 ,skin:'layui-layer-rim'//加上边框
@@ -208,10 +258,37 @@
                 ,success: function (layero,index) {
                     var body = layer.getChildFrame('body', index);
                     var iframe = window['layui-layer-iframe' + index];
+                },
+                end:function () {
+                    if(user_account.val()==""&&role_name.val()==""){
+                        table.reload("idTest",{
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,url:"/userAdministration/selectAllUser"
+
+                        });
+                    }else{
+                        table.reload("idTest",{
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            ,url:"/userAdministration/selectAccountUsers"
+                            ,where: {
+                                user_Account: user_account.val()
+                                ,role_name:role_name.val()
+                            }
+                        });
+                    }
+
                 }
             })
         })
 
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            // active[type] ? active[type].call(this) : '';
+        });
 
     });
 </script>

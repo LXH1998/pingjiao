@@ -46,9 +46,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<HashMap> selectAccountUsers(String user_Account,String role_name) {
-        return userMapper.selectAccountUsers(user_Account,role_name);
+    public List<HashMap> selectAccountUsers(String user_Account, String role_name, int pages, int limit) {
+        return userMapper.selectAccountUsers(user_Account,role_name,pages,limit);
     }
+
+    @Override
+    public List<HashMap> selectAccountUsersCount(String user_Account, String role_name) {
+        return userMapper.selectAccountUsersCount(user_Account,role_name);
+    }
+
+
 
     @Override
     public List<Role> selectAllRole() {
@@ -109,5 +116,28 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> selectUserId(String user_Name, String user_Account) {
         return userMapper.selectUserId(user_Name,user_Account);
+    }
+
+    @Override
+    public List<HashMap> selectUserHaveRole(int user_id) {
+        return userMapper.selectUserHaveRole(user_id);
+    }
+
+    @Override
+    public Boolean deleteUserIdRole(int user_Id) {
+        int userResult = userMapper.deleteUserIdRole(user_Id);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean insertUserIdRole(int user_Id, int role_ID) {
+        int userResult = userMapper.insertUserIdRole(user_Id,role_ID);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
     }
 }

@@ -7,6 +7,7 @@ import com.xiaohua.springbootpingjiao.service.PowerInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -113,13 +114,15 @@ public class PowerServiceImpl  implements PowerInterface {
             map.put("pid", item.getPower_parentid());
             map.put("href", item.getPower_url());
             map.put("status", item.getPower_state());
-
             List<Map<String, Object>> childs = buildTree(item.getPower_Id(), list);
             if(!childs.isEmpty()){
                 map.put("children", childs);
             }
+
             result.add(map);
         });
+
+
         return result;
     }
 

@@ -9,24 +9,31 @@
 
 </head>
 <style>
+    html::-webkit-scrollbar {
+
+        display: none
+    }
+
     .biaoti{
         text-align: center;
         height: 40px;
         font-size: 28px;
         color: #009688;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
 
 </style>
 <body>
-<div class="biaoti">新增班级</div>
+<!--<div class="biaoti">新增班级</div>-->
 <form class="layui-form" action="" style="width: 400px;">
 
-
+    <div style="height: 20px;"></div>
 <div class="layui-form-item">
     <label class="layui-form-label" >学　　院:</label>
 <div>
     <div class="layui-inline" style="width: 250px; " id="c">
-        <select name="quiz2" id="xueyuan">
+        <select name="quiz2" id="xueyuan"  lay-search>
             <option value="">请选择学院</option>
 
         </select>
@@ -37,10 +44,11 @@
 
     <div style="height: 20px;"></div>
 
-    <div class="layui-inline">
+    <div >
         <label class="layui-form-label">班级编号: </label>
         <div class="layui-input-inline">
-            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级编号" class="layui-input" style="width: 250px;" id="id">
+            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入班级编号" class="layui-input" style="width: 250px;" id="id"/>
+            <i id="id_ok" class="layui-icon layui-input-inline" style="color: forestgreen; left:14em;top: -30px; height: 20px"></i>
         </div>
 
     </div>
@@ -72,7 +80,29 @@
 </body>
 
 <script>
-    var departments_id
+    var departments_id;
+    $(function () {
+        $("#id").bind("input propertychange", function () {
+          //  $(this).text()
+          //  console.log($(this).val())
+                $.ajax({
+                    url:"/class/classhave",
+                    dataType: 'json',
+                    type: 'get',
+                    data:{class_Id:$(this).val()},
+                    success:function (e) {
+                        if (e==true) {
+                            $("#id_ok").css("color","forestgreen")
+                            $("#id_ok").html("&#x1005;")
+                        }else {
+                            $("#id_ok").html("&#x1007;")
+                            $("#id_ok").css("color","red")
+                        }
+
+                    }
+                })
+        })
+    })
     layui.use(['form', 'layedit', 'laydate','table'], function() {
         var form = layui.form
             , layer = layui.layer

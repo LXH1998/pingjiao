@@ -26,19 +26,19 @@
     <div class="layui-form-item">
         <label class="layui-form-label">课    程</label>
         <div class="layui-input-block">
-            <input type="text" name="course" lay-verify="title" autocomplete="off" id="course" class="layui-input">
+            <input type="text" name="course"  readonly lay-verify="title" autocomplete="off" id="course" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">班    级</label>
         <div class="layui-input-block">
-            <select name="teach" id="teach" lay-search lay-filter="aihao">
+            <select name="teach" lay-verify="required" data-method="" id="class" lay-search >
                 <option value=""></option>
             </select>
         </div>
         <label class="layui-form-label">教   师</label>
         <div class="layui-input-block">
-            <select name="class" id="class" lay-search lay-filter="aihao">
+            <select name="class"  data-Uid="张三" id="teach" lay-search lay-verify="required">
                 <option value=""></option>
             </select>
         </div>
@@ -62,55 +62,31 @@
             ,layer = layui.layer
             ,layedit = layui.layedit
             ,laydate = layui.laydate;
-
-        //自定义验证规则
-        form.verify({
-            title: function(value){
-                if(value.length < 5){
-                    return '标题至少得5个字符啊';
-                }
-            }
-            ,pass: [
-                /^[\S]{6,12}$/
-                ,'密码必须6到12位，且不能出现空格'
-            ]
-            ,content: function(value){
-                layedit.sync(editIndex);
-            }
-        });
-
-        //监听指定开关
-        form.on('switch(switchTest)', function(data){
-            layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
-                offset: '6px'
-            });
-            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
-        });
-
         //监听提交
         form.on('submit(demo1)', function(data){
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            })
-            return false;
-        });
-
-        //表单赋值
-        layui.$('#LAY-component-form-setval').on('click', function(){
-            form.val('example', {
-                "username": "贤心" // "name": "value"
-                ,"password": "123456"
-                ,"interest": 1
-                ,"like[write]": true //复选框选中状态
-                ,"close": true //开关状态
-                ,"sex": "女"
-                ,"desc": "我爱 layui"
+            // 跳转到后台修改授课信息
+            $.ajax({
+                url: '/course/editTheTeach',
+                dataType: 'json',
+                type: 'get',
+                data:{teach_id:parent.teach_id,user_Id:data.field.class,class_ID:data.field.teach},
+                success: function (data) {
+                        layer.alert(data.result, {
+                            title: '修改信息',yes:function(){
+                                if (data.result = "操作成功") {
+                                    var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
+                                    parent.layer.close(index);		//关闭窗口
+                                }
+                             }
+                        })
+                }
             });
-        });
-        //表单取值
-        layui.$('#LAY-component-form-getval').on('click', function(){
-            var data = form.val('example');
-            alert(JSON.stringify(data));
+
+            // console.log(data)
+            // layer.alert(data.field.teach, {
+            //     title: '最终的提交信息'
+            // })
+            return false;
         });
     });
     layui.use(['form', 'upload', 'layer'], function () {
@@ -119,9 +95,8 @@
             dataType: 'json',
             type: 'get',
             success: function (data) {
-                console.log(data)
                 $.each(data.data, function (index,item) {
-                    $('#class').append(new Option(item.class_name));// 下拉菜单里添加元素
+                    $('#class').append(new Option(item.class_name,item.class_id));// 下拉菜单里添加元素
                 });
                 layui.form.render("select");
             }
@@ -131,9 +106,8 @@
             dataType: 'json',
             type: 'get',
             success: function (data) {
-                console.log(data)
                 $.each(data.data, function (index,item) {
-                    $('#teach').append(new Option(item.user_Name));// 下拉菜单里添加元素
+                    $('#teach').append(new Option(item.user_Name,item.user_Id));// 下拉菜单里添加元素
                 });
                 layui.form.render("select");
             }

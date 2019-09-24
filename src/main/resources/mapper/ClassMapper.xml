@@ -22,7 +22,12 @@
 
     <select id="selectAllClass" resultType="HashMap">
         select class.class_id,class.class_name,departments.departments_name from class left join departments
-         on class.departments_id=departments.departments_id  where class_amount=1
+         on class.departments_id=departments.departments_id  where class_amount=1 limit #{pages},#{limit}
+    </select>
+
+    <!--查询所有班级-->
+    <select id="selectAllClassCount" resultType="com.xiaohua.springbootpingjiao.entity.Class">
+        select * from class where class_amount=1
     </select>
 
     <!--查询所有院系-->
@@ -37,22 +42,57 @@
     <!--重载指定院系id查找班级-->
     <select id="selectClassWhereDepartId" resultType="HashMap">
           select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id WHERE departments.departments_id=#{departments_id} and
+          class.class_amount=1 limit #{pages},#{limit}
+    </select>
+    <select id="selectClassWhereDepartIdCount" resultType="HashMap">
+          select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id WHERE departments.departments_id=#{departments_id} and
           class.class_amount=1
     </select>
 
+
     <!--重载指定班级编号查找班级-->
+    <select id="selectClassWhereClassIdlist" resultType="HashMap">
+ select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id
+WHERE class.class_id like concat('%',#{class_Id},'%') and  class.class_amount=1 limit #{pages},#{limit}
+    </select>
+
     <select id="selectClassWhereClassId" resultType="HashMap">
  select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id
 WHERE class.class_id like concat('%',#{class_Id},'%') and  class.class_amount=1
     </select>
-
+    <!--重载指定院系班级编号查找班级-->
+    <select id="selectClassWhereCdId" resultType="HashMap">
+ select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id
+WHERE class.class_id like concat('%',#{class_Id},'%') and  class.class_amount=1 and class.departments_id=#{departments_id}
+    </select>
+    <select id="selectClassWhereCdIdlist" resultType="HashMap">
+ select class.class_id,class.class_name,departments.departments_name from class left join departments on class.departments_id=departments.departments_id
+WHERE class.class_id like concat('%',#{class_Id},'%') and  class.class_amount=1 and class.departments_id=#{departments_id} limit #{pages},#{limit}
+    </select>
     <!--添加班级-->
     <insert id="insertClass" parameterType="com.xiaohua.springbootpingjiao.entity.Class">
         INSERT INTO class ( class_id,class_name,departments_id)VALUES (#{class_Id},#{class_Name},#{departments_id});
     </insert>
 
+    <!--按班级查找学生-->
+    <select id="selectUserinClass" resultType="HashMap">
+    select user.user_name,user.user_sex,user.user_account from
+          (user left join userrole on user.user_id=userrole.user_id )left join role
+                         on userrole.role_id=role.role_id
+                   where role.role_id=7 and user.class_id=#{class_Id}
+</select>
+
+<!--删除班级-->
     <update id="deleteClass" parameterType="com.xiaohua.springbootpingjiao.entity.Class">
         UPDATE class SET class_amount = 0 WHERE class_id =#{class_Id}
     </update>
+
+
+    <!--判断是否纯在-->
+
+    <select id="classHave" resultType="HashMap">
+    select class_id,class_name from class where class_amount=1 and class_id=#{class_Id}
+    </select>
+
 
 </mapper>

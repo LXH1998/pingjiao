@@ -75,7 +75,6 @@
     }).use('navbar', function() {
         var element = layui.element;
         var navbar = layui.navbar();
-
         $.ajax({
             url: '/powerBoot/menu',
             type: 'GET',
@@ -94,8 +93,6 @@
                 xuanran();
             }
         });
-
-
         //给选中的页签添加选中样式（解决刷新失效问题）
         var url = window.location.href.replace("//", "");
         var relUrl = url.substring(url.lastIndexOf("/") + 1);
@@ -120,7 +117,6 @@
             }
         })
     });
-
     function xuanran() {
         layui.use(['element', 'layer', 'jquery'], function () {
             var element = layui.element;
@@ -151,7 +147,6 @@
                 //最后不管是否新增tab，最后都转到要打开的选项页面上
                 active.tabChange(dataid.attr("data-id"));
             });
-
             var active = {
                 //在这里给active绑定几项事件，后面可通过active调用这些事件
                 tabAdd: function (url, id, name) {
@@ -172,14 +167,12 @@
                     element.tabDelete("demo", id);//删除
                 }
             };
-
             function FrameWH() {
-                var h = $(window).height();
+                var h = $(window).height()-200;
                 $("iframe").css("height", h + "px");
             }
         });
     }
-
 </script></div>
 </body>
 </html>

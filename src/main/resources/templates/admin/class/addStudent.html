@@ -8,122 +8,159 @@
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 
 </head>
+<style>
+</style>
 <body>
-<div class="site-demo-button" id="layerDemo" style="margin-bottom: 0;">
-    <blockquote class="layui-elem-quote layui-quote-nm">
-        Tips：为了更清晰演示，每触发下述一个例子之前，都会关闭所有已经演示的层
-    </blockquote>
-    <button data-method="setTop" class="layui-btn" id="a">多窗口模式，层叠置顶</button>
-    <button data-method="confirmTrans" class="layui-btn">配置一个透明的询问框</button>
-    <button data-method="notice" class="layui-btn">示范一个公告层</button>
-    <button data-method="offset" data-type="t" class="layui-btn layui-btn-normal">上弹出</button>
-    <button data-method="offset" data-type="r" class="layui-btn layui-btn-normal">右弹出</button>
-    <button data-method="offset" data-type="b" class="layui-btn layui-btn-normal">下弹出</button>
-    <button data-method="offset" data-type="l" class="layui-btn layui-btn-normal">左弹出</button>
-    <button data-method="offset" data-type="lt" class="layui-btn layui-btn-normal">左上弹出</button>
-    <button data-method="offset" data-type="lb" class="layui-btn layui-btn-normal">左下弹出</button>
-    <button data-method="offset" data-type="rt" class="layui-btn layui-btn-normal">右上弹出</button>
-    <button data-method="offset" data-type="rb" class="layui-btn layui-btn-normal">右下弹出</button>
-    <button data-method="offset" data-type="auto" class="layui-btn layui-btn-normal">居中弹出</button>
+<div style="width: 100%;">
+    <table class="layui-table" lay-size="lg">
+        <colgroup>
+            <col  style="background-color: #f8f8f8; " width="150">
+            <col width="200">
+            <col  style="background-color: #f8f8f8;" width="150">
+            <col width="200">
+        </colgroup>
+
+        <tbody>
+        <tr>
+            <td >班级编号</td>
+            <td id="class_id"></td>
+            <td>班级名称</td>
+            <td id="class_name">16级软件工程20班</td>
+
+        </tr>
+        <tr>
+            <td>班级人数</td>
+            <td id="class_count">25</td>
+            <td>所属院系</td>
+            <td id="departments_name">软件学院</td>
+        </tr>
+        </tbody>
+
+    </table>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>班级人员</legend>
+    </fieldset>
+
+    <!--<div class="layui-btn-group demoTable">-->
+        <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+        <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+        <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+    <!--</div>-->
+
+        <table id="a" class="layui-table" lay-data="{ url:'/class/userinclass', page:false , id:'idTest'}" lay-filter="demo">
+        <thead>
+        <tr>
+            <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
+            <th lay-data="{field:'user_account',  sort: true, fixed: true}">学号</th>
+            <th lay-data="{field:'user_name',fixed: true}">姓名</th>
+            <th lay-data="{field:'user_sex',fixed: true}">性别</th>
+            <th lay-data="{fixed: 'right', width:172, align:'center', toolbar: '#barDemo'}"></th>
+        </tr>
+        </thead>
+    </table>
+
+    <!--<script type="text/html" id="barDemo">-->
+        <!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+        <!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+        <!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+    <!--</script>-->
+
+
+
 </div>
+
+
 </body>
 <script>
-    layui.use('layer', function(){ //独立版的layer无需执行这一句
-        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
-
-        //触发事件
-        var active = {
-            setTop: function(){
-                var that = this;
-                //多窗口模式，层叠置顶
-                setInterval(function () {
-
-                })
-                layer.open({
-                    type: 2 //此处以iframe举例
-                    ,title: '当你选择该窗体时，即会在最顶端'
-                    ,area: ['390px', '260px']
-                    ,shade: 0
-                    ,maxmin: true
-                    ,offset: [ //为了演示，随机坐标
-                        Math.random()*($(window).height()-300)
-                        ,Math.random()*($(window).width()-390)
-                    ]
-                    ,content: '//layer.layui.com/test/settop.html'
-                    ,btn: ['继续弹出', '全部关闭'] //只是为了演示
-                    ,yes: function(){
-                        $(that).click();
-                    }
-                    ,btn2: function(){
-                        layer.closeAll();
-                    }
-
-                    ,zIndex: layer.zIndex //重点1
-                    ,success: function(layero){
-                        layer.setTop(layero); //重点2
-                    }
-
-                });
+    $(function () {
+        $("#class_id").text(parent.classid)
+        $("#class_name").text(parent.classname)
+        $("#departments_name").text(parent.departmentsname)
+        $.ajax({
+            url:"/class/userinclass",
+            dataType: 'json',
+            type: 'get',
+            data:{class_Id:parent.classid},
+            success:function (e) {
+              //  console.log(e)
+                $("#class_count").text(e.count)
             }
-            ,confirmTrans: function(){
-                //配置一个透明的询问框
-                layer.msg('大部分参数都是可以公用的<br>合理搭配，展示不一样的风格', {
-                    time: 20000, //20s后自动关闭
-                    btn: ['明白了', '知道了', '哦']
-                });
-            }
-            ,notice: function(){
-                //示范一个公告层
-                layer.open({
-                    type: 1
-                    ,title: false //不显示标题栏
-                    ,closeBtn: false
-                    ,area: '300px;'
-                    ,shade: 0.8
-                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                    ,btn: ['火速围观', '残忍拒绝']
-                    ,btnAlign: 'c'
-                    ,moveType: 1 //拖拽模式，0或者1
-                    ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br>layer ≠ layui<br><br>layer只是作为Layui的一个弹层模块，由于其用户基数较大，所以常常会有人以为layui是layerui<br><br>layer虽然已被 Layui 收编为内置的弹层模块，但仍然会作为一个独立组件全力维护、升级。<br><br>我们此后的征途是星辰大海 ^_^</div>'
-                    ,success: function(layero){
-                        var btn = layero.find('.layui-layer-btn');
-                        btn.find('.layui-layer-btn0').attr({
-                            href: 'http://www.layui.com/'
-                            ,target: '_blank'
-                        });
-                    }
-                });
-            }
-            ,offset: function(othis){
-                var type = othis.data('type')
-                    ,text = othis.text();
+        })
+    })
+console.log(parent.classid)
+    layui.use(['form', 'layedit', 'laydate','table','jquery'], function() {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate
+            , $ = layui.jquery
+            , table = layui.table;
 
-                layer.open({
-                    type: 1
-                    ,offset: type //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-                    ,id: 'layerDemo'+type //防止重复弹出
-                    ,content: '<div style="padding: 20px 100px;">'+ text +'</div>'
-                    ,btn: '关闭全部'
-                    ,btnAlign: 'c' //按钮居中
-                    ,shade: 0 //不显示遮罩
-                    ,yes: function(){
-                        layer.closeAll();
-                    }
+        // table.reload('idTest', {
+        //     page: {
+        //         curr: 1 //重新从第 1 页开始
+        //     }
+        //     ,url:'/class/userinclass'
+        //     ,where: {
+        //         key: {
+        //             class_Id:1690020
+        //         }
+        //     }
+        // }, 'data');
+
+        console.log( $("#a").attr("lay-data"))
+        table.on('checkbox(demo)', function(obj){
+          //  console.log(obj)
+        });
+
+        table.reload('idTest', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },
+            url:'/class/userinclass'
+            ,where: {
+                class_Id:parent.classid
+            }
+        }, 'data');
+        //监听工具条
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+              console.log(data)
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
                 });
+            } else if(obj.event === 'edit'){
+                console.log(data)
+
+            }
+        });
+
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('idTest');
+                layer.msg(checkStatus.isAll ? '全选': '未全选')
             }
         };
 
-        $('#layerDemo .layui-btn').on('click', function(){
-            var othis = $(this), method = othis.data('method');
-            active[method] ? active[method].call(this, othis) : '';
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
         });
 
-
     });
-
-setInterval(function () {
-        $('#a').trigger("click");
-    },50)
 
 
 

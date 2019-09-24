@@ -20,7 +20,7 @@
         <label class="layui-form-label">学院:</label>
 
         <div class="layui-input-inline">
-            <select name="quiz2" id="xueyuan" lay-search>
+            <select  name="quiz2" id="xueyuan" lay-search>
                 <option value="">请选择学院</option>
 
             </select>
@@ -57,7 +57,7 @@
         <th lay-data="{field:'class_id',  sort: true, fixed: true}">班级编号</th>
         <th lay-data="{field:'class_name'}">班级名称</th>
         <th lay-data="{field:'departments_name'}">所属院系</th>
-        <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}">操作</th>
+        <th lay-data="{fixed: 'right', width:210, align:'center', toolbar: '#barDemo'}">操作</th>
     </tr>
     </thead>
 </table>
@@ -65,6 +65,12 @@
 
     body::-webkit-scrollbar {
         display: none;
+    }
+
+    html{
+
+        padding: 0;
+        margin: 0;
     }
 </style>
 
@@ -76,8 +82,10 @@
 <!--         ,url:' ../static/b.json'-->
 
 <script>
-
-    var departments_id
+var classid
+var classname
+var departmentsname
+var departments_id
     layui.use(['form', 'layedit', 'laydate','table','jquery'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -86,11 +94,25 @@
             ,$=layui.jquery
             , table = layui.table;
 
+        
+        $("#a").click(function () {
+            location.href = "class/goaddstudent";
+        })
 
                 $("#shoushuo").bind("input propertychange",function(){
                     if (departments_id!=undefined) {
 
-                        //指定院系的迷糊查询
+                        table.reload('idTest', {
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            },
+                            url:"/class/classincd"
+                            ,where: {
+                                class_Id:$(this).val(),
+                                departments_id:departments_id
+                            }
+                        }, 'data');
+                        //指定院系的模糊查询
                     }else {
             table.reload('idTest', {
                 page: {
@@ -135,7 +157,7 @@
                     }
                 }
             })
-         //   console.log(data.value); //得到被选中的值
+          //  console.log(data.value); //得到被选中的值
         });
 
         var $ = layui.$, active = {
@@ -156,40 +178,18 @@
             var data = obj.data;
 
             if(obj.event === 'detail'){//详情
-
+        console.log(data)
+                classid=data.class_id
+                classname=data.class_name
+                departmentsname=data.departments_name
                 layer.open({
                     type: 2,
-                    title: false,
-                    area: ['1000px', '600px'],
-                    shade: 0.8,
-                    closeBtn: 1,
-                    shadeClose: true,
-                    // time:timee,
+                    area: ['100%', '100%'],
                     content: '/class/goaddstudent',
-                    end: function(){ //此处用于演示
-                        console.log("jingru")
-                        if (departments_id!=null) {
-                            table.reload('idTest', {
-                                page: {
-                                    curr: 1 //重新从第 1 页开始
-                                },
-                                url:"/class/classindepartments"
-                                ,where: {
-                                    departments_id:departments_id
-                                }
-                            }, 'data');}else {
-                            table.reload('idTest', {
-                                page: {
-                                    curr: 1 //重新从第 1 页开始
-                                },
-                                url:"/class/goclass"
-
-                            }, 'data')
-                        }
-
-
-                    }
+                    title:"班级详情",
+                    // maxmin: true,
                 });
+
 
             } else if(obj.event === 'del'){//删除
                 layer.confirm('确认删除', function(index){
@@ -214,8 +214,11 @@
                     console.log(data.class_id)
                     layer.close(index);
                 });
-            } else if(obj.event === 'edit'){
-                layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            } else if(obj.event === 'edit'){//编辑
+
+
+
+
             }
         });
 
@@ -252,10 +255,14 @@
             layer.open({
                 type: 2,
                 title: false,
-                area: ['450px', '360px'],
-                shade: 0.8,
-                closeBtn: 1,
-                shadeClose: true,
+                area: ['33em', '27em'],
+                shade: 0.3,
+                closeBtn: 2,
+                shadeClose: false,
+                offset: '100px',
+                title:'新增班级',
+                anim: 1,
+                resize:true,
                 // time:timee,
                 content: '/class/goaddclass',
                 end: function(){ //此处用于演示
