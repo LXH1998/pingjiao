@@ -2,16 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.RoleMapper">
 
-    <!--<resultMap id="BaseResultMap" type="com.xiaohua.springbootpingjiao.entity.User">-->
-        <!--<result column="id" jdbcType="INTEGER" property="id" />-->
-        <!--<result column="userName" jdbcType="VARCHAR" property="userName" />-->
-        <!--<result column="passWord" jdbcType="VARCHAR" property="passWord" />-->
-        <!--<result column="realName" jdbcType="VARCHAR" property="realName" />-->
-    <!--</resultMap>-->
-
-    <!--<select id="Sel" resultType="com.xiaohua.springbootpingjiao.entity.User">-->
-        <!--select * from user where id = #{id}-->
-    <!--</select>-->
 
     <!--查询所有角色-->
     <select id="selectAllRoles" resultMap="allRolesMap">
@@ -50,7 +40,7 @@
         update role set role_state='0' where role_name=#{role_Name} and role_state=1;
     </update>
 
-    <!--查看权限-->
+    <!--查看角色拥有的权限-->
     <select id="selectThePower" resultMap="thePowerMap">
         select r.*,rp.*,p.*
         from role r
@@ -58,42 +48,52 @@
                       on r.role_id = rp.role_id
                  join power p
                       on p.power_id = rp.power_id
-        where r.role_id=#{role_ID} and rp.power_state=1;
+        where r.role_id=#{role_ID} and rp.power_state=1 order by p.power_Id, p.sort ;
     </select>
     <resultMap id="thePowerMap" type="com.xiaohua.springbootpingjiao.entity.Power">
         <id property="power_Id" column="power_id"></id>
         <result property="power_Name" column="power_name"></result>
         <result property="power_url" column="power_url"></result>
     </resultMap>
-    <!--查看该角色一页的权限-->
-    <select id="selectOnePagePower" resultMap="thePowerMap">
-        select r.*,rp.*,p.*
-        from role r
-                 join rolepower rp
-                      on r.role_id = rp.role_id
-                 join power p
-                      on p.power_id = rp.power_id
-        where r.role_id=#{role_ID} and rp.power_state=1 limit #{thePage},#{limit};
+
+    <!--树(查询角色拥有的权限)-->
+    <!--<select id="getTreeList" parameterType="int" resultMap="thePowerMap">-->
+        <!--select r.*,rp.*,p.*-->
+        <!--from role r-->
+                 <!--join rolepower rp-->
+                      <!--on r.role_id = rp.role_id-->
+                 <!--join power p-->
+                      <!--on p.power_id = rp.power_id-->
+        <!--where r.role_id=#{role_ID} and rp.power_state=1 order by p.power_Id, p.sort-->
+    <!--</select>-->
+
+
+    <!--zTree（查询所有权限）-->
+    <select id="selectAllPower" resultMap="thePowerMap">
+        select * from power order by power_id,sort;
+    </select>
+
+    <!--查询角色被删除的权限（角色拥有的权限，但状态值为0）-->
+    <select id="selectTheDeletePower" resultMap="thePowerMap">
+        select * from rolepower where role_id=#{role_Id} and power_state=0;
     </select>
 
 
-    <!--增加角色权限（1.1、查看未授权权限）-->
-    <select id="selectUnauthorizedPower" parameterType="int" resultMap="thePowerMap">
-        select * from power  where power_id not in(select power_id from rolepower where role_id=#{role_ID} and power_state=1)
-    </select>
-    <!--增加角色权限（1.1、每页显示几条数据）-->
-    <select id="selectOnePageUnauthorizedPower" parameterType="int" resultMap="thePowerMap">
-        select * from power  where power_id not in(select power_id from rolepower where role_id=#{role_ID} and power_state=1) limit #{thePage},#{limit}
-    </select>
-    <!--增加角色权限（1.2.1、增加角色权限）-->
+    <!--增加角色权限（角色权限不存在于中间表时）-->
     <insert id="insertRolePower" parameterType="int">
         insert into rolepower(role_id,power_id) value (#{role_Id},#{power_Id});
     </insert>
-
-
-    <!--删除角色权限-->
-    <update id="deleteThePower" parameterType="int">
-        update  rolepower set power_state='0' where role_id=#{role_Id} and power_id=#{power_Id} and power_state=1;
+    <!--增加角色权限（角色被删除的权限，恢复状态值为1）-->
+    <update id="updateTheDeletePowerTest" parameterType="int">
+        update  rolepower set power_state='1' where role_id = #{role_Id} and power_id=#{power_Id};
     </update>
+
+
+    <!--删除角色权限（将角色拥有的权限状态值改为0）-->
+    <update id="deleteThePowerTest" parameterType="int">
+        update  rolepower set power_state='0' where role_id=#{role_Id} and power_state=1;
+    </update>
+
+
 
 </mapper>

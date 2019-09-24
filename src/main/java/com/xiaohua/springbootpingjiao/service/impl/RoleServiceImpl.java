@@ -7,7 +7,11 @@ import com.xiaohua.springbootpingjiao.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -60,37 +64,72 @@ public class RoleServiceImpl implements RoleService {
         return roleMapper.deleteTheRole(role_Name);
     }
 
-    //    查看权限
+    //    查看角色拥有权限
     @Override
     public List<Power> selectThePower(int role_ID) {
         return roleMapper.selectThePower(role_ID);
     }
-//    每页显示10条权限
+
+//    树
+//    @Override
+//    public List<Map<String, Object>> getTreeList(Integer id,int role_ID) {
+//        List<Power> list = roleMapper.getTreeList(role_ID);
+//        return buildTree(id, list);
+//    }
+//      public List<Map<String, Object>> buildTree(Integer pid, List<Power> list){
+//            List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+//            // 1.边界条件
+//            List<Power> childList = list.stream().filter(item -> item.getPower_parentid().intValue()==pid).collect(Collectors.toList());
+//            // 3.返回段
+//            if(childList.isEmpty()){ return result;}
+//
+//            // 2.前进段
+//            childList.stream().forEach(item->{
+//                Map<String, Object> map = new HashMap<>();
+//                map.put("id", item.getPower_Id());
+//                map.put("title", item.getPower_Name());
+//                map.put("pid", item.getPower_parentid());
+//                map.put("href", item.getPower_url());
+//                map.put("status", item.getPower_state());
+//
+//                List<Map<String, Object>> childs = buildTree(item.getPower_Id(), list);
+//                if(!childs.isEmpty()){
+//                    map.put("children", childs);
+//                }
+//                result.add(map);
+//            });
+//            return result;
+//        }
+
+
+//    查询所有权限
     @Override
-    public List<Power> selectOnePagePower(int role_ID, int thePage, int limit) {
-        return roleMapper.selectOnePagePower(role_ID,thePage,limit);
+    public List<Power> selectAllPower() {
+        return roleMapper.selectAllPower();
     }
 
-    //    增加角色权限（1.1、查看未授权权限）
-    @Override
-    public List<Power> selectUnauthorizedPower(int role_ID) {
-        return roleMapper.selectUnauthorizedPower(role_ID);
-    }
-//    增加角色权限（1.1、查看未授权权限--每页显示数据条数）
-    @Override
-    public List<Power> selectOnePageUnauthorizedPower(int role_ID, int thePage, int limit) {
-        return roleMapper.selectOnePageUnauthorizedPower(role_ID,thePage,limit);
-    }
-//    增加角色权限（1.2、增加角色权限）
+
+//    增加角色权限（插入角色在中间表中不存在的权限）
     @Override
     public int insertRolePower(int role_Id, int power_Id) {
         return roleMapper.insertRolePower(role_Id,power_Id);
     }
-
-    //    删除角色权限
+//    增加角色权限（修改角色在中间表存在但状态值为0的权限，修改状态值为1）
     @Override
-    public int deleteThePower(int role_Id, int power_Id) {
-        return roleMapper.deleteThePower(role_Id,power_Id);
+    public int updateTheDeletePowerTest(int role_Id,int power_Id) {
+        return roleMapper.updateTheDeletePowerTest(role_Id,power_Id);
+    }
+
+    //    删除角色权限（将角色拥有的权限状态值改为0）
+    @Override
+    public int deleteThePowerTest(int role_Id) {
+        return roleMapper.deleteThePowerTest(role_Id);
+    }
+
+    //    查询角色被删除的权限（角色拥有的权限，但状态值为0）
+    @Override
+    public List<Power> selectTheDeletePower(int role_Id) {
+        return roleMapper.selectTheDeletePower(role_Id);
     }
 
 
