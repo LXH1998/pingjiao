@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>在线评教系统</title>
+<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+
+<body>
+
+    <div class="login-main">
+        <header class="layui-elip">登录页</header>
+        <form class="layui-form">
+            <div class="layui-input-inline">
+                <input id="aaa" type="text" name="account" required lay-verify="required" placeholder="用户名" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <input id="bbb" type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline login-btn">
+                <button lay-submit lay-filter="login" class="layui-btn">登录</button>
+            </div>
+            <hr/>
+            <!--<div class="layui-input-inline">
+            <button type="button" class="layui-btn layui-btn-primary">QQ登录</button>
+        </div>
+        <div class="layui-input-inline">
+            <button type="button" class="layui-btn layui-btn-normal">微信登录</button>
+        </div>-->
+            <p>
+                <a href="register.html" class="fl">立即注册</a>
+                <a href="javascript:;" class="fr">忘记密码？</a>
+            </p>
+        </form>
+    </div>
+
+
+
+    <script type="text/javascript">
+        layui.use(['form', 'layer', 'jquery'], function () {
+
+            // 操作对象
+            var form = layui.form;
+            var $ = layui.jquery;
+            form.on('submit(login)', function (data) {
+                location.href = 'class/goindex';
+                // console.log(data.field);
+                // $.ajax({
+                //     //     headers: {
+                //     //     "params-one": "params-one-value",
+                //     //      "params-two": "params-two-value",
+                //     //      "Authorization": "params-Authorization-value"
+                //
+                //     // },
+                //
+                //
+                //     url: 'c.json',//user/login
+                //
+                //     data: { account: $("#aaa").val(), password: $("#bbb").val() },
+                //     callbackParameter: "callback",
+                //
+                //
+                //     success: function (e) {
+                //
+                //         //  console.log(e.user.userid)
+                //         if (e.check != 3) {
+                //             parent.sessionStorage.setItem("check", e.check);
+                //             parent.account = $("#aaa").val()
+                //             parent.sessionStorage.setItem("tt", 0.1);
+                //             parent.layer.closeAll('loading');
+                //             sessionStorage.setItem("account", $("#aaa").val());
+                //             sessionStorage.setItem("check", e.check);
+                //             sessionStorage.setItem("user", e.user.userid);
+                //             // parent.location.reload() ;
+                //             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                //              parent.layer.close(index);
+                //
+                //         } else {
+                //             layer.msg('登录名或密码错误');
+                //         }
+                //     }
+                // })
+               // return false;
+            })
+
+
+        });
+    </script>
+</body>
+
+</html>
