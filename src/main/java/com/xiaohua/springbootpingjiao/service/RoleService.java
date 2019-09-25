@@ -4,6 +4,7 @@ import com.xiaohua.springbootpingjiao.entity.Power;
 import com.xiaohua.springbootpingjiao.entity.Role;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RoleService {
 //    查询所有角色
@@ -24,20 +25,27 @@ public interface RoleService {
 //    删除角色
     public int deleteTheRole(String role_Name);
 
-//    查看权限
+//    查看角色拥有的权限
     public List<Power> selectThePower(int role_ID);
-//    查看一页的权限
-    public List<Power> selectOnePagePower(int role_ID, int thePage, int limit);
 
-//    增加角色权限（1.1、查看未授权权限）
-    public List<Power> selectUnauthorizedPower(int role_ID);
-//    增加角色权限（1.1、查看未授权权限,每页显示数据条数）
-    public List<Power> selectOnePageUnauthorizedPower(int role_ID, int thePage, int limit);
-//    增加角色权限（1.2、增加角色权限）
+
+//    树
+//    List<Map<String, Object>> getTreeList(Integer id,int role_ID);
+
+//    查询所有权限
+    List<Power> selectAllPower();
+
+//    增加角色权限（插入角色在中间表中不存在的权限）
     public int insertRolePower(int role_Id, int power_Id);
+//    增加角色权限（修改角色在中间表存在但状态值为0的权限，修改状态值为1）
+    public int updateTheDeletePowerTest(int role_Id,int power_Id);
 
-//    删除角色权限
-    public int deleteThePower(int role_Id, int power_Id);
+
+//    删除角色权限（将角色拥有的权限状态值改为0）
+    public int deleteThePowerTest(int role_Id);
+
+//    查询角色被删除的权限（角色拥有的权限，但状态值为0）
+    public List<Power> selectTheDeletePower(int role_Id);
 
 
 }
