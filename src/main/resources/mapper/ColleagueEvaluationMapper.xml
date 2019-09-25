@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohua.springbootpingjiao.mapper.ColleagueEvaluationMapper">
+    <select id="selectColleagueEvaluation" resultType="HashMap">
+        select b.batch_name,c.class_id,cs.courses_name,uu.user_name,ds.departments_name from user u
+          left join user uu on u.departments_id=uu.departments_id
+          left join userrole ur on uu.user_id=ur.user_id
+          left join role r on r.role_id=ur.role_id
+          left join teach t on t.user_id=uu.user_id
+          left join courses cs on cs.courses_id=t.courses_id
+          left join papers ps on ur.role_id=ps.role_id
+          left join batch b on b.batch_id=ps.batch_id
+          left join class c on c.class_id=t.class_id
+          left join departments ds on uu.departments_id=ds.departments_id
+        where u.user_id=#{user_id} and u.user_id!=uu.user_id and r.role_name="教师"
+    </select>
+
+</mapper>
