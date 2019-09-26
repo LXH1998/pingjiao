@@ -121,9 +121,7 @@ public class PowerServiceImpl  implements PowerInterface {
 
             result.add(map);
         });
-        for (Map m : result){
-            System.out.println(m);
-        }
+
 
         return result;
     }

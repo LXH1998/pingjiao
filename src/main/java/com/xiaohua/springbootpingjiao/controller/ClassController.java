@@ -151,6 +151,13 @@ public class ClassController {
     }
 
 
+    //查找班级是否纯在
+    @ResponseBody
+    @RequestMapping("/classhave")
+    public  boolean classHave(String class_Id){
+        boolean have=classService.classHave(class_Id);
+        return have;
+    }
 
 
     @RequestMapping("goaddclass")

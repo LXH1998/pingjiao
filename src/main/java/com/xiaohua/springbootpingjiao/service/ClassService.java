@@ -26,6 +26,7 @@ public interface ClassService {
 
     List<HashMap>  selectUserinClass(String class_Id);
 
-
     boolean deleteClass(Class c);
+
+    boolean classHave(String class_Id);
 }

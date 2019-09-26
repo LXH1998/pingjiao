@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>院系班级管理</title>
+
+<script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+
+</head>
+<body>
+
+<script>
+    function z() {
+        var aa = $("#input1").val()
+        var bb = $("#input2").val()
+        if(aa == ""){
+            alert("院系id为空！")
+        }else if(bb == ""){
+            alert("院系名称为空！")
+        }else {
+            $.ajax({
+                url: "/Departments/insert",
+                type: "post",
+                data: {
+                    aa:aa,
+                    bb:bb
+                },
+                success:function (ress) {
+                    if(ress.length == 1){
+                        alert("该ID已被使用，请重新输入！！！")
+                    }
+                    if(ress.length == 2){
+                        alert("该学院名称已被占用，请重新输入！！！")
+                    }
+                    location.href = '/Departments/IndexAdmin'           //执行ajax完成之后，跳转该页面，以达到刷新的目的
+                }
+            })
+        }
+    }
+    function f() {
+        location.href = '/Departments/IndexAdmin'
+    }
+</script>
+<div class="layui-inline">
+
+    <div class="layui-input-inline">
+        <input id="input1" type="text" name="title1" lay-verify="title" autocomplete="off" class="layui-input" placeholder="输入新增院系id">
+    </div>
+
+    <div class="layui-input-inline">
+        <input id="input2" type="text" name="title2" lay-verify="title" autocomplete="off" class="layui-input" placeholder="输入新增院系名称">
+    </div>
+
+    <button type="button" class="layui-btn layui-inline fl w130" onclick="z();">  <i class="layui-icon">&#xe608;</i> 增加院系</button>
+    <button type="button" class="layui-btn layui-inline fl w130" onclick="f()" style="margin-left: 400px"> 返回院系</button>
+</div>
+
+<table id="tableX" lay-filter="test1"></table>
+<script type="text/html" id="cz">
+    <a class="layui-btn layui-btn-xs" lay-event="yuanxi">院系详情</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+</script>
+
+<script type="text/javascript">
+    layui.use('table', function(){
+        var table = layui.table;
+
+        //数据表表头
+        table.render({
+            elem: '#tableX'
+            // ,height: 400
+            ,url: '/Departments/AdminClass' //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                [ //表头
+                    {field: 'departments_Id', templet: '#xuhao',title: '院系ID', width:'33%', sort: true, fixed: 'left', align: 'center'},
+                    {field: 'departments_Name', title: '院系名称', width: '33%',align: 'center'},
+                    {title: '操作', width: '33%', align: 'center', toolbar: '#cz'}
+                ]
+            ]
+        });
+
+
+        //监听工具条
+        table.on('tool(test1)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+
+            var id = data.departments_Id
+            var name = data.departments_Name
+            // var id = JSON.stringify(data)[18]       //获取整个json数据位置为18的数据
+            // var id2 = JSON.stringify(data)[19]       //获取整个json数据位置为19的数据
+            // if(id2 >= 0 && id2<=9){                //判断json数据第19个是否为数字
+            //     id = id + id2
+            // }
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+     //       console.log(tr)
+            if(layEvent === 'yuanxi'){ //查看
+
+              //  location.href = "class?name=" + name
+                table.render({
+                    elem: '#tableX'
+                    // ,height: 400
+                    ,url: '/Departments/selectClass1' //数据接口
+                    ,where:{                          //传入控制层的参数
+                        depart: id
+                    }
+                    ,page: true //开启分页
+                    ,cols: [
+                        [ //表头
+                            {field: 'departments_name', title: '院系名称', width: '20%',align: 'center'},
+                            {field: 'departments_id', title: '院系id', width: '20%',align: 'center'},
+                            {field: 'class_id',title: '班级id', width:'20%', align: 'center'},
+                            {field: 'class_name', title: '班级名称', width: '20%',align: 'center'},
+                            {field: 'class_amount', title: '班级amount', width: '20%',align: 'center'}
+                        ]
+                    ]
+                });
+            } else if(layEvent === 'delete'){ //删除
+                    $.ajax({
+                        url:'/Departments/delete',
+                        type:'post',
+                        data:{
+                            departments_id: id
+                        },
+                        success:function (res) {
+                            location.href = '/Departments/IndexAdmin'               //执行ajax完成，跳转该页面
+                        }
+                    })
+
+            } else if(layEvent === 'edit'){ //编辑
+                //do something
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            } else if(layEvent === 'LAYTABLE_TIPS'){
+                layer.alert('Hi，头部工具栏扩展的右侧图标。');
+            }
+        });
+//头部按钮
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('idTest');
+                layer.msg(checkStatus.isAll ? '全选': '未全选')
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    });
+
+</script>
+</body>
+</html>
