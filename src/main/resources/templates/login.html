@@ -1,93 +1,99 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<html>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>在线评教系统</title>
-<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
-<script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
-<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+
+<link type="text/css" th:href="@{/static/css/main.css}" rel="stylesheet">
+	<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
 </head>
+<style>
+	.web-font{
+		font-family:"webfont" !important;
+		font-size:16px;font-style:normal;
+		-webkit-font-smoothing: antialiased;
+		-webkit-text-stroke-width: 0.2px;
+		-moz-osx-font-smoothing: grayscale;
+	}
+	@font-face {
+		font-family: 'webfont';
+		font-display: swap;
+		src: url('//at.alicdn.com/t/webfont_d902ghf22gs.eot'); /* IE9*/
+		src: url('//at.alicdn.com/t/webfont_d902ghf22gs.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+		url('//at.alicdn.com/t/webfont_d902ghf22gs.woff2') format('woff2'),
+		url('//at.alicdn.com/t/webfont_d902ghf22gs.woff') format('woff'), /* chrome、firefox */
+		url('//at.alicdn.com/t/webfont_d902ghf22gs.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+		url('//at.alicdn.com/t/webfont_d902ghf22gs.svg#庞门正道标题体2') format('svg'); /* iOS 4.1- */
+	}
+</style>
 
 <body>
 
-    <div class="login-main">
-        <header class="layui-elip">登录页</header>
-        <form class="layui-form">
-            <div class="layui-input-inline">
-                <input id="aaa" type="text" name="account" required lay-verify="required" placeholder="用户名" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline">
-                <input id="bbb" type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline login-btn">
-                <button lay-submit lay-filter="login" class="layui-btn">登录</button>
-            </div>
-            <hr/>
-            <!--<div class="layui-input-inline">
-            <button type="button" class="layui-btn layui-btn-primary">QQ登录</button>
-        </div>
-        <div class="layui-input-inline">
-            <button type="button" class="layui-btn layui-btn-normal">微信登录</button>
-        </div>-->
-            <p>
-                <a href="register.html" class="fl">立即注册</a>
-                <a href="javascript:;" class="fr">忘记密码？</a>
-            </p>
-        </form>
-    </div>
+
+
+<div class="login">
+    <div class="box png">
+		<div class="logo png" style="text-align: center"><i  class="web-font" style="font-size: 40px; text-align: center;color: #009688" >在线评教系统</i></div>
+		<div class="input">
+
+			<div class="log">
+				<div class="name">
+					<label>用户名</label><input type="text" class="text" id="name" placeholder="用户名" name="value_1" tabindex="1">
+				</div>
+				<div class="pwd">
+					<label>密　码</label><input type="password" class="text" id="password" placeholder="密码" name="value_2" tabindex="2">
+					<input type="button" class="submit" tabindex="3" value="登录" id="sumbit">
+					<div class="check"></div>
+				</div>
+				<div class="tip"></div>
+			</div>
+
+		</div>
+	</div>
+
+    <div class="air-balloon ab-1 png"></div>
+	<div class="air-balloon ab-2 png"></div>
+    <div class="footer"></div>
+</div>
 
 
 
-    <script type="text/javascript">
-        layui.use(['form', 'layer', 'jquery'], function () {
 
-            // 操作对象
-            var form = layui.form;
-            var $ = layui.jquery;
-            form.on('submit(login)', function (data) {
-                location.href = 'class/goindex';
-                // console.log(data.field);
-                // $.ajax({
-                //     //     headers: {
-                //     //     "params-one": "params-one-value",
-                //     //      "params-two": "params-two-value",
-                //     //      "Authorization": "params-Authorization-value"
-                //
-                //     // },
-                //
-                //
-                //     url: 'c.json',//user/login
-                //
-                //     data: { account: $("#aaa").val(), password: $("#bbb").val() },
-                //     callbackParameter: "callback",
-                //
-                //
-                //     success: function (e) {
-                //
-                //         //  console.log(e.user.userid)
-                //         if (e.check != 3) {
-                //             parent.sessionStorage.setItem("check", e.check);
-                //             parent.account = $("#aaa").val()
-                //             parent.sessionStorage.setItem("tt", 0.1);
-                //             parent.layer.closeAll('loading');
-                //             sessionStorage.setItem("account", $("#aaa").val());
-                //             sessionStorage.setItem("check", e.check);
-                //             sessionStorage.setItem("user", e.user.userid);
-                //             // parent.location.reload() ;
-                //             var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                //              parent.layer.close(index);
-                //
-                //         } else {
-                //             layer.msg('登录名或密码错误');
-                //         }
-                //     }
-                // })
-               // return false;
-            })
+<script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/fun.base.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/script.js}"></script>
+
+<!--[if IE 6]>
+<script type="text/javascript" th:src="@{/static/js/DD_belatedPNG.js}"></script>
+<script>DD_belatedPNG.fix('.png')</script>
+<![endif]-->
+<div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+<p>第三组的登录界面</p>
+</div>
+<script type="text/javascript">
+	var flag
+	$("#sumbit").click(function() {
+			$.ajax({
+				type: "post"
+				,url: "/login/validation"
+				,data: {
+					"name": $("#name").val(),
+					"password":$("#password").val()
+				}
+				,success:function (res) {
+					flag = res.msg;
+					if (flag) {
+						console.log("22")
+						window.location.href = "/login/goIndex"
+					}else {
+						console.log("登录失败")
+					}
+				}
+			})
+	})
 
 
-        });
-    </script>
+</script>
 </body>
-
 </html>

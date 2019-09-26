@@ -102,6 +102,7 @@
     <insert id="insertUserRole" parameterType="com.xiaohua.springbootpingjiao.entity.Userrole">
         INSERT INTO userrole(user_id,role_id) values(#{user_Id},#{role_Id})
     </insert>
+
     <select id="selectUserId" resultType="com.xiaohua.springbootpingjiao.entity.User">
         select * from user where user_name=#{user_Name} and user_account=#{user_Account}
     </select>

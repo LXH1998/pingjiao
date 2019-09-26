@@ -6,46 +6,57 @@
     <title>Title</title>
     <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
     <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
-    <script type="text/javascript" th:src="@{/static/js//jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
+<style>
+    input {
+        width: 200px;
+        height: 33px;
+        line-height: 33px;
+        padding: 0 7px;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        margin-bottom: -2px;
+        outline: none;
+    }
+</style>
 <body>
 <form action="" class="layui-form" method="post"   >
     <div class="layui-form-item">
         <label class="layui-form-label">权限名称</label>
         <div class="layui-input-block">
-            <input type="text" name="power_Name" id="power_Name"    class="layui-input">
+            <input type="text" name="power_Name" id="power_Name"    >
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">权限地址</label>
         <div class="layui-input-block">
-            <input type="text" name="power_url" id="power_url"    class="layui-input">
+            <input type="text" name="power_url" id="power_url"   >
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">开关</label>
         <div class="layui-input-block"  id="power_stateBut">
-            <input type="checkbox" name="power_state"  id="power_state" title="启用" lay-filter="lockDemo"}>
+            <input type="checkbox"  name="power_state"  id="power_state"  lay-skin="switch" lay-text="启用|禁用" lay-filter="lockDemo">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">上级功能</label>
         <div class="layui-input-block">
-            <input type="text" name="power_parentid" id="power_parentid"  class="layui-input">
+            <input type="text" id="power_parentid" lay-filter="tree" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">排序</label>
         <div class="layui-input-block">
-            <input type="text" name="sort" id="sort"  class="layui-input">
+            <input type="text" name="sort" id="sort" >
         </div>
     </div>
     <div class="layui-form-item">
         <label  class="layui-form-label">请填写描述</label>
         <div class="layui-input-block">
-            <textarea name="" placeholder="请输入内容" class="layui-textarea" describe="describe" id="describe"></textarea>
+            <textarea name="" placeholder="请输入内容" class="layui-textarea" describe="describe" id="describe" style="width: 250px"></textarea>
         </div>
     </div>
     <div class="layui-form-item">
@@ -56,29 +67,34 @@
     </div>
 </form>
 <script>
+    var state = 0 ;
+    var flage = 0;
+    var form
     layui.use(['form'], function () {
-         form = layui.form;
+        form = layui.form;
         $ = layui.jquery;
         form.render();
         var state
         //监听提交
-        var index = parent.layer.getFrameIndex(window.name);
         form.on('submit(demo1)', function(data){
-            var checked = document.getElementById("power_state").checked;
-            console.log(checked)
-            if(checked){
-                state = 1;
+            power_pid = $("#power_parentid").val();
+            var flag = $("#power_state")[0].checked;
+            if(power_pid == "undefined" || power_pid == null || power_pid == ""){
+                power_pid = 0
             }
-            else {
+            if (flag){
+                state = 1;
+            } else {
                 state = 2;
             }
+
             $.ajax({
                 url:'/powerBoot/insertPower',
                 method:'post',
                 data:{
                     "power_Name":$("#power_Name").val(),
                     "power_url":$("#power_url").val(),
-                    "power_parentid":$("#power_parentid").val(),
+                    "power_parentid":power_pid,
                     "power_state":state,
                     "sort":$("#sort").val(),
                     "describe":$("#describe").val(),
@@ -86,16 +102,55 @@
                 dataType:'JSON',
                 success:function(res){
                     var index = parent.layer.getFrameIndex(window.name);
-                    //parent.location.reload(); //刷新父页面
+                    parent.location.reload(); //刷新父页面
                     parent.layer.close(index);
                 },
                 error:function (data) {
-                    layer.msg(data)
                 }
             }) ;
-           return false;   
+            return false;
         });
     });
+
+    layui.config({
+        base: '../static/layui/'
+    }).extend({
+        treeSelect: "treeSelect"
+    }).use(['treeSelect', 'form', 'layer'], function () {
+        var treeSelect = layui.treeSelect;
+        treeSelect.render({
+            // 选择器
+            elem: '#power_parentid',
+            // 数据
+            data: '/powerBoot/queryPowerSelected',
+            // 异步加载方式：get/post，默认get
+            type: 'get',
+            // 占位符
+            placeholder: '选择父亲节点',
+            // 是否开启搜索功能：true/false，默认false
+            search: true,
+            // 一些可定制的样式
+            style: {
+                folder: {
+                    enable: true
+                },
+                line: {
+                    enable: true
+                }
+            },
+            // 点击回调
+            click: function(d){
+                console.log(d);
+            },
+            // 加载完成后的回调函数
+            success: function (d) {
+                treeSelect.refresh('tree');
+                form.render();
+            }
+        });
+
+    });
+
 </script>
 
 

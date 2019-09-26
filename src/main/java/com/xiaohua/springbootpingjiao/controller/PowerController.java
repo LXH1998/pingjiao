@@ -9,7 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +44,7 @@ public class PowerController {
     */
     @RequestMapping("goPowerInsert")
     public String goPowerInsert(){
-        return "power/powerInsert";
+        return "admin/power/powerInsert";
     }
 
     /**
@@ -51,7 +56,7 @@ public class PowerController {
     */
     @RequestMapping("goPowerEdit")
     public String goPowerEdit(){
-        return "power/powerEdit";
+        return "admin/power/powerEdit";
     }
 
     /**
@@ -63,7 +68,7 @@ public class PowerController {
     */
     @RequestMapping("goPower")
     public String goPower(){
-        return "power/power_index";
+        return "admin/power/power_index";
     }
 
     /**
@@ -85,23 +90,6 @@ public class PowerController {
         Object data = powersList;
         return ResponseWrapper.queryPoewerSuccess(data,count);
     }
-
-    /**
-    * @Author xiaoyi
-    * @Return
-    * @Date 2019/9/15 13:49
-    * @param
-    * @Description 删除权限
-    */
-    @ResponseBody
-    @RequestMapping("deletePower")
-    public ResponseWrapper deletePower(String power_id){
-        int result = service.deletePower(power_id);
-        if(result>0){
-            return  ResponseWrapper.deletePowerSuccess();
-        }
-        return ResponseWrapper.deletePowerError();
-    }
     /**
     * @Author xiaoyi
     * @Return 
@@ -119,7 +107,11 @@ public class PowerController {
         power.setPower_parentid(Integer.parseInt(power_parentid));
         power.setPower_state(Integer.parseInt(power_state));
         power.setDescribe(describe);
-        power.setSort(Integer.parseInt(sort));
+        if (sort.isEmpty()){
+            power.setSort(null);
+        }else {
+            power.setSort(Integer.parseInt(sort));
+        }
         int result = service.updaePower(power);
         if(result>0){
             return  ResponseWrapper.updataPowerSucces();
@@ -176,12 +168,16 @@ public class PowerController {
      * @Description 修改权限状态
      */
     @ResponseBody
-    @RequestMapping("updaePowerState")
-    public ResponseWrapper updaePowerState(int power_id,int state){
+    @RequestMapping("updatePowerState")
+    public ResponseWrapper updatePowerState(int power_id,int state){
         Power p = new Power();
         p.setPower_Id(power_id);
         p.setPower_state(state);
-        boolean result = service.updaePowerState(p);
+        boolean flag = service.updateChilderPowerState(p);
+        boolean result = false;
+        if (flag){
+            result = service.updatePowerState(p);
+        }
         if (result){
             return ResponseWrapper.updataPowerSucces();
         }
@@ -197,8 +193,11 @@ public class PowerController {
     */
     @ResponseBody
     @RequestMapping(value = "/menu")
-    public ResponseWrapper getTreeList(){
-        List<Map<String, Object>> data = service.queryRolePower(16);
+    public ResponseWrapper getTreeList(HttpSession session){
+        int user_id = (int)session.getAttribute("user_id");
+
+        System.out.println(user_id);
+        List<Map<String, Object>> data = service.queryRolePower(user_id);
         return ResponseWrapper.queryPoewerSuccess(data,0);
     }
     /**
@@ -224,5 +223,55 @@ public class PowerController {
         return "power/ces";
     }
 
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/9/24 9:02
+    * @param
+    * @Description
+    */
+    @ResponseBody
+    @RequestMapping(value = "/queryPowerAll")
+    public ResponseWrapper queryPowerAll(String key){
+        List<Power> data = service.queryPowerAll(key);
+        String size  = service.queryPowerCount();
+        int count = Integer.parseInt(size);
+        return ResponseWrapper.queryPoewerSuccess(data,count);
+    }
+
+
+
+    /**
+     * @Author xiaoyi
+     * @Return
+     * @Date 2019/9/15 13:49
+     * @param
+     * @Description 删除某节点的所有子节点
+     */
+    @ResponseBody
+    @RequestMapping("deletePower")
+    public ResponseWrapper deletePower(String power_id){
+        int result = service.deleteChilderPower(power_id);
+        int flag = service.deletePower(power_id);
+        if(result>0&&flag>0){
+            return  ResponseWrapper.deletePowerSuccess();
+        }
+        return ResponseWrapper.deletePowerError();
+    }
+
+
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/9/24 22:09
+    * @param
+    * @Description  查询所有权限用于下拉框
+    */
+    @ResponseBody
+    @RequestMapping(value = "/queryPowerSelected")
+    public List queryPowerSelected(){
+        List<Map<String, Object>> data = service.queryPowerSelected();
+        return data;
+    }
 
 }

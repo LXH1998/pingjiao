@@ -12,7 +12,75 @@
         <result property="sort" column="sort"></result>
     </resultMap>
 
-<!--查询所有权限-->
+<!--查询所有权限    -->
+    <select id="queryPowerAll" resultMap="permissionsResultmap" parameterType="string">
+        SELECT  * FROM POWER WHERE power_state!=0
+         <if test="key !=null">
+            AND  power_id LIKE "%${key}%" OR power_name LIKE "%${key}%"
+         </if>
+    </select>
+
+
+<!--    查询某父亲节点下的所有子节点-->
+    <select id="queryChilderPower" parameterType="string" resultMap="permissionsResultmap">
+        select *from power where find_in_set(power_parentid, getChildLst(${power_id}));
+    </select>
+<!-- 删除某父亲节点下的所有子节点-->
+    <update id="deleteChilderPower" parameterType="String">
+    UPDATE POWER SET power_state = 0 WHERE FIND_IN_SET(power_parentid, getChildLst(${power_id}));
+    </update>
+
+    <!-- 删除父亲节点权限-->
+    <update id="deletePower" parameterType="String">
+        UPDATE POWER SET power_state = 0 WHERE power_id=#{power_id}
+    </update>
+    <!--查询所有权限用于下拉框-->
+    <select id="queryPowerSelected" resultMap="permissionsResultmap">
+        SELECT  * FROM POWER WHERE power_state!=0
+    </select>
+
+    <!--   修改权限状态 -->
+    <update id="updatePowerState" parameterType="com.xiaohua.springbootpingjiao.entity.Power">
+       UPDATE POWER SET power_state = #{power_state} WHERE power_id=#{power_Id}
+    </update>
+    <!-- 修改某父亲节点下的所有子节点-->
+    <update id="updateChilderPowerState" parameterType="com.xiaohua.springbootpingjiao.entity.Power">
+    UPDATE POWER SET power_state = #{power_state} WHERE FIND_IN_SET(power_parentid, getChildLst(${power_Id}));
+    </update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--查询分页所有权限-->
     <select id="queryPermissionsAll" resultMap="permissionsResultmap" parameterType="com.xiaohua.springbootpingjiao.entity.Paging">
         SELECT  * FROM POWER WHERE power_state!=0 LIMIT #{pages},#{limits}
     </select>
@@ -22,10 +90,6 @@
         SELECT  count(power_Id) FROM POWER WHERE power_state!=0
     </select>
 
-<!-- 删除权限-->
-    <update id="deletePower" parameterType="String">
-        UPDATE POWER SET power_state = 0 WHERE power_id=#{power_id}
-    </update>
 <!--修改权限-->
     <update id="updaePower" parameterType="com.xiaohua.springbootpingjiao.entity.Power">
         UPDATE POWER SET power_name=#{power_Name},power_url=#{power_url} ,power_parentid=#{power_parentid} ,power_state = #{power_state} ,`describe` = #{describe}, sort = #{sort} WHERE power_id =#{power_Id}
@@ -56,12 +120,6 @@
         INSERT	INTO POWER(`power_name`,`power_url`,`power_parentid`,`power_state`,`describe`,`sort`)
             VALUE(#{power_Name},#{power_url},#{power_parentid},#{power_state},#{describe},#{sort})
     </insert>
-
-<!--   修改权限状态 -->
-
-    <update id="updaePowerState" parameterType="com.xiaohua.springbootpingjiao.entity.Power">
-       UPDATE POWER SET power_state = #{power_state} WHERE power_id=#{power_id}
-    </update>
 
 <!--查询树状表格权限-->
     <select id="queryTreePower" resultMap="permissionsResultmap">
