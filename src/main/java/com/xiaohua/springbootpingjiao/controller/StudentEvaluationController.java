@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.controller;
 
+import com.xiaohua.springbootpingjiao.entity.Batch;
 import com.xiaohua.springbootpingjiao.service.StudentEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,27 @@ public class StudentEvaluationController {
     public Map selectStudentEvaluation(int user_id){
         Map result = new HashMap();
         List<HashMap> student = studentEvaluationService.selectStudentEvaluation(user_id);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",student.size());
+        result.put("data",student);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("selectBatchName")
+    public  Map selectBatchName(){
+        Map result = new HashMap();
+        List<Batch> batches = studentEvaluationService.selectBatchName();
+        result.put("data",batches);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("selectBatchIdStudentEvaluation")
+    public Map selectBatchIdStudentEvaluation(int user_id,int batch_id){
+        Map result = new HashMap();
+        List<HashMap> student = studentEvaluationService.selectBatchIdStudentEvaluation(user_id,batch_id);
         result.put("code",0);
         result.put("msg","");
         result.put("count",student.size());

@@ -19,6 +19,11 @@ public class ColleagueEvaluationServiceImpl implements ColleagueEvaluationServic
     private ColleagueEvaluationMapper colleagueEvaluationMapper;
 
     @Override
+    public List<HashMap> selectBatchIdColleagueEvaluation(int user_id, int batch_id) {
+        return colleagueEvaluationMapper.selectBatchIdColleagueEvaluation(user_id, batch_id);
+    }
+
+    @Override
     public List<HashMap> selectColleagueEvaluation(int user_id) {
         return colleagueEvaluationMapper.selectColleagueEvaluation(user_id);
     }

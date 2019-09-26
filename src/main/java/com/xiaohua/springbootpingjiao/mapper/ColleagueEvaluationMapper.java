@@ -14,4 +14,5 @@ import java.util.List;
 @Repository
 public interface ColleagueEvaluationMapper {
     List<HashMap> selectColleagueEvaluation(int user_id);
+    List<HashMap> selectBatchIdColleagueEvaluation(int user_id,int batch_id);
 }

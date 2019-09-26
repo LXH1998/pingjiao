@@ -10,4 +10,5 @@ import java.util.List;
  **/
 public interface ColleagueEvaluationService {
     List<HashMap> selectColleagueEvaluation(int user_id);
+    List<HashMap> selectBatchIdColleagueEvaluation(int user_id,int batch_id);
 }

@@ -37,4 +37,16 @@ public class ColleagueEvaluationController {
         result.put("data",users);
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping("selectBatchIdColleagueEvaluation")
+    public Map selectBatchIdColleagueEvaluation(int user_id,int batch_id){
+        Map result = new HashMap();
+        List<HashMap> users = colleagueEvaluationService.selectBatchIdColleagueEvaluation(user_id,batch_id);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",users.size());
+        result.put("data",users);
+        return result;
+    }
 }

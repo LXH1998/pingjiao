@@ -12,6 +12,55 @@
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <body>
+<!--搜索框-->
+<div class="demoTable">
+    批次:
+    <div class="layui-form layui-inline" style="width: 200px">
+        <select id="batch_name" name="batch_name"  lay-search>
+            <option value=""></option>
+        </select>
+    </div>
+</div>
+<!--动态生成批次下拉框-->
+<script>
+    layui.use(['form', 'upload', 'layer','table'], function () {
+        $.ajax({
+            url: '/StudentEvaluation/selectBatchName',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#batch_name').append(new Option(item.batch_Name,item.batch_Id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+        var table = layui.table;
+        var form = layui.form
+        form.on('select',function (data) {
+            console.log(data.value)
+            if(data.value!=""){
+                table.reload("idTest",{
+                    url:"/ColleagueEvaluation/selectBatchIdColleagueEvaluation"
+                    ,where: {
+                        user_id:1
+                        ,batch_id:data.value
+                    }
+                })
+            }else {
+                table.reload("idTest",{
+                    url:"/ColleagueEvaluation/selectColleagueEvaluation"
+                    ,where: {
+                        user_id:1
+                    }
+                })
+            }
+
+        })
+    });
+
+</script>
+
 <!--生成表格-->
 <script type="text/html" id="xuHao">
     {{d.LAY_INDEX}}
