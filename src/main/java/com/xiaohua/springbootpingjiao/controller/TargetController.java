@@ -1,9 +1,16 @@
 package com.xiaohua.springbootpingjiao.controller;
 
+import com.xiaohua.springbootpingjiao.entity.Options;
+import com.xiaohua.springbootpingjiao.entity.Target;
+import com.xiaohua.springbootpingjiao.service.TargetService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +25,9 @@ import java.util.Map;
 @RequestMapping("/TargetManagement")
 public class TargetController {
 
+    @Autowired
+    private TargetService targetService;
+
 //    跳转指标管理选项卡
     @RequestMapping("/toIndex")
     public String toTargetManagement(){
@@ -25,9 +35,41 @@ public class TargetController {
     }
 
 
-    public Map targetTree(){
-        Map result = new HashMap();
+    /**
+     * 以树的形式显示指标
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/targetTree")
+    public List targetTree(){
+        List<Map<String,Object>> list = new ArrayList<>();
 
+        List<Target> targets = targetService.selectAllTarget();
+        for (Target t:targets){
+            Map result = new HashMap();
+
+            result.put("id",t.getTarget_Id());
+            result.put("pId",t.getParent_Id());
+//            树 显示指标名和权重
+            result.put("name",t.getTarget_Name() + "(" + t.getTarget_Weight() + ")");
+            result.put("leafs",t.getLeafs_Id());
+            result.put("targetWeight",t.getTarget_Weight());
+            result.put("targetName",t.getTarget_Name());
+            list.add(result);
+        }
+        return list;
+    }
+
+
+    /**
+     * 查询指定指标的选项
+     */
+    @ResponseBody
+    @RequestMapping("/targetOptions")
+    public Map selectTargetOptions(int target_id){
+        Map result = new HashMap();
+        List<Options> options = targetService.selectTargetOptions(target_id);
+        result.put("options",options);
         return result;
     }
 }

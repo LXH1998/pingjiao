@@ -38,11 +38,11 @@
 
     $(function () {
 
-        var url = '/roleManagement/checkTest'
+        var url = '/TargetManagement/targetTree'
 
-        var param = {"role_ID":1};
+        // var param = {"role_ID":1};
 
-        $.post(url,param,function (data) {
+        $.post(url,function (data) {
             //    调用初始化方法
             initzTree(data);
         },"json");
@@ -62,8 +62,19 @@
     // treeNode----被点击的节点 JSON 数据对象
     function zTreeOnClick(event, treeId, treeNode) {
         // console.log(treeNode)
-        // alert(treeNode.tId + ", " +treeId + "," + treeNode.id);
-        $('#leftTree').after()
+        $.ajax({
+            url:"/TargetManagement/targetOptions",
+            data:{
+                target_id:treeNode.id
+            },
+            success:function (res) {
+                // $("[name=optionA]").val(res.options[0].options_Content);
+                // $("[name=optionAWeight]").val(res.options[0].options_Weight);
+                $()
+            }
+        })
+        $("[name=targetName]").val(treeNode.targetName);
+        $("[name=targetWeight]").val(treeNode.targetWeight);
     };
 </script>
 <body>
@@ -71,109 +82,109 @@
     <div style="width: 19%;height: 435px;background-color:greenyellow;float: left">
         <ul id="tree" class="ztree" style="height:435px; overflow:auto;"></ul>
     </div>
-    <div style="width: 81%;height: 100%; background-color: #00F7DE;float: left">
-        <div style="background-color:#007DDB;width: 100%">
-            <div class="layui-form-item" style="padding-left: 70px">
-                <label class="layui-form-label">指标名称:</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                </div>
-                <label class="layui-form-label">指标权重:</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="username" lay-verify="required" class="layui-input">
-                </div>
-                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>
-            </div>
+    <div id="targetM" style="width: 81%;height: 100%; background-color: #00F7DE;float: left">
+        <!--<div style="background-color:#007DDB;width: 100%">-->
+            <!--<div class="layui-form-item" style="padding-left: 70px">-->
+                <!--<label class="layui-form-label">指标名称:</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="targetName" lay-verify="required" class="layui-input">-->
+                <!--</div>-->
+                <!--<label class="layui-form-label">指标权重:</label>-->
+                <!--<div class="layui-input-inline">-->
+                    <!--<input type="text" name="targetWeight" lay-verify="required" class="layui-input">-->
+                <!--</div>-->
+                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>-->
+            <!--</div>-->
 
-            <div style="width:400px;margin: 0 auto">
-                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加下级指标</button>
-                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>
-                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存修改</button>
-            </div>
-        </div>
-        <div style="width:100%;height:325px;background-color:yellow">
-            <fieldset class="layui-elem-field site-demo-button" style="margin-top: 25px;">
-                <legend>指标维护</legend>
-                <div style="margin-bottom: 10px;">
-                    <button type="button" class="layui-btn">添加选项</button>
-                </div>
-                <form class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">选项A:</label>
-                            <div class="layui-input-inline" style="width: 400px">
-                                <input type="hidden" name="id">
-                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 50px">
-                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 50px">
-                                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">选项B:</label>
-                            <div class="layui-input-inline" style="width: 400px">
-                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 50px">
-                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 50px">
-                                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">选项C:</label>
-                            <div class="layui-input-inline" style="width: 400px">
-                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 50px">
-                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 50px">
-                                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <div class="layui-inline">
-                            <label class="layui-form-label">选项D:</label>
-                            <div class="layui-input-inline" style="width: 400px">
-                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 50px">
-                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <div class="layui-input-inline" style="width: 50px">
-                                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </fieldset>
-        </div>
+            <!--<div style="width:400px;margin: 0 auto">-->
+                <!--<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加下级指标</button>-->
+                <!--<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>-->
+                <!--<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存修改</button>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div style="width:100%;height:325px;background-color:yellow">-->
+            <!--<fieldset class="layui-elem-field site-demo-button" style="margin-top: 25px;">-->
+                <!--<legend>指标维护</legend>-->
+                <!--<div style="margin-bottom: 10px;">-->
+                    <!--<button type="button" class="layui-btn">添加选项</button>-->
+                <!--</div>-->
+                <!--<form class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">-->
+                    <!--<div class="layui-form-item">-->
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label">选项A:</label>-->
+                            <!--<div class="layui-input-inline" style="width: 400px">-->
+                                <!--<input type="hidden" name="id">-->
+                                <!--<input type="text" name="optionA" lay-verify="required" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<div class="layui-input-inline" style="width: 50px">-->
+                                <!--<input type="text" name="optionAWeight" lay-verify="required" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<div class="layui-input-inline" style="width: 50px">-->
+                                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="layui-form-item">-->
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label">选项B:</label>-->
+                            <!--<div class="layui-input-inline" style="width: 400px">-->
+                                <!--<input type="text" name="optionB" lay-verify="required" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<div class="layui-input-inline" style="width: 50px">-->
+                                <!--<input type="text" name="optionBWeight" lay-verify="required" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<div class="layui-input-inline" style="width: 50px">-->
+                                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="layui-form-item">-->
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label">选项C:</label>-->
+                            <!--<div class="layui-input-inline" style="width: 400px">-->
+                                <!--<input type="text" name="optionC" lay-verify="required" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<div class="layui-input-inline" style="width: 50px">-->
+                                <!--<input type="text" name="optionCWeight" lay-verify="required" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<div class="layui-input-inline" style="width: 50px">-->
+                                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="layui-form-item">-->
+                        <!--<div class="layui-inline">-->
+                            <!--<label class="layui-form-label">选项D:</label>-->
+                            <!--<div class="layui-input-inline" style="width: 400px">-->
+                                <!--<input type="text" name="optionD" lay-verify="required" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<div class="layui-input-inline" style="width: 50px">-->
+                                <!--<input type="text" name="optionDWeight" lay-verify="required" class="layui-input">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="layui-inline">-->
+                            <!--<div class="layui-input-inline" style="width: 50px">-->
+                                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</form>-->
+            <!--</fieldset>-->
+        <!--</div>-->
     </div>
 </div>
 

@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.TargetMapper">
+    <resultMap id="targetResultMap" type="com.xiaohua.springbootpingjiao.entity.Target">
+        <id property="target_Id" column="target_id"></id>
+        <result property="target_Name" column="target_name"></result>
+        <result property="target_Weight" column="target_weight"></result>
+        <result property="parent_Id" column="parent_id"></result>
+        <result property="leafs_Id" column="leafs_id"></result>
+        <result property="hides_Id" column="hides"></result>
+    </resultMap>
 
+    <resultMap id="optionResultMap" type="com.xiaohua.springbootpingjiao.entity.Options">
+        <id property="options_Id" column="options_id"></id>
+        <result property="options_Content" column="options_content"></result>
+        <result property="options_Weight" column="options_weight"></result>
+    </resultMap>
+
+    <!--查询所有指标信息-->
+    <select id="selectAllTarget" resultMap="targetResultMap">
+        select * from target;
+    </select>
+
+    <!--根据指标id查询该指标拥有的选项-->
+    <select id="selectTargetOptions" resultMap="optionResultMap">
+        select o.*,tos.* from options o join targetoptions tos on o.options_id =  tos.options_id where tos.target_id=#{target_id}
+    </select>
 </mapper>

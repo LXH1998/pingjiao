@@ -1,5 +1,10 @@
 package com.xiaohua.springbootpingjiao.service;
 
+import com.xiaohua.springbootpingjiao.entity.Options;
+import com.xiaohua.springbootpingjiao.entity.Target;
+
+import java.util.List;
+
 /**
  * TargetService
  *
@@ -9,4 +14,10 @@ package com.xiaohua.springbootpingjiao.service;
  * @Time 8:53
  **/
 public interface TargetService {
+
+//    查询所有的指标
+    List<Target> selectAllTarget();
+
+//    查询指定指标的选项
+    List<Options> selectTargetOptions(int target_id);
 }
