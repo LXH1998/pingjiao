@@ -73,41 +73,85 @@
     layui.use(['form'], function () {
         form = layui.form;
         $ = layui.jquery;
+        layer=layui.layer;
         form.render();
         var state
         //监听提交
+        function testName(power_Name){
+            var regex = /^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$/;
+            if (!regex.test(power_Name)){
+                layer.alert('权限名称不能有特殊字符')
+                return  false;
+            }
+            return  true;
+        }
+
+        function testSort(sort){
+            var regex = /^[1-9]\d*$/;
+            if (!regex.test(sort)){
+                layer.alert('排序必须为数字')
+                return  false;
+            }
+            return  true;
+        }
+
+        function testSort(describe){
+            var regex = /^[\u4e00-\u9fa5]{4,}$/;
+            if (!regex.test(sort)){
+                layer.alert('描述至少四个汉字')
+                return  false;
+            }
+            return  true;
+        }
         form.on('submit(demo1)', function(data){
             power_pid = $("#power_parentid").val();
             var flag = $("#power_state")[0].checked;
             if(power_pid == "undefined" || power_pid == null || power_pid == ""){
                 power_pid = 0
             }
+
+            var sumbitFlag = false;
+            var power_Name = $("#power_Name").val();
+            var sort = $("#sort").val();
+            var describe = $("#describe").val();
+            if (testName(power_Name)) {
+                if (testSort(sort)) {
+                    if (testDescribe(describe)){
+                        sumbitFlag = true;
+                    }
+                }
+                sumbitFlag = false;
+            }else {
+                sumbitFlag = false;
+            }
+            console.log(sumbitFlag)
             if (flag){
                 state = 1;
             } else {
                 state = 2;
             }
-
-            $.ajax({
-                url:'/powerBoot/insertPower',
-                method:'post',
-                data:{
-                    "power_Name":$("#power_Name").val(),
-                    "power_url":$("#power_url").val(),
-                    "power_parentid":power_pid,
-                    "power_state":state,
-                    "sort":$("#sort").val(),
-                    "describe":$("#describe").val(),
-                },
-                dataType:'JSON',
-                success:function(res){
-                    var index = parent.layer.getFrameIndex(window.name);
-                    parent.location.reload(); //刷新父页面
-                    parent.layer.close(index);
-                },
-                error:function (data) {
-                }
-            }) ;
+            if (sumbitFlag) {
+                $.ajax({
+                    url:'/powerBoot/insertPower',
+                    method:'post',
+                    data:{
+                        "power_Name":$("#power_Name").val(),
+                        "power_url":$("#power_url").val(),
+                        "power_parentid":power_pid,
+                        "power_state":state,
+                        "sort":$("#sort").val(),
+                        "describe":$("#describe").val(),
+                    },
+                    dataType:'JSON',
+                    success:function(res){
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.location.reload(); //刷新父页面
+                        parent.layer.close(index);
+                    },
+                    error:function (data) {
+                    }
+                }) ;
+            }
             return false;
         });
     });

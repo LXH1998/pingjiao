@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface LoginService {
 
-    boolean loginUser(User u, HttpSession session);
+    boolean loginUser(User u);
 }

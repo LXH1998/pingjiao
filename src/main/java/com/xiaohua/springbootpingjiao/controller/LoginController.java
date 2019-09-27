@@ -60,7 +60,7 @@ public class LoginController {
         User user  = new User();
         user.setUser_Password(password);
         user.setUser_Account(name);
-        boolean result =service.loginUser(user,session);
+        boolean result =service.loginUser(user);
         Map map = new HashMap();
         if (result){
             map.put("msg","true");

@@ -63,7 +63,8 @@
 <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/fun.base.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/script.js}"></script>
-
+<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 <!--[if IE 6]>
 <script type="text/javascript" th:src="@{/static/js/DD_belatedPNG.js}"></script>
 <script>DD_belatedPNG.fix('.png')</script>
@@ -74,6 +75,7 @@
 <script type="text/javascript">
 	var flag
 	$("#sumbit").click(function() {
+
 			$.ajax({
 				type: "post"
 				,url: "/login/validation"

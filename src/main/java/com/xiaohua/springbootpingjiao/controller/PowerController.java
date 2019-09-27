@@ -193,10 +193,11 @@ public class PowerController {
     */
     @ResponseBody
     @RequestMapping(value = "/menu")
-    public ResponseWrapper getTreeList(HttpSession session){
+    public ResponseWrapper getTreeList(){
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
+        HttpSession  session = request.getSession();
         int user_id = (int)session.getAttribute("user_id");
-
-        System.out.println(user_id);
         List<Map<String, Object>> data = service.queryRolePower(user_id);
         return ResponseWrapper.queryPoewerSuccess(data,0);
     }
@@ -233,6 +234,9 @@ public class PowerController {
     @ResponseBody
     @RequestMapping(value = "/queryPowerAll")
     public ResponseWrapper queryPowerAll(String key){
+        if(key==""){
+            key=null;
+        }
         List<Power> data = service.queryPowerAll(key);
         String size  = service.queryPowerCount();
         int count = Integer.parseInt(size);
