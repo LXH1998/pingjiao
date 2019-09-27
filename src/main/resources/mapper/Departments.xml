@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohua.springbootpingjiao.mapper.DepartmentsMapper">
+
+
+    <resultMap id="Departments" type="com.xiaohua.springbootpingjiao.entity.Departments">
+        <result column="departments_Id" jdbcType="INTEGER" property="departments_id" />
+        <result column="departments_Name" jdbcType="VARCHAR" property="departments_name" />
+        <result column="departments_State" jdbcType="VARCHAR" property="departments_state" />
+    </resultMap>
+
+    <resultMap id="ClassDepartments" type="com.xiaohua.springbootpingjiao.entity.Class">
+        <result column="class_Id" jdbcType="INTEGER" property="class_id" />
+        <result column="class_Name" jdbcType="VARCHAR" property="class_name" />
+        <result column="departments_id" jdbcType="INTEGER" property="departments_id" />
+        <result column="class_amount" jdbcType="INTEGER" property="class_amount" />
+
+        <collection property="departments" ofType="com.xiaohua.springbootpingjiao.entity.Departments" column="departments_id">
+            <id property="departments_Id" column="departments_id"></id>
+            <result property="departments_Name" column="departments_Name"></result>
+        </collection>
+    </resultMap>
+
+    <select id="Departments" resultType="com.xiaohua.springbootpingjiao.entity.Departments">
+        select * from  departments where departments_state = 1
+    </select>
+
+    <select id="deleteDepartments" resultType="com.xiaohua.springbootpingjiao.entity.Departments">
+        update departments set departments_state = 0 where departments_id = #{departments_id}
+    </select>
+
+    <select id="insertDepartments" resultType="com.xiaohua.springbootpingjiao.entity.Departments">
+        insert into departments (departments_id,departments_name) value (#{departments_id},#{departments_name})
+    </select>
+
+    <select id="selectClass1" resultType="HashMap">
+       select
+            departments.departments_name,class.class_id,class.class_name,class.class_amount,class.departments_id
+       from
+            class,departments
+       where class.departments_id = departments.departments_id and departments.departments_id = #{departments_id}
+    </select>
+
+    <select id="selectDepartments1" resultType="String">
+        select * from departments where departments_id = #{departments_id} and departments_state = 1
+    </select>
+    <select id="selectDepartments2" resultType="String">
+        select * from departments where departments_name = #{departments_name} and departments_state = 1
+    </select>
+
+</mapper>

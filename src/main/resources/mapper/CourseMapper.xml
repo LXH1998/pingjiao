@@ -8,7 +8,11 @@
     </resultMap>
 <!--查找所有课程-->
     <select id="SelectCourseAll" resultType="com.xiaohua.springbootpingjiao.entity.Courses">
-        select * from Courses where courses_state = '1'
+        select * from Courses where courses_state = '1' limit #{pages},#{limit}
+    </select>
+    <!--查找所有课程数量-->
+    <select id="SelectCourseCount" resultType="int">
+        select count(*) from Courses where courses_state = '1'
     </select>
     <!--查找具体一门课程-->
     <select id="SelectCourseOne" parameterType="String" resultType="int">
@@ -48,13 +52,22 @@
     <select id="SelectTeachAll"  resultType="com.xiaohua.springbootpingjiao.entity.TeachData" >
      select t.teach_id,c.class_name,u.user_name,courses.courses_name from Teach as t left join
       class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
-      courses on courses.courses_id = t.courses_id
+      courses on courses.courses_id = t.courses_id limit #{pages},#{limit}
+    </select>
+    <!--查询授课信息数量-->
+    <select id="SelectTeachCount"  resultType="int" >
+     select count(*) from teach
     </select>
     <!--查询具体一门授课信息-->
     <select id="SelectTeachOne" parameterType="com.xiaohua.springbootpingjiao.entity.Courses" resultType="com.xiaohua.springbootpingjiao.entity.TeachData" >
      select t.teach_id,c.class_name,u.user_name,courses.courses_name from Teach as t left join
       class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
-      courses on courses.courses_id = t.courses_id where courses.courses_name = #{courses_name}
+      courses on courses.courses_id = t.courses_id where courses.courses_name = #{courses_name} limit #{pages},#{limit}
+    </select>
+    <!--查询具体一门授课信息数量-->
+    <select id="SelectTeachOneCount" parameterType="com.xiaohua.springbootpingjiao.entity.Courses" resultType="int" >
+       select count(*) from Teach as t left join
+    courses on courses.courses_id = t.courses_id where courses.courses_name = #{courses_name}
     </select>
 
     <!--修改授课信息-->
