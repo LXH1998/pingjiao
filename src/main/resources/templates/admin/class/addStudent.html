@@ -23,16 +23,16 @@
         <tbody>
         <tr>
             <td >班级编号</td>
-            <td>1690020</td>
+            <td id="class_id"></td>
             <td>班级名称</td>
-            <td>16级软件工程20班</td>
+            <td id="class_name">16级软件工程20班</td>
 
         </tr>
         <tr>
             <td>班级人数</td>
-            <td>25</td>
+            <td id="class_count">25</td>
             <td>所属院系</td>
-            <td>软件学院</td>
+            <td id="departments_name">软件学院</td>
         </tr>
         </tbody>
 
@@ -41,29 +41,29 @@
         <legend>班级人员</legend>
     </fieldset>
 
-    <div class="layui-btn-group demoTable">
-        <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
-        <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
-        <button class="layui-btn" data-type="isAll">验证是否全选</button>
-    </div>
+    <!--<div class="layui-btn-group demoTable">-->
+        <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+        <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
+        <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
+    <!--</div>-->
 
-        <table class="layui-table" lay-data="{ url:'/class/userinclass?class_Id=1690020', page:true, id:'idTest'}" lay-filter="demo">
+        <table id="a" class="layui-table" lay-data="{ url:'/class/userinclass', page:false , id:'idTest'}" lay-filter="demo">
         <thead>
         <tr>
             <th lay-data="{type:'checkbox', fixed: 'left'}"></th>
             <th lay-data="{field:'user_account',  sort: true, fixed: true}">学号</th>
-            <th lay-data="{field:'user_name'}">姓名</th>
-            <th lay-data="{field:'user_sex'}">性别</th>
-            <th lay-data="{fixed: 'right', width:178, align:'center', toolbar: '#barDemo'}">操作</th>
+            <th lay-data="{field:'user_name',fixed: true}">姓名</th>
+            <th lay-data="{field:'user_sex',fixed: true}">性别</th>
+            <th lay-data="{fixed: 'right', width:172, align:'center', toolbar: '#barDemo'}"></th>
         </tr>
         </thead>
     </table>
 
-    <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
-    </script>
+    <!--<script type="text/html" id="barDemo">-->
+        <!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+        <!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+        <!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+    <!--</script>-->
 
 
 
@@ -72,8 +72,22 @@
 
 </body>
 <script>
-
-
+    $(function () {
+        $("#class_id").text(parent.classid)
+        $("#class_name").text(parent.classname)
+        $("#departments_name").text(parent.departmentsname)
+        $.ajax({
+            url:"/class/userinclass",
+            dataType: 'json',
+            type: 'get',
+            data:{class_Id:parent.classid},
+            success:function (e) {
+              //  console.log(e)
+                $("#class_count").text(e.count)
+            }
+        })
+    })
+console.log(parent.classid)
     layui.use(['form', 'layedit', 'laydate','table','jquery'], function() {
         var form = layui.form
             , layer = layui.layer
@@ -94,14 +108,20 @@
         //     }
         // }, 'data');
 
-        table.render('idTest',{
-
-            }
-        )
-
+        console.log( $("#a").attr("lay-data"))
         table.on('checkbox(demo)', function(obj){
-            console.log(obj)
+          //  console.log(obj)
         });
+
+        table.reload('idTest', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },
+            url:'/class/userinclass'
+            ,where: {
+                class_Id:parent.classid
+            }
+        }, 'data');
         //监听工具条
         table.on('tool(demo)', function(obj){
             var data = obj.data;

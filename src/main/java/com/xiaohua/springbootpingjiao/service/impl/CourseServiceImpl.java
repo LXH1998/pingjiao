@@ -22,10 +22,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     CourseMapper courseMapper;
-//查找所有课程
+    //查找所有课程
     @Override
-    public List<Courses> SelectCourse() {
-        return courseMapper.SelectCourseAll();
+    public List<Courses> SelectCourse(int pages,int limit) {
+        return courseMapper.SelectCourseAll(pages,limit);
+    }
+
+    @Override
+    public int SelectCourseCount() {
+        return courseMapper.SelectCourseCount();
     }
 
     //查找课程
@@ -35,8 +40,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<TeachData> SelectTeach() {
-        return courseMapper.SelectTeachAll();
+    public List<TeachData> SelectTeach(int pages,int limit) {
+        return courseMapper.SelectTeachAll(pages,limit);
+    }
+    //查询授课信息数量
+    @Override
+    public int SelectTeachCount() {
+        return courseMapper.SelectTeachCount();
     }
 
     @Override
@@ -53,4 +63,27 @@ public class CourseServiceImpl implements CourseService {
     public List<User> SelectTeachUser() {
         return courseMapper.SelectTeachUser();
     }
+
+    @Override
+    public int EditTeachs(int teach_id, String user_Id, String class_ID) {
+        return courseMapper.EditTeach(teach_id,user_Id,class_ID);
+    }
+
+    //查询具体一门授课信息
+    @Override
+    public List<TeachData> SelectTeachOne(String courses_name, int pages, int limit) {
+        return courseMapper.SelectTeachOne(courses_name,pages,limit);
+    }
+
+    @Override
+    public int SelectTeachOneCount() {
+        return courseMapper.SelectTeachOneCount();
+    }
+
+    //新增授课信息
+    @Override
+    public int AddTeach(String courses_Id, String user_Id, String class_ID) {
+        return courseMapper.AddTeach(courses_Id,user_Id,class_ID);
+    }
+
 }

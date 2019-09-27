@@ -46,7 +46,7 @@
 <!--行内工具条-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail">权限</a>
-    <a class="layui-btn layui-btn-xs" lay-event="add">添加权限</a>
+    <!--<a class="layui-btn layui-btn-xs" lay-event="add">添加权限</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 
     <!-- 这里同样支持 laytpl 语法，如： -->
@@ -62,6 +62,12 @@
 
 <!--数据表格js-->
 <script type="text/javascript">
+    //弹出框中点击保存按钮将子页面中的函数submitCheckedNode传给powerIds
+    var powerIds;
+    <!--弹出框中点击保存按钮,将子页面中被选中的节点power_Id传给codeId-->
+    var codeId;
+    //获取树的初始勾选数据
+    var originalValue;
     layui.use('table', function(){
         var table = layui.table;
 
@@ -100,21 +106,66 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
             var roleName = data.role_Name; //获得属性role_Name的值
+            var roleID = data.role_ID;
+
+
 
             if(layEvent === 'detail'){ //查看角色权限
+                //var originalValue;
                 //do somehing
                 //iframe层-父子操作
                 layer.open({
                     type: 2,
-                    title:'已有权限',
-                    area: ['700px', '450px'],
+                    title:'角色权限',
+                    area: ['300px', '430px'],
+                    offset: '30px',
                     fixed: false, //不固定
                     maxmin: true,
                     scrollbar: false,
-                    content: '/roleManagement/checkPower',
+                    content: '/roleManagement/zTree',
+                    btn: ['保存', '关闭'],
+                    yes: function(index){
+                        powerIds();
+                        console.log(codeId)
+                        if (originalValue == codeId){
+                            layer.msg("未做出任何修改")
+                        }else {
+                            layer.confirm("您确定要保存修改吗？",function(){
+                                $.ajax({
+                                    type:"POST",
+                                    url: '/roleManagement/insertThePowers',
+                                    data:{
+                                        "codeId":codeId,
+                                        "role_Id":roleID
+                                    },
+                                    success:function (data) {
+                                        layer.closeAll('loading');
+                                        if(data.code==1){
+                                            layer.msg("修改成功", { shift: -1 , time: 1200 , icon: 1}, function () {
+                                                location.reload(true);
+                                            });
+                                        }else{
+                                            layer.msg('修改失败', {icon: 2,time:3000,shade:0.2});
+                                        }
+                                    }
+                                })
+                            })
+                        }
+
+                    },
+                    btn2 : function(){
+                        layer.close();
+                    },
                     success:function (layero,index) {
+                        // powerIds();
+                        // console.log(codeId);
                         var iframe = window['layui-layer-iframe' + index];
                         iframe.child(data)
+
+                    },
+                    end:function () {
+                        // powerIds();
+                        console.log(originalValue)
                     }
                 });
             } else if(layEvent === 'del'){ //删除角色
@@ -140,27 +191,6 @@
                             layer.msg("异常");
                         }
                     })
-                });
-            } else if(layEvent === 'add'){ //添加角色权限
-                //do something
-
-                layer.open({
-                    type: 2,
-                    title:'可添加权限',
-                    area: ['700px', '450px'],
-                    fixed: false, //不固定
-                    maxmin: true,
-                    content: '/roleManagement/goAddPower',
-                    success:function (layero,index) {
-                        var iframe = window['layui-layer-iframe' + index];
-                        iframe.child(data)
-                    }
-                });
-
-                //同步更新缓存对应的值
-                obj.update({
-                    username: '123'
-                    ,title: 'xxx'
                 });
             } else if(layEvent === 'LAYTABLE_TIPS'){
                 layer.alert('Hi，头部工具栏扩展的右侧图标。');

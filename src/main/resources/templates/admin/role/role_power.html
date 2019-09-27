@@ -4,178 +4,156 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/zTree_v3/js/jquery-1.4.4.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
-    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+    <!--<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>-->
+    <link rel="stylesheet" type="text/css" th:href="@{/static/zTree_v3/css/zTreeStyle/zTreeStyle.css}" >
+    <script type="text/javascript" th:src="@{/static/zTree_v3/js/jquery.ztree.core.js}"></script>
+    <script type="text/javascript" th:src="@{/static/zTree_v3/js/jquery.ztree.excheck.js}"></script>
+
+    <!--1、先引入css和js
+    2、配置zTree
+    3、提供数据
+    4、调用ztree初始化的方法-->
+
+    <!--<script type="text/javascript">-->
+        <!--// zTree的设置-->
+        <!--var setting = {-->
+            <!--check:{-->
+                <!--enable:true-->
+            <!--},-->
+            <!--data:{-->
+                <!--simpleData:{-->
+                    <!--enable:true-->
+                <!--}-->
+            <!--}-->
+        <!--};-->
+
+    <!--//    提供数据-->
+        <!--var zTreeNodes = [-->
+            <!--{"id":1, "pId":0, "name":"系统管理"},-->
+            <!--{"id":11, "pId":1, "name":"用户管理"},-->
+            <!--{"id":12, "pId":1, "name":"角色管理"},-->
+            <!--{"id":2, "pId":0, "name":"问卷管理"},-->
+            <!--{"id":111, "pId":2, "name":"问卷生成"}-->
+        <!--];-->
+
+    <!--//    调用zTree初始化方法-->
+        <!--$(function () {-->
+            <!--//页面一加载，在页面生成树-->
+            <!--//初始化的方法-->
+            <!--var obj = $.fn.zTree.init($("#tree"), setting, zTreeNodes);-->
+
+        <!--//    obj就是zTree的对象-->
+        <!--//    展开所有的节点-->
+            <!--obj.expandAll(true);-->
+        <!--})-->
+    <!--</script>-->
+
+    <script type="text/javascript">
+        // zTree的设置
+        var setting = {
+            check:{
+                enable:true
+            },
+            data:{
+                simpleData:{
+                    enable:true
+                }
+            }
+        };
+
+        $(function () {
+            var url = '/roleManagement/checkTest'
+
+            var param = {"role_ID":roleID};
+
+            $.post(url,param,function (data) {
+            //    调用初始化方法
+                initzTree(data);
+                initialNode();
+            },"json");
+        });
+
+        function initzTree(data) {
+            // console.log(data);
+        //    初始化树
+            zTreeObj = $.fn.zTree.init($("#tree"), setting, data);
+        //    展开树的节点
+            zTreeObj.expandAll(true);
+
+            parent.powerIds = submitCheckedNode;
+        }
+    </script>
 </head>
 <body>
 
-<!--头部工具栏-->
-<div class="layui-btn-group demoTable" style="margin: 10px 0 0 10px">
-    <button class="layui-btn layui-btn-sm" data-type="goAddPower">添加权限</button>
-    <button class="layui-btn  layui-btn-sm layui-btn-danger" data-type="batchDelete">批量删除</button>
+
+
+<!--DOM的容器，用于生成zTree树-->
+<div>
+    <ul id="tree" class="ztree" style="width:230px; overflow:auto;"></ul>
 </div>
 
-<table id="demo" lay-filter="test"></table>
+<form name="icform" method="post">
+    <input type="hidden" name="id" value="1">
+    <input type="hidden" id="powerIds" name="powerIds" value="">
+</form>
 
-<!--行内工具-->
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+<script type="text/javascript">
 
-    <!-- 这里同样支持 laytpl 语法，如： -->
-    {{#  if(d.auth > 2){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
-    {{#  } }}
+
+    function submitCheckedNode() {
+        //定义新的数组
+        var nodes = new Array();
+    //    获取到所有勾选的节点的集合
+        nodes = zTreeObj.getCheckedNodes(true);
+    //    定义字符串
+        var str = "";
+    //    遍历数组
+        for (i = 0; i < nodes.length; i++){
+            if (str != ""){
+                str += ",";
+            }
+            str += nodes[i].id;
+        }
+    //    powerIds
+        $('#powerIds').val(str);
+        // console.log($('#powerIds').val());
+        parent.codeId = $('#powerIds').val();
+
+        // console.log($('input[name="id"]').val());
+        // console.log($('input[name="powerIds"]').val())
+    }
+    
+    
+    function initialNode() {
+        //定义新的数组
+        var nodes = new Array();
+        //    获取到所有勾选的节点的集合
+        nodes = zTreeObj.getCheckedNodes(true);
+        //    定义字符串
+        var str = "";
+        //    遍历数组
+        for (i = 0; i < nodes.length; i++){
+            if (str != ""){
+                str += ",";
+            }
+            str += nodes[i].id;
+        }
+        console.log(str);
+        parent.originalValue = str;
+    }
 </script>
 
-<!--序号自增-->
-<script type="text/html" id="xuhao">
-    {{d.LAY_TABLE_INDEX+1}}
-</script>
-
-<script>
+<script type="text/javascript">
     var roleID;
     function child(obj){
         // console.log(obj);
         roleID=obj.role_ID;
         // roleName=obj.role_Name;
 
-        layui.use('table', function(){
-            var table = layui.table;
-
-            //数据表表头
-            table.render({
-                elem: '#demo'
-                ,height: 300
-                ,url: '/roleManagement/selectThePower' //数据接口
-                ,where: {
-                    role_ID:roleID
-                } //设定异步数据接口的额外参数
-                ,page: true //开启分页
-                ,cols: [
-                    [
-                        {type: 'checkbox', fixed: 'left', width:'10%'}
-                        //表头
-                        ,{field: 'power_Id', templet: '#xuhao',title: '序号', width:'15%', sort: true, align: 'center'}
-                        ,{field:'power_Name',  title: '权限', width:'50%', align: 'center'}
-                        ,{title: '操作', fixed: 'right' , width: '25%', align: 'center', toolbar: '#barDemo'}
-                    ]
-                ]
-            });
-
-            //监听工具条
-            table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
-                var data = obj.data; //获得当前行数据
-                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
-                var powerId = data.power_Id; //获得属性role_ID的值
-
-                if(layEvent === 'del'){ //删除
-                    layer.confirm('真的删除该权限么', function(index){
-                        //向服务端发送删除指令
-                        $.ajax({
-                            url:'/roleManagement/deleteThePower',
-                            type:'post',
-                            data:{
-                                role_Id: roleID,
-                                power_Id:powerId
-                            },
-                            success:function (res) {
-                                if (res.data=="操作成功"){
-                                    // obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                                    // layer.close(index);
-                                    //操作成功后继续显示当前页数据
-                                    $(".layui-laypage-btn").click();
-
-                                    layer.msg(res.data)
-                                } else if (res.data=="操作失败") {
-                                    layer.msg(res.data);
-                                }
-                            },
-                            error:function () {
-                                layer.msg("异常");
-                            }
-                        })
-                    });
-                }
-            });
-
-            //头部按钮
-            var $ = layui.$, active = {
-                goAddPower: function(){ //弹出添加权限窗口，关闭角色权限窗口
-                    // var checkStatus = table.checkStatus('demo')
-                    //     ,data = checkStatus.data;
-                    // layer.alert(JSON.stringify(data));
-                    // console.log(data);
-
-                    //iframe层-父子操作
-                    layer.open({
-                        type: 2
-                        ,title:'审批详情'
-                        ,offset: 'r'//弹出层位置
-                        ,content: '/roleManagement/goAddPower'
-                        ,btn: ['同意']//按钮
-                        ,area: ['40%', '100%']//宽高
-                        ,btnAlign: 'c'//按钮对齐方式
-                        ,maxmin:true//支持最大最小化
-                        ,scrollbar: false//屏蔽滚动条
-                        ,shade: 0.1 //遮罩
-                        ,shadeClose:true//点击遮罩关闭
-                        ,yes: function(index){
-                            layer.close(index);
-                            handling('consent');//同意
-
-                        }
-                    });
-                }
-                ,batchDelete: function(){ //批量删除角色权限
-                    var checkStatus = table.checkStatus('demo')
-                        ,data = checkStatus.data;
-                    // layer.msg('选中了：'+ data.length + ' 个');
-
-                    if (data.length == 0){
-                        layer.msg("请选择将要删除的数据行", {icon: 2});
-                        return ;
-                    }
-                    var codeId="";
-                    for(var i=0;i<data.length;i++){
-                        codeId += data[i].power_Id+",";
-                        console.log(codeId);
-                        console.log(roleID);
-                    }
-
-                    layer.confirm("您确定要删除吗？",function(){
-                        $.ajax({
-                            type:"POST",
-                            url: '/roleManagement/deleteThePowers',
-                            data:{
-                                "codeId":codeId,
-                                "role_Id":roleID
-                            },
-                            success:function (data) {
-                                layer.closeAll('loading');
-                                if(data.code==1){
-                                    layer.msg("删除成功", { shift: -1 , time: 1200 , icon: 1}, function () {
-                                        location.reload(true);
-                                    });
-                                }else{
-                                    layer.msg('删除失败', {icon: 2,time:3000,shade:0.2});
-                                }
-                            }
-                        })
-                    })
-                }
-            };
-            $('.demoTable .layui-btn').on('click', function(){
-                var type = $(this).data('type');
-                active[type] ? active[type].call(this) : '';
-            });
-        });
-        };
-
-
-
-
-
+    };
 </script>
 </body>
 </html>

@@ -32,8 +32,11 @@ public class LoginServiceImpl implements LoginService {
     * @Description 登录验证
     */
     @Override
-    public boolean loginUser(User u,HttpSession session) {
+    public boolean loginUser(User u) {
         List<User>  list = loginMapper.loginUser(u);
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
+        HttpSession  session = request.getSession();
         if (!list.isEmpty()){
             session.setAttribute("user_id",list.get(0).getUser_Id());
             return  true;
