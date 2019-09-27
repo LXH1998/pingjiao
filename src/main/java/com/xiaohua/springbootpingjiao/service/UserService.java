@@ -31,4 +31,5 @@ public interface UserService {
     List<HashMap> selectUserHaveRole(int user_id);
     Boolean deleteUserIdRole(int user_Id);
     Boolean insertUserIdRole(int user_Id,int role_ID);
+
 }
