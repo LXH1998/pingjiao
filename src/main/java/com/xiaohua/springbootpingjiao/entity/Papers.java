@@ -5,6 +5,15 @@ public class Papers{
     private Integer role_Id;
     private Integer batch_Id;
     private String papers_Name;
+    private Integer oapers_visible;
+
+    public Integer getOapers_visible() {
+        return oapers_visible;
+    }
+
+    public void setOapers_visible(Integer oapers_visible) {
+        this.oapers_visible = oapers_visible;
+    }
 
     public Integer getPapers_Id() {
         return papers_Id;
