@@ -88,11 +88,11 @@
             ,page: true //开启分页
             ,cols: [
                 [
-                    {type: 'checkbox', fixed: 'left', width:'10%'}
+                    {type: 'checkbox', width:'10%'}
                     //表头
                     ,{field: 'role_ID', templet: '#xuhao',title: '序号', width:'10%', sort: true, align: 'center'}
                     ,{field: 'role_Name', title: '角色', width:'50%', align: 'center'}
-                    ,{title: '操作', fixed:'right', align: 'center', toolbar: '#barDemo'}
+                    ,{title: '操作', align: 'center', toolbar: '#barDemo'}
                 ]
             ]
             // ,limits : [ 5,6,7,8,9,10 ] //控制多少行一页（默认五条一页）
@@ -118,7 +118,7 @@
                     type: 2,
                     title:'角色权限',
                     area: ['300px', '430px'],
-                    offset: '30px',
+                    offset: '15px',
                     fixed: false, //不固定
                     maxmin: true,
                     scrollbar: false,
