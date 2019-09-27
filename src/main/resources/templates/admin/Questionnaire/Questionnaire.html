@@ -1,10 +1,176 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>问卷管理</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+
 </head>
+<style>
+
+</style>
 <body>
+<div style="width: 100%;">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" style="line-height:0.5em;margin-top:1px;float:right"  href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon" style="line-height:20px">ဂ</i></a>
+</div>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>问卷管理</legend>
+</fieldset>
+
+<form class="layui-form   " action="">
+<div class="layui-form-item">
+    <label class="layui-form-label">问卷批次:</label>
+    <div class="layui-input-inline">
+        <select  name="quiz2" id="xueyuan" lay-search>
+            <option value="">请选择批次</option>
+        </select>
+    </div>
+
+    <label class="layui-form-label">角色:</label>
+    <div class="layui-input-inline">
+        <select  name="quiz2" id="xueyuan1" lay-search>
+            <option value="">请选择角色</option>
+        </select>
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">问卷名称: </label>
+        <div class="layui-input-inline">
+            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入问卷名称" class="layui-input" id="shoushuo">
+        </div>
+        <button type="button" class="layui-btn layui-btn-normal" id="a">   <i class="layui-icon">&#xe615;</i>搜索</button>
+    </div>
+    <button type="button" class="layui-btn"   id="add">
+        <i class="layui-icon">&#xe608;</i> 新增问卷
+    </button>
+
+</div>
+</form>
+<!--历史问卷-->
+<!--<hr class="layui-bg-green">-->
+<fieldset class="layui-elem-field layui-field-title " style="margin-top: 10px;">
+    <legend style="font-size: 15px">历史问卷</legend>
+</fieldset>
+
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+    </div>
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
 
 </body>
+<script type="text/html" id="xuhao">
+    {{d.LAY_TABLE_INDEX+1}}
+</script>
+
+<script>
+
+    layui.use(['form', 'layedit', 'laydate','table','jquery', 'upload', 'layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,$=layui.jquery
+            , table = layui.table;
+        table.render({
+            elem: '#test'
+            ,url:'/Questionnaire//QuestionnaireAll'
+            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                ,layEvent: 'LAYTABLE_TIPS'
+                ,icon: 'layui-icon-tips'
+            }]
+            ,title: '用户数据表'
+            ,cols: [
+                [
+                 {title: '序号',templet: '#xuhao', width:100,sort: true,align:'center' }
+                ,{field:'role_name', title:'角色', width:220, edit: 'text'}
+                ,{field:'batch_name', title:'批次', edit: 'text', sort: true }
+                ,{field:'papers_name', title:'问卷名称', edit: 'text',}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]
+            ]
+            ,page: true
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+
+                //自定义头工具栏右侧图标 - 提示
+                case 'LAYTABLE_TIPS':
+                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.email
+                }, function(value, index){
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+        $.ajax({
+            url: '/class/queryDepartments',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#xueyuan').append(new Option(item.departments_Name));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+
+
+    });
+
+
+
+
+
+</script>
 </html>
