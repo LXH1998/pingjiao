@@ -57,7 +57,7 @@
             , table = layui.table;
         //初始化课程下拉框
         $.ajax({
-            url: '/course/listDate',
+            url: '/course/listDateAll',
             dataType: 'json',
             type: 'get',
             success: function (data) {
@@ -81,7 +81,7 @@
                     {field: 'courses_Name', title: '课程名', width: '20%',align: 'center'}
                     ,{field: 'class_Name', title: '班级', width:'20%', event: 'setSign' ,align: 'center'}
                     ,{field: 'user_Name', title: '授课教师', width:'20%', align: 'center'}
-                    ,{title: '操作', width: '20%', align: 'center', toolbar: '#barDemo'}
+                    ,{title: '操作', width: '19%', align: 'center', toolbar: '#barDemo'}
                 ]
             ]
         });
@@ -170,7 +170,6 @@
                 shadeClose: true,
                 content: '/course/addTeach',
                 end: function(){ //此处用于演示
-
                     location.reload();
                 }
             });

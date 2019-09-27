@@ -95,7 +95,7 @@
     layui.use(['form', 'upload', 'layer'], function () {
         //为课程下拉框赋值
         $.ajax({
-            url: '/course/listDate',
+            url: '/course/listDateAll',
             dataType: 'json',
             type: 'get',
             success: function (data) {
@@ -107,12 +107,12 @@
         })
         //为班级下拉框赋值
         $.ajax({
-            url: '/class/goclass',
+            url: '/course/classInfo',
             dataType: 'json',
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index,item) {
-                    $('#class').append(new Option(item.class_name,item.class_id));// 下拉菜单里添加元素
+                    $('#class').append(new Option(item.class_Name,item.class_Id));// 下拉菜单里添加元素
                 });
                 layui.form.render("select");
             }
