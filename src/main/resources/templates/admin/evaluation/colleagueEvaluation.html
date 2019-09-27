@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>学生评价</title>
+    <title>同行评价</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -41,7 +41,7 @@
             console.log(data.value)
             if(data.value!=""){
                 table.reload("idTest",{
-                    url:"/StudentEvaluation/selectBatchIdStudentEvaluation"
+                    url:"/ColleagueEvaluation/selectBatchIdColleagueEvaluation"
                     ,where: {
                         user_id:1
                         ,batch_id:data.value
@@ -49,7 +49,7 @@
                 })
             }else {
                 table.reload("idTest",{
-                    url:"/StudentEvaluation/selectStudentEvaluation"
+                    url:"/ColleagueEvaluation/selectColleagueEvaluation"
                     ,where: {
                         user_id:1
                     }
@@ -65,15 +65,15 @@
 <script type="text/html" id="xuHao">
     {{d.LAY_INDEX}}
 </script>
-<table class="layui-table" lay-data="{width:1100,url:'/StudentEvaluation/selectStudentEvaluation', id:'idTest',where:{user_id:1}}" lay-filter="demo">
+<table class="layui-table" lay-data="{width:1100,url:'/ColleagueEvaluation/selectColleagueEvaluation', id:'idTest',where:{user_id:1}}" lay-filter="demo">
     <thead>
     <tr>
         <th lay-data="{field: '序号',templet: '#xuHao',sort: true,width:80}">序号</th>
         <th lay-data="{field:'batch_name',width:160}">批次</th>
-        <th lay-data="{field:'class_id',width:90}">班级</th>
+        <th lay-data="{field:'class_id',width:90,sort: true}">班级</th>
         <th lay-data="{field:'courses_name',sort: true,width:160}">课程</th>
         <th lay-data="{field:'user_name',width:160}">授课老师</th>
-        <th lay-data="{field:'role_name',width:160}">用户角色</th>
+        <th lay-data="{field:'departments_name',width:160}">所属院系</th>
         <th lay-data="{title:'操作', toolbar: '#barDemo'}"></th>
     </tr>
     </thead>

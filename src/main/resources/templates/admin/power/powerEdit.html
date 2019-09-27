@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<style>
+    input {
+        width: 200px;
+        height: 33px;
+        line-height: 33px;
+        padding: 0 7px;
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        margin-bottom: -2px;
+        outline: none;
+    }
+</style>
+<body>
+<form action="" class="layui-form" method="post"   >
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限编号</label>
+        <div class="layui-input-block">
+            <input type="text" name="power_Id" id="power_Id"  disabled="disabled" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="power_Name" id="power_Name"    >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="power_url" id="power_url"   >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开关</label>
+        <div class="layui-input-block"  id="power_stateBut">
+            <input type="checkbox"  name="power_state"  id="power_state"  lay-skin="switch" lay-text="启用|禁用" lay-filter="lockDemo">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">上级功能</label>
+        <div class="layui-input-block">
+            <input type="text" id="power_parentid" lay-filter="tree" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-block">
+            <input type="text" name="sort" id="sort" >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label  class="layui-form-label">请填写描述</label>
+        <div class="layui-input-block">
+            <textarea name="" placeholder="请输入内容" class="layui-textarea" describe="describe" id="describe" style="width: 250px"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="demo1">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<script>
+    var state = 0 ;
+    var flage = 0;
+    var form
+
+    layui.use(['form'], function () {
+         form = layui.form;
+        $ = layui.jquery;
+        layer=layui.layer;
+        form.render();
+        var state
+        //监听提交
+
+        function testName(power_Name){
+            var result = /^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$/;
+            if (!result.test(power_Name)){
+                layer.alert('权限名称不能有特殊字符')
+                return  false;
+             }
+            return  true;
+        }
+
+        function testSort(sort){
+            var result = /^[1-9]\d*$/;
+            if (!result.test(sort)){
+                layer.alert('排序必须为数字')
+                return  false;
+            }
+            return  true;
+        }
+
+        function testDescribe(describe){
+            var regex = /^[\u4e00-\u9fa5]{4,}$/;
+            if (!regex.test(sort)){
+                layer.alert('描述至少四个汉字')
+                return  false;
+            }
+            return  true;
+        }
+
+        form.on('submit(demo1)', function(data){
+            power_pid = $("#power_parentid").val();
+            var flag = $("#power_state")[0].checked;
+
+            var sumbitFlag = false;
+            var power_Name = $("#power_Name").val();
+            var sort = $("#sort").val();
+            var describe = $("#describe").val();
+            if (testName(power_Name)) {
+                if (testSort(sort)) {
+                    if (testDescribe(describe)){
+                        sumbitFlag = true;
+                    }
+                }
+                sumbitFlag = false;
+            }else {
+                sumbitFlag = false;
+            }
+            console.log(sumbitFlag)
+
+            if (flag){
+                state = 1;
+            } else {
+                state = 2;
+            }
+            if (sumbitFlag) {
+                $.ajax({
+                    url:'/powerBoot/updatePower',
+                    method:'post',
+                    data:{
+                        "power_Id":data.field.power_Id,
+                        "power_Name":data.field.power_Name,
+                        "power_url":data.field.power_url,
+                        "power_parentid":power_pid,
+                        "power_state":state,
+                        "sort":data.field.sort,
+                        "describe":$("#describe").val()
+                    },
+                    dataType:'JSON',
+                    success:function(res){
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.location.reload(); //刷新父页面
+                        parent.layer.close(index);
+                    },
+                    error:function (data) {
+                    }
+                }) ;
+            }
+           return false;   
+        });
+    });
+
+    layui.config({
+        base: '../static/layui/'
+    }).extend({
+        treeSelect: "treeSelect"
+    }).use(['treeSelect', 'form', 'layer'], function () {
+        var treeSelect = layui.treeSelect;
+        treeSelect.render({
+            // 选择器
+            elem: '#power_parentid',
+            // 数据
+            data: '/powerBoot/queryPowerSelected',
+            // 异步加载方式：get/post，默认get
+            type: 'get',
+            // 占位符
+            placeholder: '选择父亲节点',
+            // 是否开启搜索功能：true/false，默认false
+            search: true,
+            // 一些可定制的样式
+            style: {
+                folder: {
+                    enable: true
+                },
+                line: {
+                    enable: true
+                }
+            },
+            // 点击回调
+            click: function(d){
+                console.log(d);
+            },
+            // 加载完成后的回调函数
+            success: function (d) {
+                treeSelect.refresh('tree');
+                form.render();
+            }
+        });
+
+    });
+
+
+</script>
+
+
+</body>
+</html>

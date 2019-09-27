@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface PowerInterface {
+public interface PowerService {
     List<Power> queryPermissionsAll(Paging paging);
     String queryPowerCount();
     int deletePower(String power_id);
@@ -16,6 +16,10 @@ public interface PowerInterface {
     List<Power> fuzzPowerSize(String p);
     List<Map<String, Object>> queryRolePower(Integer user_id);
     boolean insertPower(Power P);
-    boolean updaePowerState(Power p);
+    boolean updatePowerState(Power p);
+    boolean updateChilderPowerState(Power p);
     List<Power> queryTreePower();
+    List<Power> queryPowerAll(String key);
+    int deleteChilderPower(String power_id);
+    List<Map<String, Object>> queryPowerSelected();
 }

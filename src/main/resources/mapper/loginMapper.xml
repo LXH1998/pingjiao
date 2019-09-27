@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohua.springbootpingjiao.mapper.LoginMapper">
+    <resultMap id="UserResultMap" type="com.xiaohua.springbootpingjiao.entity.User">
+        <id property="user_Id" column="user_id"></id>
+        <result property="user_Name" column="user_name"></result>
+        <result property="user_Sex" column="user_sex"></result>
+        <result property="user_Account" column="user_account"></result>
+        <result property="user_Password" column="user_password"></result>
+        <result property="departments_Id" column="departments_id"></result>
+        <result property="class_Id" column="class_id"></result>
+        <result property="user_state" column="user_state"></result>
+    </resultMap>
+    <select id="loginUser" resultMap="UserResultMap" parameterType="com.xiaohua.springbootpingjiao.entity.User">
+        select * from user where user_Account=#{user_Account} and user_Password = #{user_Password};
+    </select>
+</mapper>

@@ -3,7 +3,7 @@ package com.xiaohua.springbootpingjiao.service.impl;
 import com.xiaohua.springbootpingjiao.entity.Paging;
 import com.xiaohua.springbootpingjiao.entity.Power;
 import com.xiaohua.springbootpingjiao.mapper.PowerMapper;
-import com.xiaohua.springbootpingjiao.service.PowerInterface;
+import com.xiaohua.springbootpingjiao.service.PowerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @Description :
  */
 @Service
-public class PowerServiceImpl  implements PowerInterface {
+public class PowerServiceImpl  implements PowerService {
     @Autowired
     private PowerMapper powerMapper;
 
@@ -51,14 +51,29 @@ public class PowerServiceImpl  implements PowerInterface {
     * @Description 修改权限状态
     */
     @Override
-    public boolean updaePowerState(Power p) {
-        int result = powerMapper.updaePowerState(p);
+    public boolean updatePowerState(Power p) {
+        int result = powerMapper.updatePowerState(p);
         if (result>0){
             return  true;
         }
         return false;
     }
 
+    /**
+     * @Author xiaoyi
+     * @Return
+     * @Date 2019/9/18 14:48
+     * @param
+     * @Description 修改父亲节点下的权限状态
+     */
+    @Override
+    public boolean updateChilderPowerState(Power p) {
+        int result = powerMapper.updateChilderPowerState(p);
+        if (result>0){
+            return  true;
+        }
+        return false;
+    }
 
     /**
     * @Author xiaoyi
@@ -84,6 +99,14 @@ public class PowerServiceImpl  implements PowerInterface {
         List<Power> list = powerMapper.queryTreePower();
         return  list;
     }
+
+    @Override
+    public List<Power> queryPowerAll(String key) {
+        List<Power> list = powerMapper.queryPowerAll(key);
+        return  list;
+    }
+
+
 
 
     /**
@@ -122,6 +145,42 @@ public class PowerServiceImpl  implements PowerInterface {
             result.add(map);
         });
 
+        return result;
+    }
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/9/24 22:08
+    * @param
+    * @Description 查询所有权限用于下拉框
+    */
+    @Override
+    public List<Map<String, Object>> queryPowerSelected() {
+        List<Power> list = powerMapper.queryPowerSelected();
+        return selectTree(0, list);
+    }
+
+    public List<Map<String, Object>> selectTree(Integer pid, List<Power> list){
+        List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+        // 1.边界条件
+        List<Power> childList = list.stream().filter(item -> item.getPower_parentid().intValue()==pid).collect(Collectors.toList());
+        // 3.返回段
+        if(childList.isEmpty()){ return result;}
+
+        // 2.前进段
+        childList.stream().forEach(item->{
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", item.getPower_Id());
+            map.put("name", item.getPower_Name());
+            map.put("parenid", item.getPower_parentid());
+//            map.put("url", item.getPower_url());
+            map.put("checked", "true");
+            List<Map<String, Object>> childs = selectTree(item.getPower_Id(), list);
+            if(!childs.isEmpty()){
+                map.put("children", childs);
+            }
+            result.add(map);
+        });
 
         return result;
     }
@@ -165,17 +224,6 @@ public class PowerServiceImpl  implements PowerInterface {
     /**
     * @Author xiaoyi
     * @Return
-    * @Date 2019/9/15 13:47
-    * @param power_id 权限ID
-    * @Description  删除权限
-    */
-    @Override
-    public int deletePower(String power_id) {
-        return powerMapper.deletePower(power_id) ;
-    }
-    /**
-    * @Author xiaoyi
-    * @Return
     * @Date 2019/9/16 20:45
     * @param power 权限属性
     * @Description 修改权限
@@ -184,4 +232,32 @@ public class PowerServiceImpl  implements PowerInterface {
     public int updaePower(Power power) {
         return powerMapper.updaePower(power);
     }
+
+
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/9/24 16:43
+    * @param
+    * @Description 删除某节点的所有子节点
+    */
+    @Override
+    public int deleteChilderPower(String power_id) {
+        return powerMapper.deleteChilderPower(power_id);
+    }
+
+
+
+    /**
+     * @Author xiaoyi
+     * @Return
+     * @Date 2019/9/15 13:47
+     * @param power_id 权限ID
+     * @Description  删除叶子节点权限
+     */
+    @Override
+    public int deletePower(String power_id) {
+        return powerMapper.deletePower(power_id) ;
+    }
+
 }
