@@ -36,20 +36,26 @@
     <div class="box png">
 		<div class="logo png" style="text-align: center"><i  class="web-font" style="font-size: 40px; text-align: center;color: #009688" >在线评教系统</i></div>
 		<div class="input">
-
-			<div class="log">
-				<div class="name">
+			<form class="layui-form" action="">
+			<div class="log" style="position: relative; top: -20px">
+				<div class="name" >
 					<label>用户名</label><input type="text" class="text" id="name" placeholder="用户名" name="value_1" tabindex="1">
 				</div>
 				<div class="pwd">
 					<label>密　码</label><input type="password" class="text" id="password" placeholder="密码" name="value_2" tabindex="2">
-					<input type="button" class="submit" tabindex="3" value="登录" id="sumbit">
+					<div class="layui-form-item" style="position: relative;top: 10px;width: 300px">
+						<label class="layui-form-label">滑动验证</label>
+						<div class="layui-input-block">
+							<div id="slider" ></div>
+						</div>
+					</div>
+					<input type="button" class="submit" tabindex="3" value="登录" id="sumbit" style="position: relative; top: -20px">
 					<div class="check"></div>
 				</div>
 				<div class="tip"></div>
 			</div>
-
-		</div>
+			</form>
+		   </div>
 	</div>
 
     <div class="air-balloon ab-1 png"></div>
@@ -73,27 +79,78 @@
 <p>第三组的登录界面</p>
 </div>
 <script type="text/javascript">
-	var flag
-	$("#sumbit").click(function() {
+	layui.config({
+		base: '../static/layui/'
+	}).use(['sliderVerify', 'jquery', 'form'], function() {
+		var sliderVerify = layui.sliderVerify,
+		form = layui.form;
+		var flag = false;
+		var sumbitFlag = false;
+		layer=layui.layer;
+		 var slider = sliderVerify.render({
+			elem: '#slider',
+			onOk: function () {//当验证通过回调
+				layer.msg("滑块验证通过");
+			}
+		})
 
-			$.ajax({
-				type: "post"
-				,url: "/login/validation"
-				,data: {
-					"name": $("#name").val(),
-					"password":$("#password").val()
+			function testName(power_Name){
+				var result = /^\d{4,}$/;
+				if (!result.test(power_Name)){
+					layer.alert('用户名请输入4位的数字')
+					return  false;
 				}
-				,success:function (res) {
-					flag = res.msg;
-					if (flag) {
-						console.log("22")
-						window.location.href = "/login/goIndex"
-					}else {
-						console.log("登录失败")
+				return  true;
+			}
+			function testPassWorld(passWorld){
+				var result = /^^[\d\w]{5,}$/;
+				if (!result.test(passWorld)){
+					layer.alert('请输入至少数字、字母或组合密码')
+					return  false;
+				}
+				return  true;
+			}
+
+			$("#sumbit").click(function() {
+				var userName = $("#name").val();
+				var passWorld = $("#password").val()
+				if (testName(userName)) {
+					if (testPassWorld(passWorld)) {
+						if (slider.isOk()) {
+							sumbitFlag = true;
+						}else{
+							layer.msg("请先通过滑块验证");
+						}
 					}
 				}
+				if (sumbitFlag) {
+					$.ajax({
+						type: "post"
+						,url: "/login/validation"
+						,data: {
+							"name": $("#name").val(),
+							"password":$("#password").val()
+						}
+						,success:function (res) {
+							flag = res.msg;
+							if (flag == "true") {
+								window.location.href = "/login/goIndex"
+							}else {
+								layer.msg("用户名或者密码错误")
+							}
+						}
+					})
+				}
 			})
+
 	})
+
+
+
+
+
+
+
 
 
 </script>

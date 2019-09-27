@@ -108,7 +108,7 @@
 
 <!-- 查询角色的权限-->
     <select id="queryRolePower" parameterType="Integer" resultMap="permissionsResultmap">
-        SELECT p.power_id,power_name,power_url,power_parentid,p.power_state  FROM USER u ,userrole ur,rolepower rp,POWER p
+        SELECT distinct  p.power_id,power_name,power_url,power_parentid,p.power_state  FROM USER u ,userrole ur,rolepower rp,POWER p
                 WHERE u.`user_id`=ur.`user_id`
                  AND ur.`role_id`=rp.`role_id`
                  AND rp.`power_id`=p.`power_id`

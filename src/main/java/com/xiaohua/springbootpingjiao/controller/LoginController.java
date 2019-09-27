@@ -1,12 +1,17 @@
 package com.xiaohua.springbootpingjiao.controller;
 
+import com.xiaohua.springbootpingjiao.entity.ResponseWrapper;
 import com.xiaohua.springbootpingjiao.entity.User;
 import com.xiaohua.springbootpingjiao.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,6 +75,22 @@ public class LoginController {
         return  map;
     }
 
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/9/27 11:47
+    * @param
+    * @Description 登出
+    */
+    @RequestMapping("loginOut")
+    @ResponseBody
+    public ResponseWrapper loginOut(){
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
+        HttpSession  session = request.getSession();
+        session.invalidate();
+        return ResponseWrapper.loginOutSuccess();
+    }
 
 }
 
