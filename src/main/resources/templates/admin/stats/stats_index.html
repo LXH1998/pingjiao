@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>在线评教系统---统计分析管理模块</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<style>
+    html, body {
+        height: 100%;
+        margin:0;padding:0;
+        font-size: 12px;
+    }
+    .layui-top-div{
+        width: 300px;
+        height: 100px;
+        margin-left: 40px;
+        background-color: #1E9FFF;
+    }
+    #top{
+        margin-top: 20px;
+    }
+</style>
+<body>
+<div class="layui-container" id="top">
+    <div class="layui-row layui-col-space30">
+        <div class="layui-col-md4" >
+            <div class="layui-top-div" >栏目1</div>
+        </div>
+        <div class="layui-col-md4">
+            <div  class="layui-top-div" >栏目2</div>
+        </div>
+        <div class="layui-col-md4">
+            <div  class="layui-top-div" >栏目3</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -112,7 +112,7 @@
                 WHERE u.`user_id`=ur.`user_id`
                  AND ur.`role_id`=rp.`role_id`
                  AND rp.`power_id`=p.`power_id`
-                 AND u.user_id=#{user_id} And p.power_state!=0 ORDER BY p.power_id, p.sort
+                 AND u.user_id=#{user_id} And p.power_state!=0 ORDER BY  p.sort
     </select>
 
 <!--添加权限-->
