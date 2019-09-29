@@ -34,4 +34,9 @@ public class TargetServiceImpl implements TargetService {
     public List<Options> selectTargetOptions(int target_id) {
         return targetMapper.selectTargetOptions(target_id);
     }
+
+    @Override
+    public int insertTargetCategory(String target_Name, Float target_Weight) {
+        return targetMapper.insertTargetCategory(target_Name,target_Weight);
+    }
 }

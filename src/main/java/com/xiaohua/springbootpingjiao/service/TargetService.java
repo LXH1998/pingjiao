@@ -20,4 +20,7 @@ public interface TargetService {
 
 //    查询指定指标的选项
     List<Options> selectTargetOptions(int target_id);
+
+//    插入指标类别
+    int insertTargetCategory(String target_Name,Float target_Weight);
 }

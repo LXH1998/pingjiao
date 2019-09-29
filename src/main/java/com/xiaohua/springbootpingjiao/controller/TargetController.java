@@ -72,4 +72,21 @@ public class TargetController {
         result.put("options",options);
         return result;
     }
+
+
+    /**
+     * 插入指标类别
+     */
+    @ResponseBody
+    @RequestMapping("/addTargetCategory")
+    public Map insertTargetCategory(String target_Name,Float target_Weight){
+        Map result = new HashMap();
+        int count = targetService.insertTargetCategory(target_Name,target_Weight);
+        if (count!=0){
+            result.put("message","操作成功");
+        }else {
+            result.put("message","操作失败");
+        }
+        return result;
+    }
 }

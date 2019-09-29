@@ -20,12 +20,15 @@
 
     }
 </style>
+
 <script type="text/javascript">
+    //声明一个数组，用于指标选项
+    var arrayBox = new Array('A','B','C','D','E','F','G','H','I','J','K','L')
     // zTree的设置
     var setting = {
-        check:{
-            enable:true
-        },
+        // check:{
+        //     enable:true
+        // },
         data:{
             simpleData:{
                 enable:true
@@ -43,8 +46,23 @@
         // var param = {"role_ID":1};
 
         $.post(url,function (data) {
-            //    调用初始化方法
-            initzTree(data);
+                //    调用初始化zTree的方法
+                initzTree(data);
+
+
+                $('#targetManagement').append('        <div style="width: 100%">\n' +
+                    '            <div class="layui-form-item" style="padding-left: 70px;border-bottom: #4E5465 1px solid">\n' +
+                    '                <label class="layui-form-label">指标类别:</label>\n' +
+                    '                <div class="layui-input-inline">\n' +
+                    '                    <input type="text" name="targetName" lay-verify="required" class="layui-input">\n' +
+                    '                </div>\n' +
+                    '                <label class="layui-form-label">权重:</label>\n' +
+                    '                <div class="layui-input-inline">\n' +
+                    '                    <input type="text" name="targetWeight" lay-verify="required" class="layui-input">\n' +
+                    '                </div>\n' +
+                    '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" style="margin-top: 4px" onclick="addTargetCategory()">添加</button>\n' +
+                    '            </div>')
+
         },"json");
     });
 
@@ -62,27 +80,90 @@
     // treeNode----被点击的节点 JSON 数据对象
     function zTreeOnClick(event, treeId, treeNode) {
         // console.log(treeNode)
+        // alert(treeNode.targetName)
         $.ajax({
             url:"/TargetManagement/targetOptions",
             data:{
                 target_id:treeNode.id
             },
             success:function (res) {
+                //动态添加元素之前先全部清除
+                $("#targetManagement").empty()
+                // alert(treeNode.leafs)
                 // $("[name=optionA]").val(res.options[0].options_Content);
                 // $("[name=optionAWeight]").val(res.options[0].options_Weight);
-                $()
+                
+                //右侧添加上半部div
+                $("#targetManagement").append('        <div style="width: 100%">\n' +
+                    '            <div class="layui-form-item" style="padding-left: 70px">\n' +
+                    '                <label class="layui-form-label">指标:</label>\n' +
+                    '                <div class="layui-input-inline">\n' +
+                    '                    <input type="text" name="targetName" lay-verify="required" class="layui-input" value="'+treeNode.targetName+'">\n' +
+                    '                </div>\n' +
+                    '                <label class="layui-form-label">权重:</label>\n' +
+                    '                <div class="layui-input-inline">\n' +
+                    '                    <input type="text" name="targetWeight" lay-verify="required" class="layui-input" value="'+treeNode.targetWeight+'">\n' +
+                    '                </div>\n' +
+                    '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>\n' +
+                    '            </div>\n' +
+                    '\n' +
+                    '            <div style="width:400px;margin: 0 auto">\n' +
+                    '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加下级指标</button>\n' +
+                    '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>\n' +
+                    '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存修改</button>\n' +
+                    '            </div>\n' +
+                    '        </div>');
+                
+
+                //右侧下半部分div
+                if (treeNode.leafs==-1){
+                    $('#targetManagement').append('        <div style="width:100%;height:325px;">\n' +
+                        '            <fieldset class="layui-elem-field site-demo-button" style="margin-top: 25px;">\n' +
+                        '                <legend>指标维护</legend>\n' +
+                        '                <div  style="margin-bottom: 10px;">\n' +
+                        '                    <button type="button" class="layui-btn">添加选项</button>\n' +
+                        '                </div>\n' +
+                        '                <form id="addOptions" class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">\n' +
+                        '                </form>\n' +
+                        '            </fieldset>\n' +
+                        '        </div>')
+                    if (res.options.length!=0){
+                        for (var i=0;i<res.options.length;i++){
+                            $('#addOptions').append('<div class="layui-form-item">\n' +
+                                '                        <div class="layui-inline">\n' +
+                                '                            <label class="layui-form-label">选项'+arrayBox[i]+':</label>\n' +
+                                '                            <div class="layui-input-inline" style="width: 400px">\n' +
+                                '                                <input type="hidden" name="id" value="'+res.options[i].options_Id+'">\n' +
+                                '                                <input type="text" name="optionA" lay-verify="required" class="layui-input" readonly="true" value="'+res.options[i].options_Content+'">\n' +
+                                '                            </div>\n' +
+                                '                        </div>\n' +
+                                '                        <div class="layui-inline">\n' +
+                                '                            <div class="layui-input-inline" style="width: 50px">\n' +
+                                '                                <input type="text" name="optionAWeight" lay-verify="required" class="layui-input" readonly="true" style="padding-left:0px;text-align: center" value="'+res.options[i].options_Weight+'">\n' +
+                                '                            </div>\n' +
+                                '                        </div>\n' +
+                                '                        <div class="layui-inline">\n' +
+                                '                            <div class="layui-input-inline" style="width: 50px">\n' +
+                                '                                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>\n' +
+                                '                            </div>\n' +
+                                '                        </div>\n' +
+                                '                    </div>')
+                        }
+                    }
+
+                }
             }
         })
-        $("[name=targetName]").val(treeNode.targetName);
-        $("[name=targetWeight]").val(treeNode.targetWeight);
+        // $("[name=targetName]").val(treeNode.targetName);
+        // $("[name=targetWeight]").val(treeNode.targetWeight);
     };
 </script>
 <body>
-<div style="width: 1120px;height: 435px;background-color:red;">
-    <div style="width: 19%;height: 435px;background-color:greenyellow;float: left">
+<div style="width: 1120px;height: 435px;">
+    <div style="width: 18%;height: 435px;float: left;border-right: #4E5465 1px solid">
         <ul id="tree" class="ztree" style="height:435px; overflow:auto;"></ul>
     </div>
-    <div id="targetM" style="width: 81%;height: 100%; background-color: #00F7DE;float: left">
+    <div id="targetManagement" style="width: 81%;height: 100%; float: left">
         <!--<div style="background-color:#007DDB;width: 100%">-->
             <!--<div class="layui-form-item" style="padding-left: 70px">-->
                 <!--<label class="layui-form-label">指标名称:</label>-->
@@ -188,5 +269,36 @@
     </div>
 </div>
 
+
+<script type="text/javascript">
+    //添加指标类别
+    function addTargetCategory() {
+        var targetName = $("[name=targetName]").val();
+        var targetWeight = $("[name=targetWeight]").val();
+        if (targetWeight.replace(/(^\s*)|(\s*$)/g, "") == ""){
+            targetWeight = 0;
+        }
+
+        if (!(targetName.replace(/(^\s*)|(\s*$)/g, "") == "")){
+            $.ajax({
+                url:'/TargetManagement/addTargetCategory',
+                data:{
+                    target_Name:targetName,
+                    target_Weight:targetWeight
+                },
+                success:function (res) {
+                    layer.msg(res.message);
+                },
+                error:function () {
+                    layer.msg("异常")
+                }
+            })
+        }
+        // alert(targetName);
+        // alert(targetWeight)
+        // console.log(targetWeight)
+    }
+
+</script>
 </body>
 </html>

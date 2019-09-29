@@ -18,11 +18,20 @@
 
     <!--查询所有指标信息-->
     <select id="selectAllTarget" resultMap="targetResultMap">
-        select * from target;
+        select * from target where hides=1;
     </select>
 
     <!--根据指标id查询该指标拥有的选项-->
     <select id="selectTargetOptions" resultMap="optionResultMap">
         select o.*,tos.* from options o join targetoptions tos on o.options_id =  tos.options_id where tos.target_id=#{target_id}
     </select>
+
+    <!--插入指标类别（查看数据库是否存在完全相同指标类别）-->
+    <select id="">
+
+    </select>
+    <!--插入指标类别（当没有指标类别时）-->
+    <insert id="insertTargetCategory">
+        insert into target(target_name,target_weight,parent_id,leafs_id) value (#{target_Name},#{target_Weight},0,0)
+    </insert>
 </mapper>
