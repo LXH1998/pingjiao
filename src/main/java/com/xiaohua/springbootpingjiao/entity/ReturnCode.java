@@ -10,7 +10,9 @@ public enum ReturnCode {
     ERROR("0001","失败"),
     DELETESUCCES("0002","删除成功"),
     UPDATASUCCES("0003","修改成功"),
-    INSERTSUCCES("0004","插入成功");
+    INSERTSUCCES("0004","插入成功"),
+    LOGINERROR("0005","登录失败"),
+    LOGINOUT("0006","登出成功");
 
 
     private String code;

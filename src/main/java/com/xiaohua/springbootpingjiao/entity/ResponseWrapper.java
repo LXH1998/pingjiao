@@ -16,6 +16,20 @@ public class ResponseWrapper {
     /**返回数据*/
     private Object data;
 
+    /**
+     * @Author xiaoyi
+     * @Return
+     * @Date 2019/9/17 10:15
+     * @param
+     * @Description  退出系统
+     */
+    public static ResponseWrapper loginOutSuccess() {
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCount(0);
+        responseWrapper.setCode(ReturnCode.LOGINOUT.getCode());
+        responseWrapper.setMsg(ReturnCode.LOGINOUT.getMsg());
+        return responseWrapper;
+    }
 
     /**
      * @Author xiaoyi
@@ -89,6 +103,22 @@ public class ResponseWrapper {
         responseWrapper.setCount(0);
         responseWrapper.setCode(ReturnCode.ERROR.getCode());
         responseWrapper.setMsg(ReturnCode.ERROR.getMsg());
+        return  responseWrapper;
+    }
+
+
+    /**
+     * @Author xiaoyi
+     * @Return
+     * @Date 2019/9/15 13:55
+     * @param
+     * @Description 登录失败
+     */
+    public static ResponseWrapper loginError(){
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCount(0);
+        responseWrapper.setCode(ReturnCode.LOGINERROR.getCode());
+        responseWrapper.setMsg(ReturnCode.LOGINERROR.getMsg());
         return  responseWrapper;
     }
 

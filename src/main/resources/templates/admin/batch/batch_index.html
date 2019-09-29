@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>批次管理</title>
+<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="demoTable"  >
+        批次:
+        <!--lay-search-->
+        <div class="layui-input-inline">
+            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入批次名称" class="layui-input" id="batch">
+        </div>
+        <button type="button" class="layui-btn"   id="add">
+            <i class="layui-icon">&#xe608;</i> 添加批次
+        </button>
+    </div>
+</form>
+<table id="demo" lay-filter="test"></table>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-xs" lay-event="detail">授课详情</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.auth > 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
+</script>
+<style>
+
+    /* 防止下拉框的下拉列表被隐藏---必须设置--- */
+    .layui-table-cell {            overflow: visible !important;        }
+    /* 使得下拉框与单元格刚好合适 */
+    td .layui-form-select{
+        margin-top: -10px;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+</style>
+<script type="text/javascript">
+    var course_Name;
+    var teach_id;
+    layui.use(['form', 'layedit', 'laydate','table','jquery'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,$=layui.jquery
+            , table = layui.table;
+
+
+        //数据表表头
+        table.render({
+            elem: '#demo'
+            // ,height: 400
+            ,url: '/batch/listDate' //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                [ //表头
+                    {field: 'batch_Id', templet: '#xuhao',title: '批次ID', width:'30%', sort: true, fixed: 'left', align: 'center'},
+                    // {field: 'electGxmc', title: '下拉框', width: '20%',align: 'center',templet:'#selectGxmc'},
+                    {field: 'batch_Name', title: '批次名', width: '50%',align: 'center'}
+                    ,{title: '操作', width: '19%', align: 'center', toolbar: '#barDemo'}
+                ]
+            ]
+        });
+
+        //监听工具条
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            console.log(data)
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+            $("#id").html("填充代码");
+            // console.log(tr[0].innerHTML)  获取DOM结构
+
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+                //iframe层-父子操作
+                // layer.open({
+                //     type: 2,
+                //     title:'已有权限',
+                //     area: ['700px', '450px'],
+                //     fixed: false, //不固定
+                //     maxmin: true,
+                //     content: '/course/teach',
+                //     success:function (layero,index) {
+                //         var iframe = window['layui-layer-iframe' + index];
+                //         iframe.child(data)
+                //     }
+                // });
+                location.href = '/course/teach'
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    //向服务端发送删除指令
+                    $.ajax({
+                        url:'/course/deleteOne',
+                        type:'post',
+                        data:{
+                            courses_Id: data.courses_Id
+                        },
+                        success:function (res) {
+                            if (res.result=="操作成功"){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.close(index);
+                                layer.msg(res.result)
+                            } else if (res.result=="操作失败") {
+                                layer.msg(res.result);
+                            }
+                        },
+                        error:function () {
+                            layer.msg("异常");
+                        }
+                    })
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                console.log(data)
+                courses_Name = data.courses_Name;
+                teach_id = data.teach_id
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['450px', '360px'],
+                    shade: 0.8,
+                    closeBtn: 1,
+                    shadeClose: true,
+                    // time:timee,
+                    content: '/course/editTeach',
+                    end: function(){ //此处用于演示
+
+                        location.reload();
+                    }
+                });
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            }
+        });
+        //添加页面跳出
+        $("#add").click(function(){
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['450px', '360px'],
+                shade: 0.8,
+                closeBtn: 1,
+                shadeClose: true,
+                content: '/course/addTeach',
+                end: function(){ //此处用于演示
+                    location.reload();
+                }
+            });
+        });
+        //搜索框
+        $("#batch").bind("input propertychange",function(){
+
+           console.log()
+            // if ($(this).val()=="") {
+            //
+            //     table.reload('demo', {
+            //         page: {
+            //             curr: 1 //重新从第 1 页开始
+            //         },
+            //         url:"/batch/listDate"
+            //         ,where: {
+            //             class_Id:$(this).val(),
+            //         }
+            //     }, 'data');
+            //     //指定院系的模糊查询
+            // }
+            console.log($(this).val())
+        })
+
+        // $('.demoTable .layui-btn').on('click', function(){
+        //     var type = $(this).data('type');
+        //     active[type] ? active[type].call(this) : '';
+        // });
+
+    });
+
+</script>
+</body>
+</html>
