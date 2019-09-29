@@ -15,7 +15,7 @@
         <div class="layui-input-inline">
             <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入批次名称" class="layui-input" id="batch">
         </div>
-        <button type="button" class="layui-btn"   id="add">
+        <button type="button" class="layui-btn layui-btn-disabled" disabled  id="add">
             <i class="layui-icon">&#xe608;</i> 添加批次
         </button>
     </div>
@@ -52,8 +52,15 @@
             ,laydate = layui.laydate
             ,$=layui.jquery
             , table = layui.table;
-
-
+        //重构函数
+        function batchRelode(){
+            table.reload('demo', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                url:"/batch/listDate"
+            }, 'data');
+        }
         //数据表表头
         table.render({
             elem: '#demo'
@@ -145,36 +152,73 @@
         });
         //添加页面跳出
         $("#add").click(function(){
+            var batchName = $("#batch").val()
             layer.open({
-                type: 2,
-                title: false,
-                area: ['450px', '360px'],
-                shade: 0.8,
-                closeBtn: 1,
-                shadeClose: true,
-                content: '/course/addTeach',
-                end: function(){ //此处用于演示
-                    location.reload();
+                content: "确定要新增“"+batchName+"”批次吗？"
+                ,btn: ['冲冲冲', '那没事了']
+                ,btnAlign:'c'
+                ,yes: function(index, layero){
+                    console.log("111")
+                    $.ajax({
+                        url:'/batch/insertBatch',
+                        type:'post',
+                        data:{
+                            batch_Name: batchName
+                        },
+                        success:function (res) {
+                            if (res.result=="操作成功"){
+                                layer.close(index);
+                                layer.msg(res.result)
+                            } else if (res.result=="操作失败") {
+                                layer.msg(res.result);
+                            }else {
+                                layer.msg(res.result);
+                            }
+                        },
+                        error:function () {
+                            layer.msg("异常");
+                        }
+                    })
+                    layer.close(index)
+                    batchRelode();
+                }
+                ,btn2: function(index, layero){
+                    //清空输入框
+                    $("#batch").val("")
+                    //重载表格
+                    batchRelode();
+                    //return false 开启该代码可禁止点击该按钮关闭
                 }
             });
+
         });
         //搜索框
         $("#batch").bind("input propertychange",function(){
-
            console.log()
-            // if ($(this).val()=="") {
-            //
-            //     table.reload('demo', {
-            //         page: {
-            //             curr: 1 //重新从第 1 页开始
-            //         },
-            //         url:"/batch/listDate"
-            //         ,where: {
-            //             class_Id:$(this).val(),
-            //         }
-            //     }, 'data');
-            //     //指定院系的模糊查询
-            // }
+            if ($(this).val()=="") {
+                $("#add").prop("disabled",true);
+                $("#add").addClass("layui-btn-disabled");
+
+                table.reload('demo', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:"/batch/listDate"
+                }, 'data');
+                //指定院系的模糊查询
+            }else {
+                $("#add").removeClass("layui-btn-disabled");
+                $("#add").prop("disabled",false);
+                table.reload('demo', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:"/batch/SelectBatchName"
+                    ,where: {
+                        batch_Name:$(this).val()
+                    }
+                }, 'data');
+            }
             console.log($(this).val())
         })
 

@@ -196,9 +196,10 @@ public class PowerController {
     public ResponseWrapper getTreeList(){
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
-        HttpSession  session = request.getSession();
-        int user_id = (int)session.getAttribute("user_id");
-        List<Map<String, Object>> data = service.queryRolePower(user_id);
+//        HttpSession  session = request.getSession();
+//        int user_id = (int)session.getAttribute("user_id");
+//        List<Map<String, Object>> data = service.queryRolePower(user_id);
+        List<Map<String, Object>> data = service.queryRolePower(16);
         return ResponseWrapper.queryPoewerSuccess(data,0);
     }
     /**
