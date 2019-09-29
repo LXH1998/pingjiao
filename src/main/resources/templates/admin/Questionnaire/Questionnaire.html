@@ -23,23 +23,23 @@
 <div class="layui-form-item">
     <label class="layui-form-label">问卷批次:</label>
     <div class="layui-input-inline">
-        <select  name="quiz2" id="xueyuan" lay-filter="college" lay-search>
+        <select  name="quiz2" id="pici" lay-filter="college" lay-search>
             <option value="">请选择批次</option>
         </select>
     </div>
 
     <label class="layui-form-label">角色:</label>
     <div class="layui-input-inline">
-        <select  name="quiz2" id="xueyuan1" lay-search>
+        <select  name="quiz2" id="jiaose" lay-filter="jiaose"  lay-search>
             <option value="">请选择角色</option>
         </select>
     </div>
     <div class="layui-inline">
         <label class="layui-form-label">问卷名称: </label>
         <div class="layui-input-inline">
-            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入问卷名称" class="layui-input" id="shoushuo">
+            <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入问卷名称" class="layui-input" id="shoushuo_input">
         </div>
-        <button type="button" class="layui-btn layui-btn-normal" id="a">   <i class="layui-icon">&#xe615;</i>搜索</button>
+        <button type="button" class="layui-btn layui-btn-normal" id="shoushu">   <i class="layui-icon">&#xe615;</i>搜索</button>
     </div>
     <button type="button" class="layui-btn"   id="add">
         <i class="layui-icon">&#xe608;</i> 新增问卷
@@ -57,13 +57,13 @@
 <table class="layui-hide" id="test" lay-filter="test"></table>
 
 
-<script type="text/html" id="toolbarDemo">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
-        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
-        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
-    </div>
-</script>
+<!--<script type="text/html" id="toolbarDemo">-->
+    <!--<div class="layui-btn-container">-->
+        <!--<button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>-->
+        <!--<button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>-->
+        <!--<button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>-->
+    <!--</div>-->
+<!--</script>-->
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
@@ -78,7 +78,8 @@
 </script>
 
 <script>
-
+var role_id
+var batch_id
     layui.use(['form', 'layedit', 'laydate','table','jquery', 'upload', 'layer'], function(){
         var form = layui.form
             ,layer = layui.layer
@@ -89,7 +90,7 @@
         table.render({
             elem: '#test'
             ,url:'/Questionnaire//QuestionnaireAll'
-            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+          //  ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
             ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
                 title: '提示'
                 ,layEvent: 'LAYTABLE_TIPS'
@@ -98,16 +99,31 @@
             ,title: '用户数据表'
             ,cols: [
                 [
-                 {title: '序号',templet: '#xuhao', width:100,sort: true,align:'center' }
+                 {field:'papers_id', title:'', width:2, edit: 'text' ,style:"display: none", }
+                ,{title: '序号',templet: '#xuhao', width:100,sort: true,align:'center' }
                 ,{field:'role_name', title:'角色', width:220, edit: 'text'}
                 ,{field:'batch_name', title:'批次', edit: 'text', sort: true }
                 ,{field:'papers_name', title:'问卷名称', edit: 'text',}
-                    ,{field:'batch_hide', title:'状态', edit: 'text',}
+                ,{field:'batch_hide', title:'状态', edit: 'text', width:200}
                 ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+
             ]
             ]
             ,page: true
         });
+        $('table.layui-table thead tr th:eq(0)').addClass('layui-hide');
+
+        $("#shoushu").click(function () {
+            table.reload('test', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                url:"/Questionnaire/selectQuestionnaireinName"
+                ,where: {
+                    papers_name:$("#shoushuo_input").val()
+                }
+            }, 'data');
+        })
 
         //头工具栏事件
         table.on('toolbar(test)', function(obj){
@@ -133,18 +149,91 @@
         });
 //下拉监听
         form.on('select(college)', function(data){
+            if (role_id!="") {
+                table.reload('test', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:"/Questionnaire/selectQuestionnaireinBR"
+                    ,where: {
+                        batch_id:data.value,
+                        role_id:role_id
+                    }
+                }, 'data');
+            }else {
 
-            console.log(data.value); //得到被选中的id
+                table.reload('test', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:"/Questionnaire/selectQuestionnaireinBatch"
+                    ,where: {
+                        batch_id:data.value
+                    }
+                }, 'data');
+            }
+
+            batch_id=data.value
+    //        console.log(data.value); //得到被选中的id
+        });
+        form.on('select(jiaose)', function(data){
+
+            if (batch_id!="") {
+                table.reload('test', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:"/Questionnaire/selectQuestionnaireinBR"
+                    ,where: {
+                        batch_id:batch_id,
+                        role_id:data.value
+                    }
+                }, 'data');
+
+            }else {
+                table.reload('test', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:"/Questionnaire/selectQuestionnaireinRoleid"
+                    ,where: {
+                        role_id:data.value
+                    }
+                }, 'data');
+            }
+
+
+          //  console.log(data.value); //得到被选中的id
+            role_id=data.value
         });
 
         //监听行工具事件
         table.on('tool(test)', function(obj){
+            console.log(obj)
             var data = obj.data;
-            //console.log(obj)
+            console.log(data)
+            console.log(data.papers_id)
             if(obj.event === 'del'){
                 layer.confirm('真的删除行么', function(index){
-                    obj.del();
-                    layer.close(index);
+                    $.ajax({
+                        type: "get",
+                        url:"/Questionnaire/deletePapers",
+                        data:{papers_Id:data.papers_id},
+                        success:function (e) {
+                            if (e==true) {
+                                obj.del();
+                                layer.close(index);
+                                layer.msg('删除成功', {icon: 1});
+                            }else {
+                                layer.msg('操作失败', {icon: 2});
+                            }
+                        },
+                        error:function () {
+                            layer.msg('操作失败', {icon: 2});
+                        }
+
+                    })
+
                 });
             } else if(obj.event === 'edit'){
                 layer.prompt({
@@ -158,6 +247,8 @@
                 });
             }
         });
+        
+        
 
         $.ajax({
             url: '/Questionnaire/selectbatch',
@@ -165,11 +256,24 @@
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index,item) {
-                    $('#xueyuan').append(new Option(item.batch_name,item.batch_id));// 下拉菜单里添加元素
+                    $('#pici').append(new Option(item.batch_name,item.batch_id));// 下拉菜单里添加元素
                 });
                 layui.form.render("select");
             }
         })
+
+        $.ajax({
+            url: '/Questionnaire/selectuser',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#jiaose').append(new Option(item.role_name,item.role_id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+      
 
 
     });
@@ -179,4 +283,9 @@
 
 
 </script>
+<style>
+    html{
+
+    }
+</style>
 </html>
