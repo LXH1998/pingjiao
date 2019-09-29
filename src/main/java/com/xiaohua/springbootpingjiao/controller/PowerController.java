@@ -194,12 +194,16 @@ public class PowerController {
     @ResponseBody
     @RequestMapping(value = "/menu")
     public ResponseWrapper getTreeList(){
+        int user_id;
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
-//        HttpSession  session = request.getSession();
-//        int user_id = (int)session.getAttribute("user_id");
-//        List<Map<String, Object>> data = service.queryRolePower(user_id);
-        List<Map<String, Object>> data = service.queryRolePower(16);
+        HttpSession  session = request.getSession();
+        if(session.getAttribute("user_id") != null){
+             user_id = (int)session.getAttribute("user_id");
+        } else {
+            return ResponseWrapper.loginError();
+        }
+        List<Map<String, Object>> data = service.queryRolePower(user_id);
         return ResponseWrapper.queryPoewerSuccess(data,0);
     }
     /**
