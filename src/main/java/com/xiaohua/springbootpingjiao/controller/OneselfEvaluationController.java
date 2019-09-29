@@ -26,32 +26,32 @@ public class OneselfEvaluationController {
     @RequestMapping("selectOneselfEvaluation")
     public Map selectOneselfEvaluation(int user_id){
         Map result = new HashMap();
-        List<HashMap> student = oneselfEvaluationService.selectOneselfEvaluation(user_id);
+        List<HashMap> users = oneselfEvaluationService.selectOneselfEvaluation(user_id);
         result.put("code",0);
         result.put("msg","");
-        result.put("count",student.size());
-        result.put("data",student);
+        result.put("count",users.size());
+        result.put("data",users);
         return result;
     }
 
-    @ResponseBody
-    @RequestMapping("selectBatchName")
-    public  Map selectBatchName(){
-        Map result = new HashMap();
-        List<Batch> batches = oneselfEvaluationService.selectBatchName();
-        result.put("data",batches);
-        return result;
-    }
+//    @ResponseBody
+//    @RequestMapping("selectBatchName")
+//    public  Map selectBatchName(){
+//        Map result = new HashMap();
+//        List<Batch> batches = oneselfEvaluationService.selectBatchName();
+//        result.put("data",batches);
+//        return result;
+//    }
 
     @ResponseBody
-    @RequestMapping("selectBatchIdStudentEvaluation")
+    @RequestMapping("selectBatchIdOneselfEvaluation")
     public Map selectBatchIdStudentEvaluation(int user_id,int batch_id){
         Map result = new HashMap();
-        List<HashMap> student = oneselfEvaluationService.selectBatchIdStudentEvaluation(user_id,batch_id);
+        List<HashMap> users = oneselfEvaluationService.selectBatchIdOneselfEvaluation(user_id,batch_id);
         result.put("code",0);
         result.put("msg","");
-        result.put("count",student.size());
-        result.put("data",student);
+        result.put("count",users.size());
+        result.put("data",users);
         return result;
     }
 }

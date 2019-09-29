@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface OneselfEvaluationService {
     List<HashMap> selectOneselfEvaluation(int user_id);
-    List<Batch> selectBatchName();
-    List<HashMap> selectBatchIdStudentEvaluation(int user_id,int batch_id);
+//    List<Batch> selectBatchName();
+    List<HashMap> selectBatchIdOneselfEvaluation(int user_id,int batch_id);
 }

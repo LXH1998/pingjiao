@@ -14,14 +14,14 @@ public class OneselfEvaluationServiceImpl implements OneselfEvaluationService{
     private OneselfEvaluationMapper oneselfEvaluationMapper;
 
     @Override
-    public List<HashMap> selectBatchIdStudentEvaluation(int user_id, int batch_id) {
-        return oneselfEvaluationMapper.selectBatchIdStudentEvaluation(user_id,batch_id);
+    public List<HashMap> selectBatchIdOneselfEvaluation(int user_id, int batch_id) {
+        return oneselfEvaluationMapper.selectBatchIdOneselfEvaluation(user_id,batch_id);
     }
 
-    @Override
-    public List<Batch> selectBatchName() {
-        return oneselfEvaluationMapper.selectBatchName();
-    }
+//    @Override
+//    public List<Batch> selectBatchName() {
+//        return oneselfEvaluationMapper.selectBatchName();
+//    }
 
     @Override
     public List<HashMap> selectOneselfEvaluation(int user_id) {
