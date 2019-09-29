@@ -23,7 +23,7 @@
 <div class="layui-form-item">
     <label class="layui-form-label">问卷批次:</label>
     <div class="layui-input-inline">
-        <select  name="quiz2" id="xueyuan" lay-search>
+        <select  name="quiz2" id="xueyuan" lay-filter="college" lay-search>
             <option value="">请选择批次</option>
         </select>
     </div>
@@ -102,6 +102,7 @@
                 ,{field:'role_name', title:'角色', width:220, edit: 'text'}
                 ,{field:'batch_name', title:'批次', edit: 'text', sort: true }
                 ,{field:'papers_name', title:'问卷名称', edit: 'text',}
+                    ,{field:'batch_hide', title:'状态', edit: 'text',}
                 ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
             ]
             ]
@@ -130,6 +131,11 @@
                     break;
             };
         });
+//下拉监听
+        form.on('select(college)', function(data){
+
+            console.log(data.value); //得到被选中的id
+        });
 
         //监听行工具事件
         table.on('tool(test)', function(obj){
@@ -154,12 +160,12 @@
         });
 
         $.ajax({
-            url: '/class/queryDepartments',
+            url: '/Questionnaire/selectbatch',
             dataType: 'json',
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index,item) {
-                    $('#xueyuan').append(new Option(item.departments_Name));// 下拉菜单里添加元素
+                    $('#xueyuan').append(new Option(item.batch_name,item.batch_id));// 下拉菜单里添加元素
                 });
                 layui.form.render("select");
             }

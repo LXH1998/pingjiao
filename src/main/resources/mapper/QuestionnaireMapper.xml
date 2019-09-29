@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.QuestionnaireMapper">
+
+    <!--查询问卷信息-->
     <select id="selectQuestionnaire" resultType="HashMap">
     select b.batch_name,b.batch_hide,p.papers_name,r.role_name from batch b
     left join papers p on b.batch_id=p.batch_id
     left join role r on p.role_id=r.role_id
     where oapers_visible=1 limit #{pages},#{limit}
-</select>
+   </select>
+    <!--分页-->
+    <select id="selectQuestionnaireCount" resultType="HashMap">
+    select b.batch_name,b.batch_hide,p.papers_name,r.role_name from batch b
+    left join papers p on b.batch_id=p.batch_id
+    left join role r on p.role_id=r.role_id
+    where oapers_visible=1
+   </select>
+
+
+    <!--查询批次-->
+    <select id="selectbatch" resultType="HashMap">
+      select batch_id,batch_name from batch
+   </select>
+    <!--查询角色-->
+    <!--<select id="selectbatch" resultType="HashMap">-->
+  <!--select role_id,role_name from role where role_state=1 and role_name!="管理员"-->
+   <!--</select>-->
+
 
 
 

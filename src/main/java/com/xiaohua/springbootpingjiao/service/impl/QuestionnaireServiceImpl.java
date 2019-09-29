@@ -14,7 +14,17 @@ public class QuestionnaireServiceImpl  implements QuestionnaireService {
     public QuestionnaireMapper QuestionnaireMapper;
 
     @Override
-    public List<HashMap> selectQuestionnaire(int pages, int limit) {
+    public List<HashMap<String, String>> selectbatch() {
+        return QuestionnaireMapper.selectbatch();
+    }
+
+    @Override
+    public List<HashMap<String, String>> selectQuestionnaireCount() {
+        return QuestionnaireMapper.selectQuestionnaireCount();
+    }
+
+    @Override
+    public List<HashMap<String,String>> selectQuestionnaire(int pages, int limit) {
         return QuestionnaireMapper.selectQuestionnaire(pages,limit);
     }
 }

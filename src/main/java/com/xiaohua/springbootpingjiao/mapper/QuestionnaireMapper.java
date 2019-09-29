@@ -7,5 +7,8 @@ import java.util.List;
 
 @Repository
 public interface QuestionnaireMapper {
-    List<HashMap> selectQuestionnaire(int pages, int limit);
+    List<HashMap<String,String>> selectQuestionnaire(int pages, int limit);
+    List<HashMap<String,String>>selectQuestionnaireCount();
+    List<HashMap<String,String>>selectbatch();
+
 }
