@@ -32,7 +32,7 @@
 
     <!--查询所有院系-->
     <select id="queryAllDepartments" resultMap="departmentsResuMap">
-        select * from departments
+        select * from departments where departments_state=1
     </select>
 
     <!--查询院系ID-->
