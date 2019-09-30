@@ -112,6 +112,11 @@ public class PowerController {
         }else {
             power.setSort(Integer.parseInt(sort));
         }
+        if (power_parentid.isEmpty()){
+            power.setPower_parentid(0);
+        }else {
+            power.setSort(Integer.parseInt(power_parentid));
+        }
         int result = service.updaePower(power);
         if(result>0){
             return  ResponseWrapper.updataPowerSucces();
