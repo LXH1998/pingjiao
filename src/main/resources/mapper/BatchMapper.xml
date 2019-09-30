@@ -13,5 +13,16 @@
     <select id="SelectBatchName" resultType="com.xiaohua.springbootpingjiao.entity.Batch">
         select * from batch where batch_name like concat('%',#{batch_Name},'%')  limit #{pages},#{limit}
     </select>
-
+    <!--根据批次名模糊搜索的数量-->
+    <select id="SelectBatchNameCount" parameterType="String" resultType="int">
+        select count(*) from batch where batch_name like concat('%',#{batch_Name},'%')
+    </select>
+    <!--增加批次-->
+    <insert id="InsertBatch" parameterType="String">
+        INSERT INTO batch (batch_name) VALUES (#{batch_Name})
+    </insert>
+    <!--判断具体某个批次是否存在-->
+    <select id="SelectBatchOne" parameterType="String" resultType="int" >
+        select count(*) from batch where batch_name = #{batch_Name}
+    </select>
 </mapper>

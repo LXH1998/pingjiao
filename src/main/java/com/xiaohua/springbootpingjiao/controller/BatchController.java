@@ -43,4 +43,37 @@ public class BatchController {
         result.put("data",batchList);
         return result;
     }
+
+    //模糊查询批次
+    @ResponseBody
+    @RequestMapping("/SelectBatchName")
+    public Map OneTeachListDate(String batch_Name,int page,int limit){
+        int pages = (page-1)*limit;
+        List<Batch> batchList = batchService.SelectBatchName(batch_Name,pages,limit);
+        int count = batchService.SelectBatchNameCount(batch_Name);
+        Map result = new HashMap<>();
+        result.put("code",0);
+        result.put("msg","返回成功");
+        result.put("data",batchList);
+        result.put("count",count);
+        return result;
+    }
+    //增加批次
+    @ResponseBody
+    @RequestMapping("/insertBatch")
+    public Map insertBatch(String batch_Name){
+        int batchIf = batchService.SelectBatchOne(batch_Name);
+        Map result = new HashMap();
+        if (batchIf==0){
+            int insertResult = batchService.InsertBatch(batch_Name);
+            if (insertResult == 1){
+                result.put("result","操作成功");
+            }else {
+                result.put("result","操作失败");
+            }
+        }else{
+            result.put("result","当前批次已存在");
+        }
+        return result;
+    }
 }

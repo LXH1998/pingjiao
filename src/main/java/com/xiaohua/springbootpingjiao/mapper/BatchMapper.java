@@ -13,4 +13,12 @@ public interface BatchMapper {
      List<Batch> SelectBatch(int pages,int limit);
      //查找批次数量
     int SelectBatchCount();
+    //模糊查找批次
+    List<Batch> SelectBatchName(String batch_Name,int pages,int limit);
+    //模糊查找批次的数量
+    int SelectBatchNameCount(String batch_Name);
+    //增加批次
+    int InsertBatch(String batch_Name);
+    //精确查找某批次是否存在
+    int SelectBatchOne(String batch_Name);
 }
