@@ -173,7 +173,7 @@ public class PowerServiceImpl  implements PowerService {
             map.put("id", item.getPower_Id());
             map.put("name", item.getPower_Name());
             map.put("parenid", item.getPower_parentid());
-//            map.put("url", item.getPower_url());
+
             map.put("checked", "true");
             List<Map<String, Object>> childs = selectTree(item.getPower_Id(), list);
             if(!childs.isEmpty()){

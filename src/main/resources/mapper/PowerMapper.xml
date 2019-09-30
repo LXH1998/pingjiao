@@ -23,11 +23,11 @@
 
 <!--    查询某父亲节点下的所有子节点-->
     <select id="queryChilderPower" parameterType="string" resultMap="permissionsResultmap">
-        select *from power where find_in_set(power_parentid, getChildLst(${power_id}))AND  power_state!=0;
+        select *from power where find_in_set(power_parentid, getChildLst(${power_id})) AND  power_state!=0;
     </select>
 <!-- 删除某父亲节点下的所有子节点-->
     <update id="deleteChilderPower" parameterType="String">
-    UPDATE POWER SET power_state = 0 WHERE FIND_IN_SET(power_parentid, getChildLst(${power_id})))AND  power_state!=0;
+    UPDATE POWER SET power_state = 0 WHERE FIND_IN_SET(power_parentid, getChildLst(${power_id})) AND  power_state!=0;
     </update>
 
     <!-- 删除父亲节点权限-->
@@ -112,7 +112,7 @@
                 WHERE u.`user_id`=ur.`user_id`
                  AND ur.`role_id`=rp.`role_id`
                  AND rp.`power_id`=p.`power_id`
-                 AND u.user_id=#{user_id} And p.power_state!=0 ORDER BY p.power_id, p.sort
+                 AND u.user_id=#{user_id} And p.power_state!=0 ORDER BY  p.sort
     </select>
 
 <!--添加权限-->

@@ -279,7 +279,8 @@ var departments_id
                         ,where: {
                             departments_id:departments_id
                         }
-                    }, 'data');}else {
+                    }, 'data');
+                    }else {
                         table.reload('idTest', {
                             page: {
                                 curr: 1 //重新从第 1 页开始

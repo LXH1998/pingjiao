@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>指标管理</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/zTree_v3/css/zTreeStyle/zTreeStyle.css}" >
+    <script type="text/javascript" th:src="@{/static/zTree_v3/js/jquery.ztree.core.js}"></script>
+    <script type="text/javascript" th:src="@{/static/zTree_v3/js/jquery.ztree.excheck.js}"></script>
+</head>
+<style type="text/css">
+    body{
+        margin: 0;
+        padding: 0;
+    }
+    .layui-tab-content {
+        padding: 10px;
+    }
+</style>
+<script type="text/javascript">
+    // zTree的设置
+    var setting = {
+        check:{
+            enable:true
+        },
+        data:{
+            simpleData:{
+                enable:true
+            }
+        },
+        callback: {
+            onClick: zTreeOnClick
+        }
+    };
+
+    $(function () {
+        var url = '/roleManagement/checkTest'
+
+        var param = {"role_ID":1};
+
+        $.post(url,param,function (data) {
+            //    调用初始化方法
+            initzTree(data);
+        },"json");
+    });
+
+    function initzTree(data) {
+        // console.log(data);
+        //    初始化树
+        zTreeObj = $.fn.zTree.init($("#tree"), setting, data);
+        //    展开树的节点
+        zTreeObj.expandAll(true);
+    }
+
+    //用于捕获节点被点击的事件回调函数
+    // event-----标准的 js event 对象
+    //treeId----对应 zTree 的 treeId(存放zTree标签的id)
+    // treeNode----被点击的节点 JSON 数据对象
+    function zTreeOnClick(event, treeId, treeNode) {
+        // console.log(treeNode)
+        // alert(treeNode.tId + ", " +treeId + "," + treeNode.id);
+        $('#leftTree').after()
+    };
+</script>
+<body>
+<div class="layui-fluid" style="height: 435px;">
+    <div class="layui-row">
+        <div id="leftTree" class="layui-col-md2" style="background-color:#ff0000; height: 435px;overflow: auto;white-space:nowrap;" >
+            <ul id="tree" class="ztree layui-col-md12" style="height:435px; overflow:auto;"></ul>
+        </div>
+        <div class="layui-col-md10">
+            <div class="layui-col-md12 " style="background-color:#00FF00;">
+                <div class="layui-form-item" style="padding-left: 70px">
+                    <label class="layui-form-label">指标名称:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label">指标权重:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="username" lay-verify="required" class="layui-input">
+                    </div>
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>
+                </div>
+                <div style="width:400px;margin: 0 auto">
+                    <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加下级指标</button>
+                    <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>
+                    <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存修改</button>
+                </div>
+            </div>
+            <div class="layui-col-md12" style="height:400px;margin-top: 20px;background-color: #007DDB;">
+                <fieldset class="layui-elem-field site-demo-button" style="margin-top: 30px">
+                    <legend>指标维护</legend>
+                    <form class="layui-form layui-form-pane" style="height:300px;padding-left: 192px;overflow: auto">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">指标名称:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 400px">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">指标名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 400px">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">指标名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 400px">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">指标名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 400px">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">指标名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 400px">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">指标名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 400px">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">指标名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 400px">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">指标名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input" style="width: 400px">
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

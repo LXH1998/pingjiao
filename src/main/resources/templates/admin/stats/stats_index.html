@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>在线评教系统---统计分析管理模块</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/echarts.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<body>
+<div class="dBody">
+    <i class="layui-icon" style="font-size: 30px;">&#xe615;</i>
+    <input id="edt-search" type="text" placeholder="输入关键字"  style="margin-left: 20px"/>
+    <div class="layui-input-inline">
+        <select  name="questionnaire" id="questionnaire" lay-search>
+            <option value="">请选择问卷批次</option>
+        </select>
+    </div>
+    <button class="layui-btn" data-type="insert" id="insertPower" style="margin-left: 20px">搜索</button>
+    <table class="layui-hidden layui-table" id="treeTable" lay-filter="treeTable"></table>
+</div>
+
+
+</body>
+</html>
