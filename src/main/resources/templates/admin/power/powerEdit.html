@@ -105,18 +105,17 @@
 
         function testDescribe(describe){
             var regex = /^[\u4e00-\u9fa5]{4,}$/;
-            if (!regex.test(sort)){
+            if (!regex.test(describe)){
                 layer.alert('描述至少四个汉字')
                 return  false;
             }
             return  true;
         }
-
         form.on('submit(demo1)', function(data){
+            var sumbitFlag = false;
             power_pid = $("#power_parentid").val();
             var flag = $("#power_state")[0].checked;
 
-            var sumbitFlag = false;
             var power_Name = $("#power_Name").val();
             var sort = $("#sort").val();
             var describe = $("#describe").val();
@@ -126,9 +125,6 @@
                         sumbitFlag = true;
                     }
                 }
-                sumbitFlag = false;
-            }else {
-                sumbitFlag = false;
             }
             console.log(sumbitFlag)
 

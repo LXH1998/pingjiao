@@ -95,25 +95,25 @@
             return  true;
         }
 
-        function testSort(describe){
+        function testDescribe(describe){
             var regex = /^[\u4e00-\u9fa5]{4,}$/;
-            if (!regex.test(sort)){
+            if (!regex.test(describe)){
                 layer.alert('描述至少四个汉字')
                 return  false;
             }
             return  true;
         }
+        var sumbitFlag = false;
         form.on('submit(demo1)', function(data){
             power_pid = $("#power_parentid").val();
             var flag = $("#power_state")[0].checked;
             if(power_pid == "undefined" || power_pid == null || power_pid == ""){
                 power_pid = 0
             }
-
-            var sumbitFlag = false;
             var power_Name = $("#power_Name").val();
             var sort = $("#sort").val();
             var describe = $("#describe").val();
+
             if (testName(power_Name)) {
                 if (testSort(sort)) {
                     if (testDescribe(describe)){
