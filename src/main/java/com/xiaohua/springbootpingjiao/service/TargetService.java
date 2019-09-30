@@ -14,6 +14,7 @@ import java.util.List;
  * @Time 8:53
  **/
 public interface TargetService {
+//
 
 //    查询所有的指标
     List<Target> selectAllTarget();

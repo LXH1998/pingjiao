@@ -16,6 +16,7 @@ import java.util.List;
  **/
 @Repository
 public interface TargetMapper {
+//
 
 //    查询所有指标
     List<Target> selectAllTarget();
