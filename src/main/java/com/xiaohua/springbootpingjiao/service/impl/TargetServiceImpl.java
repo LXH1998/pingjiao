@@ -19,6 +19,7 @@ import java.util.List;
  **/
 @Service
 public class TargetServiceImpl implements TargetService {
+//
 
     @Autowired
     private TargetMapper targetMapper;
@@ -35,8 +36,21 @@ public class TargetServiceImpl implements TargetService {
         return targetMapper.selectTargetOptions(target_id);
     }
 
+//    插入指标类别之前查询是否已存在该类别（hides=1）
+    @Override
+    public int selectTheTargetCategory(String target_Name) {
+        return targetMapper.selectTheTargetCategory(target_Name);
+    }
+//    插入指标类别
     @Override
     public int insertTargetCategory(String target_Name, Float target_Weight) {
         return targetMapper.insertTargetCategory(target_Name,target_Weight);
     }
+
+//    删除指标
+    @Override
+    public int deleteTarget(int target_Id) {
+        return targetMapper.deleteTarget(target_Id);
+    }
+
 }

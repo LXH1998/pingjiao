@@ -24,6 +24,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/TargetManagement")
 public class TargetController {
+//
 
     @Autowired
     private TargetService targetService;
@@ -81,8 +82,30 @@ public class TargetController {
     @RequestMapping("/addTargetCategory")
     public Map insertTargetCategory(String target_Name,Float target_Weight){
         Map result = new HashMap();
-        int count = targetService.insertTargetCategory(target_Name,target_Weight);
-        if (count!=0){
+        int categoryCount = targetService.selectTheTargetCategory(target_Name);
+        if (categoryCount==0){
+            int count = targetService.insertTargetCategory(target_Name,target_Weight);
+            if (count!=0){
+                result.put("message","操作成功");
+            }else {
+                result.put("message","操作失败");
+            }
+        }else {
+            result.put("message","指标类别已存在");
+        }
+
+        return result;
+    }
+
+    /**
+     * 删除指标
+     */
+    @ResponseBody
+    @RequestMapping("/deleteTarget")
+    public Map deleteTarget(int target_Id){
+        Map result = new HashMap();
+        int count = targetService.deleteTarget(target_Id);
+        if (count==1){
             result.put("message","操作成功");
         }else {
             result.put("message","操作失败");
