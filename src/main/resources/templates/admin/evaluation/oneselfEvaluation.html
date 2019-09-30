@@ -91,7 +91,20 @@
         table.on('tool(demo)', function(obj){
             var data = obj.data;
             if(obj.event === 'edit'){//开始评教
-
+                layer.open({
+                    type: 2
+                    , skin: 'layui-layer-rim'//加上边框
+                    // ,maxmin: true //开启最大化最小化按钮
+                    , area: ["100%", "100%"]
+                    , title: "在线评教"
+                    , content: "/OnlineEvaluationController/GoOnlineEvaluation"
+                    , success: function (layero, index) {
+                        var body = layer.getChildFrame('body', index);
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数
+                        iframe.inputDataHandle(obj);
+                    }
+                })
             }
         });
 
