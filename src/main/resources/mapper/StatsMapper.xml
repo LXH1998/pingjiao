@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaohua.springbootpingjiao.mapper.StatsMapper">
+
+    <resultMap id="Departments" type="com.xiaohua.springbootpingjiao.entity.Departments">
+        <result column="departments_Id" jdbcType="INTEGER" property="departments_Id" />
+        <result column="departments_Name" jdbcType="VARCHAR" property="departments_Name" />
+    </resultMap>
+
+<!-- 查询所有院系数量-->
+    <select id="queryDepartmentSize" resultType="Map" >
+        SELECT COUNT(departments_id) as departmentSize FROM departments where departments_state!=0
+    </select>
+<!-- 查询所有在职老师数量-->
+    <select id="querTeacherSize" resultType="Map" >
+        SELECT COUNT(u.user_id) as userSize FROM USER u
+        LEFT JOIN userrole ur ON u.`user_id` = ur.`user_id`
+        LEFT JOIN role r ON r.`role_id` = ur.`role_id`
+        WHERE u.`user_state`!=0 AND r.`role_state`!=0
+                AND r.`role_name`="教师"
+    </select>
+
+<!--    查询问卷部门总数-->
+    <select id="qeryDepartmentCount" parameterType="string" resultType="hashmap">
+        SELECT d.`departments_id`,d.departments_name,COUNT(d.`departments_id`)AS '院系教师数',COUNT(f.`rater`) AS '参与评教人数'
+FROM departments d  LEFT JOIN USER u ON d.`departments_id` = u.`departments_id` LEFT JOIN  fraction f ON f.`fraction_id` =u.`user_id`
+LEFT JOIN papers p ON f.`papers_id` = p.`papers_id` LEFT JOIN batch b ON b.`batch_id` = p.`batch_id`
+WHERE b.`batch_name`="2019-2020第一学期" AND b.`batch_hide`=2 AND p.`oapers_visible`=1 AND u.`user_state`!=0 AND d.`departments_state`!=0
+GROUP BY u.departments_id
+
+    </select>
+</mapper>
