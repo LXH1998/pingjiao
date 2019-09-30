@@ -29,4 +29,25 @@ public class BatchServiceImpl implements BatchService {
         return batchMapper.SelectBatchCount();
     }
 
+    //增加批次
+    @Override
+    public int InsertBatch(String batch_Name) {
+        return batchMapper.InsertBatch(batch_Name);
+    }
+    //模糊查找批次
+    @Override
+    public List<Batch> SelectBatchName(String batch_Name, int pages, int limit) {
+        return batchMapper.SelectBatchName(batch_Name,pages,limit);
+    }
+
+    @Override
+    public int SelectBatchNameCount(String batch_Name) {
+        return batchMapper.SelectBatchNameCount(batch_Name);
+    }
+    //精确查找某批次是否存在
+    @Override
+    public int SelectBatchOne(String batch_Name) {
+        return batchMapper.SelectBatchOne(batch_Name);
+    }
+
 }
