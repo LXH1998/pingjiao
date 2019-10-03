@@ -13,7 +13,7 @@
 </head>
 <body>
 <form class="layui-form" action="">
-<div class="layui-col-md6" style="width: 100%">
+<div class="layui-col-md6" style="width: 95%">
     <div class="layui-card" id="targetOptions">
 
     </div>
@@ -31,23 +31,18 @@
                 type:"get",
                 data:{papers_id:obj.data.papers_id},
                 success:function (res) {
-                    console.log("aaa")
-                    console.log(res.data)
-                    console.log(res.data[0].options[0].options_name)
-                    console.log("aaa")
+
                     var a=res.data
                     var b
                     var i=1
                     for(var index in a) {
-                        console.log(a[index]);
                         b=a[index].options
                         $('#targetOptions').append('<div class="layui-card-header" style="width: 100%">\n' +
-                            '            <label class="layui-form-label" style="font-size: 18px;width: 30%;text-align: left">'+i+'：'+a[index].target_name+'</label>\n' +
+                            '            <label class="layui-form-label" style="font-size: 18px;width: 30%;text-align: left">'+i+'.'+a[index].target_name+'</label>\n' +
                             '<hr class="layui-bg-black">' +
                             '        </div>');
                         i++
                         for(var index1 in b) {
-                            console.log(b[index1]);
                             $('#targetOptions').append('<div class="layui-card-body">\n' +
                                 '            <span>\n' +
                                 '                <input lay-filter="options" type="radio"\n' +
