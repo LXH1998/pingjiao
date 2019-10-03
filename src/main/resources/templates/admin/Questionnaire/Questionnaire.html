@@ -99,8 +99,8 @@ var batch_id
             ,title: '用户数据表'
             ,cols: [
                 [
-                 {field:'papers_id', title:'', width:2, edit: 'text' ,style:"display: none", }
-                ,{title: '序号',templet: '#xuhao', width:100,sort: true,align:'center' }
+                 {field:'papers_id', title:'', width:0.1, edit: 'text' ,style:"display: none", hide:"true" }
+                ,{title: '序号',templet: '#xuhao', width:100,align:'center' }
                 ,{field:'role_name', title:'角色', width:220, edit: 'text'}
                 ,{field:'batch_name', title:'批次', edit: 'text', sort: true }
                 ,{field:'papers_name', title:'问卷名称', edit: 'text',}
@@ -112,7 +112,7 @@ var batch_id
             ,page: true
         });
         $('table.layui-table thead tr th:eq(0)').addClass('layui-hide');
-
+        $('table.layui-table thead tr :eq(0)').addClass('layui-hide');
         $("#shoushu").click(function () {
             table.reload('test', {
                 page: {
@@ -149,18 +149,9 @@ var batch_id
         });
 //下拉监听
         form.on('select(college)', function(data){
-            if (role_id!="") {
-                table.reload('test', {
-                    page: {
-                        curr: 1 //重新从第 1 页开始
-                    },
-                    url:"/Questionnaire/selectQuestionnaireinBR"
-                    ,where: {
-                        batch_id:data.value,
-                        role_id:role_id
-                    }
-                }, 'data');
-            }else {
+            console.log("点击批次")
+            batch_id=data.value
+            if (role_id==""||role_id==undefined) {
 
                 table.reload('test', {
                     page: {
@@ -171,14 +162,63 @@ var batch_id
                         batch_id:data.value
                     }
                 }, 'data');
+
+            }else {
+
+                table.reload('test', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:"/Questionnaire/selectQuestionnaireinBR"
+                    ,where: {
+                        batch_id:data.value,
+                        role_id:role_id
+                    }
+                }, 'data');
+            }
+            if (batch_id=="") {
+                if (role_id==""||role_id==undefined) {
+                    table.reload('test', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        url:'/Questionnaire//QuestionnaireAll'
+
+                    }, 'data');
+                }else {
+
+                    table.reload('test', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        url:"/Questionnaire/selectQuestionnaireinRoleid"
+                        ,where: {
+                            role_id:role_id
+                        }
+                    }, 'data');
+                }
             }
 
-            batch_id=data.value
+
     //        console.log(data.value); //得到被选中的id
         });
         form.on('select(jiaose)', function(data){
+            role_id=data.value
+            if (batch_id==""||batch_id==undefined) {
 
-            if (batch_id!="") {
+                table.reload('test', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    },
+                    url:"/Questionnaire/selectQuestionnaireinRoleid"
+                    ,where: {
+                        role_id:data.value
+                    }
+                }, 'data');
+
+
+            }else {
+
                 table.reload('test', {
                     page: {
                         curr: 1 //重新从第 1 页开始
@@ -189,22 +229,33 @@ var batch_id
                         role_id:data.value
                     }
                 }, 'data');
+            }
+            if (role_id=="") {
+                if (batch_id==""||batch_id==undefined) {
+                    table.reload('test', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        url:'/Questionnaire//QuestionnaireAll'
 
-            }else {
-                table.reload('test', {
-                    page: {
-                        curr: 1 //重新从第 1 页开始
-                    },
-                    url:"/Questionnaire/selectQuestionnaireinRoleid"
-                    ,where: {
-                        role_id:data.value
-                    }
-                }, 'data');
+                    }, 'data');
+                }else {
+
+                    table.reload('test', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        },
+                        url:"/Questionnaire/selectQuestionnaireinBR"
+                        ,where: {
+                            batch_id:batch_id
+                        }
+                    }, 'data');
+                }
             }
 
 
           //  console.log(data.value); //得到被选中的id
-            role_id=data.value
+
         });
 
         //监听行工具事件
