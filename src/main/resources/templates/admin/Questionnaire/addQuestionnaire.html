@@ -17,23 +17,24 @@
 
                         <div class="layui-collapse" lay-filter="test">
                             <div class="layui-colla-item">
-                                <h2 class="layui-colla-title">学生方面题目</h2>
+                                <h2 class="layui-colla-title" id="1"><span>1</span>学生方面题目</h2>
                                 <div class="layui-colla-content pad">
                                     <p><input type="checkbox" name="" value="写作" title="写作(3分)"  ></p>
-                                    <p><span>a:asasasddad</span> <span>b:dsadsdsafsafafafaasfa</span></p>
+                                    <p><span style="padding-left: 20px; padding-right: 20px">选项1:asasasddad</span>
+                                        <span>选项2:dsadsdsafsafafafaasfa</span></p>
                                     <p><input type="checkbox" name="" value="概念的讲解" title="概念的讲解(3分)"></p>
                                     <p><span>a:asasasddad</span> <span>b:dsadsdsafsafafafaasfa</span></p>
                                     <p><input type="checkbox" name="" value="概念的讲解" title="概念的讲解(3分)"></p>
-                                    <p><span>a:asasasddad</span> <span>b:dsadsdsafsafafafaasfa</span></p>
+                                    <p><span>选项1:asasasddad</span> <span>b:dsadsdsafsafafafaasfa</span></p>
                                 </div>
                             </div>
                             <div class="layui-colla-item">
-                                <h2 class="layui-colla-title">老师方面的题目</h2>
+                                <h2 class="layui-colla-title" id="2">老师方面的题目</h2>
                                 <div class="layui-colla-content">
                                 </div>
                             </div>
                             <div class="layui-colla-item">
-                                <h2 class="layui-colla-title">领导方面的题目</h2>
+                                <h2 class="layui-colla-title" id="3">领导方面的题目</h2>
                                 <div class="layui-colla-content">
 
                                 </div>
@@ -71,6 +72,8 @@
 
         element.on('collapse(test)', function(data){
             layer.msg('展开状态：'+ data.show);
+            console.log(data.title[0].id)//得到id
+
         });
 
     });
