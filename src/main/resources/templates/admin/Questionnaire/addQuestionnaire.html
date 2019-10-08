@@ -10,22 +10,40 @@
 </head>
 <body>
 <div style="padding: 1px; background-color: #F2F2F2;">
-                <div class="layui-card-header">选择题目</div>
+    <form class="layui-form" action="">
+        <label class="layui-form-label">问卷批次:</label>
+        <div class="layui-input-inline">
+            <select  name="quiz2" id="pici" lay-filter="college" lay-search>
+                <option value="">请选择批次</option>
+            </select>
+        </div>
+    </form>
+    <div class="layui-card-header">选择题目</div>
                 <div class="layui-card-body">
 
                     <form class="layui-form" action="">
 
                         <div class="layui-collapse" lay-filter="test">
                             <div class="layui-colla-item">
-                                <h2 class="layui-colla-title" data-id="1"><span>1</span>学生方面题目</h2>
+                                <h2 class="layui-colla-title" data-id="1">学生方面题目
+
+                                </h2>
                                 <div class="layui-colla-content pad">
                                     <p><input type="checkbox" name=""   value="1" title="写作(3分)"  ></p>
                                     <p><span style="padding-left: 20px; padding-right: 20px">选项1:asasasddad</span>
-                                        <span>选项2:dsadsdsafsafafafaasfa</span></p>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项2:dsadsdsafsafafafaasfa</span>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项3:dsadsdsafsafafafaasfa</span>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项4:dsadsdsafsafafafaasfa</span></p>
                                     <p><input type="checkbox" name="" value="概念的讲解" title="概念的讲解(3分)"></p>
-                                    <p><span>a:asasasddad</span> <span>b:dsadsdsafsafafafaasfa</span></p>
+                                    <p><span style="padding-left: 20px; padding-right: 20px">选项1:asasasddad</span>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项2:dsadsdsafsafafafaasfa</span>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项3:dsadsdsafsafafafaasfa</span>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项4:dsadsdsafsafafafaasfa</span></p>
                                     <p><input type="checkbox" name="" value="概念的讲解" title="概念的讲解(3分)"></p>
-                                    <p><span>选项1:asasasddad</span> <span>b:dsadsdsafsafafafaasfa</span></p>
+                                    <p><span style="padding-left: 20px; padding-right: 20px">选项1:asasasddad</span>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项2:dsadsdsafsafafafaasfa</span>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项3:dsadsdsafsafafafaasfa</span>
+                                        <span style="padding-left: 20px; padding-right: 20px">选项4:dsadsdsafsafafafaasfa</span></p>
                                 </div>
                             </div>
                             <div class="layui-colla-item">
@@ -52,11 +70,13 @@
                         <button lay-id="11" type="button" class="tag-item">写作</button>
                     </div>
                     <div class="site-demo-button" style="margin-bottom: 0;">
-                        <button class="layui-btn site-demo-active" data-type="tagAdd">新增Tag项</button>
-                        <button class="layui-btn site-demo-active" data-type="tagDelete">删除：商品管理</button>
+                        <!--<button class="layui-btn site-demo-active" data-type="tagAdd">新增Tag项</button>-->
+                        <!--<button class="layui-btn site-demo-active" data-type="tagDelete">删除：商品管理</button>-->
                     </div>
                 </div>
 </div>
+
+<button type="button" class="layui-btn">添加</button>
 
 </body>
 <style>
