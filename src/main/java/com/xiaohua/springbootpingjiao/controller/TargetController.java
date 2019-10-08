@@ -56,6 +56,7 @@ public class TargetController {
             result.put("leafs",t.getLeafs_Id());
             result.put("targetWeight",t.getTarget_Weight());
             result.put("targetName",t.getTarget_Name());
+//            result.put("isParent","false");
             list.add(result);
         }
         return list;
