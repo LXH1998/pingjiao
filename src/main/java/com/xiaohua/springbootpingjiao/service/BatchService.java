@@ -20,4 +20,12 @@ public interface BatchService {
     int SelectBatchNameCount(String batch_Name);
     //精确查找某批次是否存在
     int SelectBatchOne(String batch_Name);
+    //修改批次状态为开启
+    int ModifyOpenBatch(int batch_Id);
+    //修改批次状态为暂停
+    int ModifySuspendBatch(int batch_Id);
+    //修改批次状态为结束
+    int ModifyEndBatch(int batch_Id);
+    //删除某个批次
+    int DeleteOneBatch(int batch_Id);
 }

@@ -193,7 +193,7 @@ public class RoleController {
     public Map insertThePowers(String codeId,int role_Id){
         boolean isdelete = deleteThePowerTest(role_Id);
         Map result = new HashMap();
-        if (isdelete == true){
+//        if (isdelete == true){
             List<Power> powers = roleService.selectTheDeletePower(role_Id);
             String powerIds[]=codeId.split(",");
             try {
@@ -212,9 +212,9 @@ public class RoleController {
                 e.printStackTrace();
                 result.put("code", -1);
             }
-        }else {
-            result.put("code", -1);
-        }
+//        }else {
+//            result.put("code", -1);
+//        }
         return result;
     }
 

@@ -49,5 +49,26 @@ public class BatchServiceImpl implements BatchService {
     public int SelectBatchOne(String batch_Name) {
         return batchMapper.SelectBatchOne(batch_Name);
     }
+    //修改批次状态为开启
+    @Override
+    public int ModifyOpenBatch(int batch_Id) {
+        return batchMapper.ModifyOpenBatch(batch_Id);
+    }
+    //修改批次状态为暂停
+    @Override
+    public int ModifySuspendBatch(int batch_Id) {
+        return batchMapper.ModifySuspendBatch(batch_Id);
+    }
+    //修改批次状态为结束
+    @Override
+    public int ModifyEndBatch(int batch_Id) {
+        return batchMapper.ModifyEndBatch(batch_Id);
+    }
+    //删除某个批次
+    @Override
+    public int DeleteOneBatch(int batch_Id) {
+        return batchMapper.DeleteOneBatch(batch_Id);
+    }
+
 
 }

@@ -186,4 +186,7 @@ public HashMap selectQuestionnaireinBatch(String batch_id,int page, int limit){
     @RequestMapping("Questionnaire")
     public String details(){ return "admin/Questionnaire/Questionnaire"; }
 
+    @RequestMapping("addQuestionnaire")
+    public String addQuestionnaire(){ return "admin/Questionnaire/addQuestionnaire"; }
+
 }

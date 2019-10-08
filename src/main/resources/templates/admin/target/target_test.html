@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/static/zTree_v3/css/zTreeStyle/zTreeStyle.css}" >
     <script type="text/javascript" th:src="@{/static/zTree_v3/js/jquery.ztree.core.js}"></script>
     <script type="text/javascript" th:src="@{/static/zTree_v3/js/jquery.ztree.excheck.js}"></script>
+    <!---->
 </head>
 <style type="text/css">
     /*html{*/
@@ -22,6 +23,11 @@
 </style>
 
 <script type="text/javascript">
+
+    //页面初始化
+    $(initIndex());
+
+
     //声明一个数组，用于指标选项
     var arrayBox = new Array('A','B','C','D','E','F','G','H','I','J','K','L')
     // zTree的设置
@@ -39,33 +45,38 @@
         }
     };
 
-    $(function () {
+    //加载页面后的显示
+    function initIndex() {
 
         var url = '/TargetManagement/targetTree'
 
         // var param = {"role_ID":1};
 
         $.post(url,function (data) {
-                //    调用初始化zTree的方法
-                initzTree(data);
 
+            $("#targetManagement").empty()
 
-                $('#targetManagement').append('        <div style="width: 100%">\n' +
-                    '            <div class="layui-form-item" style="padding-left: 70px;border-bottom: #4E5465 1px solid">\n' +
-                    '                <label class="layui-form-label">指标类别:</label>\n' +
-                    '                <div class="layui-input-inline">\n' +
-                    '                    <input type="text" name="targetName" lay-verify="required" class="layui-input">\n' +
-                    '                </div>\n' +
-                    '                <label class="layui-form-label">权重:</label>\n' +
-                    '                <div class="layui-input-inline">\n' +
-                    '                    <input type="text" name="targetWeight" lay-verify="required" class="layui-input">\n' +
-                    '                </div>\n' +
-                    '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" style="margin-top: 4px" onclick="addTargetCategory()">添加</button>\n' +
-                    '            </div>')
+            //    调用初始化zTree的方法
+            initzTree(data);
+
+            //页面初始化，显示添加一级类别的表单
+            $('#targetManagement').append('        <div style="width: 100%;">\n' +
+                '            <div class="layui-form-item" style="padding:0 0 15px 70px;margin-bottom: 0px;pa;border-bottom: #4E5465 1px solid">\n' +
+                '                <label class="layui-form-label">指标类别:</label>\n' +
+                '                <div class="layui-input-inline">\n' +
+                '                    <input type="text" name="targetName" lay-verify="required" class="layui-input">\n' +
+                '                </div>\n' +
+                '                <label class="layui-form-label">权重:</label>\n' +
+                '                <div class="layui-input-inline">\n' +
+                '                    <input type="text" name="targetWeight" lay-verify="required" class="layui-input">\n' +
+                '                </div>\n' +
+                '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" style="margin-top: 4px" onclick="addTargetCategory()">添加</button>\n' +
+                '            </div>')
 
         },"json");
-    });
+    }
 
+    //树的初始化
     function initzTree(data) {
         // console.log(data);
         //    初始化树
@@ -94,7 +105,7 @@
                 // $("[name=optionAWeight]").val(res.options[0].options_Weight);
                 
                 //右侧添加上半部div
-                $("#targetManagement").append('        <div style="width: 100%">\n' +
+                $("#targetManagement").append('        <div style="width: 100%;border-bottom: #4E5465 1px solid;padding-bottom: 25px;">\n' +
                     '            <div class="layui-form-item" style="padding-left: 70px">\n' +
                     '                <label class="layui-form-label">指标:</label>\n' +
                     '                <div class="layui-input-inline">\n' +
@@ -104,7 +115,7 @@
                     '                <div class="layui-input-inline">\n' +
                     '                    <input type="text" name="targetWeight" lay-verify="required" class="layui-input" value="'+treeNode.targetWeight+'">\n' +
                     '                </div>\n' +
-                    '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>\n' +
+                    '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px" onclick="deleteTargetCategory('+treeNode.id+','+treeNode.pId+')"><i class="layui-icon"></i> 删除</button>\n' +
                     '            </div>\n' +
                     '\n' +
                     '            <div style="width:400px;margin: 0 auto">\n' +
@@ -118,7 +129,7 @@
                 //右侧下半部分div
                 if (treeNode.leafs==-1){
                     $('#targetManagement').append('        <div style="width:100%;height:325px;">\n' +
-                        '            <fieldset class="layui-elem-field site-demo-button" style="margin-top: 25px;">\n' +
+                        '            <fieldset class="layui-elem-field site-demo-button" >\n' +
                         '                <legend>指标维护</legend>\n' +
                         '                <div  style="margin-bottom: 10px;">\n' +
                         '                    <button type="button" class="layui-btn">添加选项</button>\n' +
@@ -160,7 +171,7 @@
 </script>
 <body>
 <div style="width: 1120px;height: 435px;">
-    <div style="width: 18%;height: 435px;float: left;border-right: #4E5465 1px solid">
+    <div style="width: 19%;height: 435px;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;">
         <ul id="tree" class="ztree" style="height:435px; overflow:auto;"></ul>
     </div>
     <div id="targetManagement" style="width: 81%;height: 100%; float: left">
@@ -271,6 +282,13 @@
 
 
 <script type="text/javascript">
+    var layer
+
+    layui.use('layer',function () {
+        layer = layui.layer
+    })
+
+
     //添加指标类别
     function addTargetCategory() {
         var targetName = $("[name=targetName]").val();
@@ -287,17 +305,79 @@
                     target_Weight:targetWeight
                 },
                 success:function (res) {
-                    layer.msg(res.message);
+                    if (res.message=="操作成功"){
+                        layer.msg(res.message);
+                        initIndex()
+                    } else {
+                        layer.msg(res.message);
+                    }
                 },
                 error:function () {
                     layer.msg("异常")
                 }
             })
         }
-        // alert(targetName);
-        // alert(targetWeight)
-        // console.log(targetWeight)
     }
+
+
+//    删除指标
+    function deleteTargetCategory(id,pId) {
+        var treeObj = $.fn.zTree.getZTreeObj("tree");
+        //获得指点id节点
+        var node = treeObj.getNodeByParam("id", id);
+
+        $.ajax({
+            url:'/TargetManagement/deleteTarget',
+            data:{
+                target_Id:id
+            },
+            success:function (res) {
+                if (res.message=="操作成功"){
+                    if (pId==null){
+                        //获取指定节点的下一节点
+                        var nextnode = node.getNextNode()
+                        var prenode = node.getPreNode();
+                        treeObj.removeNode(node)
+                        if (nextnode!=null){
+                            $("#"+nextnode.tId+"_a").click();
+                        }else if (prenode!=null){
+                            $("#"+prenode.tId+"_a").click();
+                        }else {
+                            //页面初始化，显示添加一级类别的表单
+                            $('#targetManagement').append('        <div style="width: 100%;">\n' +
+                                '            <div class="layui-form-item" style="padding:0 0 15px 70px;margin-bottom: 0px;pa;border-bottom: #4E5465 1px solid">\n' +
+                                '                <label class="layui-form-label">指标类别:</label>\n' +
+                                '                <div class="layui-input-inline">\n' +
+                                '                    <input type="text" name="targetName" lay-verify="required" class="layui-input">\n' +
+                                '                </div>\n' +
+                                '                <label class="layui-form-label">权重:</label>\n' +
+                                '                <div class="layui-input-inline">\n' +
+                                '                    <input type="text" name="targetWeight" lay-verify="required" class="layui-input">\n' +
+                                '                </div>\n' +
+                                '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" style="margin-top: 4px" onclick="addTargetCategory()">添加</button>\n' +
+                                '            </div>')
+                        }
+                    } else {
+                        var nextnode = node.getNextNode()
+                        var prenode = node.getPreNode();
+                        var parentnode = node.getParentNode();
+                        treeObj.removeNode(node)
+                        if (nextnode!=null){
+                            $("#"+nextnode.tId+"_a").click();
+                        }else if (prenode!=null){
+                            $("#"+prenode.tId+"_a").click();
+                        }else {
+                            $("#"+parentnode.tId+"_a").click();
+                        }
+                    }
+                    layer.msg(res.message)
+                }else {
+                    layer.msg(res.message)
+                }
+            }
+        })
+    }
+
 
 </script>
 </body>

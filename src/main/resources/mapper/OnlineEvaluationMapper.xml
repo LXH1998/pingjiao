@@ -6,14 +6,27 @@
         <result property="target_Name" column="target_name"></result>
         <result property="options_Content" column="options_content"></result>
         <result property="options_Id" column="options_id"></result>
-
     </resultMap>
+
     <!--生成试卷-->
     <select id="selectOnlineEvaluation" resultMap="evaluationMap">
-        select t.target_id,t.target_name,os.options_content,os.options_id from paperstarget pts
+        select t.target_id,t.target_name,os.options_content,os.options_id,os.options_weight from paperstarget pts
           left join target t on pts.target_id=t.target_id
           left join targetoptions tps on tps.target_id=t.target_id
           left join options os on os.options_id=tps.options_id
         where pts.papers_id=#{papers_id}
     </select>
+    <!--计算分数-->
+    <select id="OnlineEvaluationFraction" resultType="com.xiaohua.springbootpingjiao.entity.FractionSum">
+        select sum(os.options_weight*pst.target_allweight) as fraction from options os
+          left join targetoptions tos on os.options_id=tos.options_id
+          left join target t on t.target_id=tos.target_id
+          left join paperstarget pst on pst.target_id=t.target_id
+        where os.options_id=#{options_id}
+    </select>
+    <!--插入分数及其信息-->
+    <insert id="insertOnlineEvaluation" parameterType="com.xiaohua.springbootpingjiao.entity.Fraction">
+        insert into fraction(rater,gradeds,papers_id,courses_id,answers,fractions)
+        values(${rater},${gradeds},${papers_id},${courses_id},${answers},${fractions})
+    </insert>
 </mapper>
