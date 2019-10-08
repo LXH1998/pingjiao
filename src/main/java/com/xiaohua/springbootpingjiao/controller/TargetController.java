@@ -56,6 +56,7 @@ public class TargetController {
             result.put("leafs",t.getLeafs_Id());
             result.put("targetWeight",t.getTarget_Weight());
             result.put("targetName",t.getTarget_Name());
+//            result.put("isParent","false");
             list.add(result);
         }
         return list;
@@ -110,6 +111,103 @@ public class TargetController {
         }else {
             result.put("message","操作失败");
         }
+        return result;
+    }
+
+    /**
+     * 添加下级指标类别
+     */
+    @ResponseBody
+    @RequestMapping("/insertSubordinateTargetCategory")
+    public Map insertSubordinateTargetCategory(String target_Name, Float target_Weight, int target_Id){
+        Map result = new HashMap();
+        int categoryCount = targetService.selectSubordinateTargetCategory(target_Name,target_Id);
+        if (categoryCount==0){
+            int count = targetService.insertSubordinateTargetCategory(target_Name,target_Weight,target_Id);
+            if (count!=0){
+                result.put("message","操作成功");
+            }else {
+                result.put("message","操作失败");
+            }
+        }else {
+            result.put("message","指标类别已存在");
+        }
+        return result;
+    }
+
+    /**
+     * 添加指标(同时添加选项)
+     */
+    @ResponseBody
+    @RequestMapping("/addTarget")
+    public Map addTarget(String target_Name,Float target_Weight,String optionList,String weightList,int target_Id){
+        Map result = new HashMap();
+        if (optionList.equals("未添加选项")&&weightList.equals("未添加选项")){
+            int categoryCount = targetService.selectSubordinateTargetCategory(target_Name,target_Id);
+            if (categoryCount==0){
+                Target target = new Target();
+                int insertTargetCount = targetService.insertTarget(target_Name, target_Weight, target_Id, target);
+                if (insertTargetCount==1){
+                    result.put("message","操作成功");
+                }
+            }else {
+                result.put("message","此类别已拥有该指标");
+            }
+        }else {
+            int insertTargetId;
+//        ArrayList insertOptionsId = new ArrayList();
+            String optionsContent[]=optionList.split(",");
+            String optionsWeight[]=weightList.split(",");
+            Options options = new Options();
+
+//        result.put("数据",insertOptionsId);
+            int categoryCount = targetService.selectSubordinateTargetCategory(target_Name,target_Id);
+            if (categoryCount==0) {
+                Target target = new Target();
+                int insertTargetCount = targetService.insertTarget(target_Name, target_Weight, target_Id, target);
+                insertTargetId = target.getTarget_Id();
+                int insertOptionsCount =0;
+                int insertTargetOptionCount = 0;
+                for (int i=0;i<optionsContent.length;i++){
+                    String options_Content = optionsContent[i];
+                    Float options_Weight = Float.parseFloat(optionsWeight[i]);
+                    int count = targetService.insertOptions(options_Content,options_Weight,options);
+                    if (count==1){
+                        insertOptionsCount +=1;
+                        int insertOptionId = options.getOptions_Id();
+                        int count1 =targetService.insertTargetOptions(insertTargetId, insertOptionId);
+                        if (count1 == 1){
+                            insertTargetOptionCount +=1;
+                        }
+
+                    }
+                }
+                if (insertTargetCount==1&&insertOptionsCount==optionsContent.length&&insertTargetOptionCount==optionsContent.length){
+                    result.put("message","操作成功");
+                }
+            }else {
+                result.put("message","此类别已拥有该指标");
+            }
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 保存--修改后的指标和权重
+     */
+    @ResponseBody
+    @RequestMapping("/saveTargetCategoryChange")
+    public Map saveTargetCategoryChange(String targetName,Float targetWeight, int targetId){
+        Map result = new HashMap();
+        int count = targetService.saveTargetCategoryChange(targetName,targetWeight,targetId);
+        if (count==1){
+            result.put("message","操作成功");
+        }else {
+            result.put("message","操作失败");
+        }
+
         return result;
     }
 }

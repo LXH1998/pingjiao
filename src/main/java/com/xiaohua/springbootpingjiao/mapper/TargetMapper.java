@@ -31,4 +31,21 @@ public interface TargetMapper {
 
 //    删除指标
     int deleteTarget(int target_Id);
+
+//    插入下级指标类别（查看当前指标类别下是否存在相同下级指标类别）
+    int selectSubordinateTargetCategory(String target_Name, int target_Id);
+//    插入下级指标类别
+    int insertSubordinateTargetCategory(String target_Name,Float target_Weight,int target_Id);
+
+//    插入指标
+    int insertTarget(String target_Name,Float target_Weight,int target_Id,Target target);
+
+//    插入选项
+    int insertOptions(String options_Content, Float options_Weight, Options options);
+
+//    指标和选项插入中间表
+    int insertTargetOptions(int target_Id, int options_Id);
+
+//    保存--修改后的指标内容和权重
+    int saveTargetCategoryChange(String targetName,Float targetWeight, int targetId);
 }

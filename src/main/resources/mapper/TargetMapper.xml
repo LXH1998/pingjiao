@@ -41,4 +41,35 @@
     <update id="deleteTarget">
         update target set hides=0 where target_id = #{target_Id}
     </update>
+
+    <!--插入下级指标类别（查看当前指标类别下是否存在相同下级指标类别）-->
+    <select id="selectSubordinateTargetCategory" resultType="int">
+        select  IFNULL(MAX(target_id),0) AS target_id from target where parent_id = #{target_Id} and target_name = #{target_Name} and hides = 1;
+    </select>
+    <!--插入下级指标类别-->
+    <insert id="insertSubordinateTargetCategory">
+        insert into target(target_name,target_weight,parent_id,leafs_id) value (#{target_Name},#{target_Weight},#{target_Id},0)
+    </insert>
+
+    <!--插入指标-->
+    <insert id="insertTarget" useGeneratedKeys="true" keyProperty="target.target_Id">
+        insert into target(target_name,target_weight,parent_id,leafs_id) value (#{target_Name},#{target_Weight},#{target_Id},-1)
+    </insert>
+
+    <!--插入选项-->
+    <insert id="insertOptions" useGeneratedKeys="true" keyProperty="options.options_Id">
+        insert into options (options_content, options_weight)
+        values (#{options_Content},#{options_Weight});
+    </insert>
+
+    <!--指标和选项插入中间表-->
+    <insert id="insertTargetOptions">
+        insert into targetoptions (target_id, options_id)
+        values (#{target_Id},#{options_Id});
+    </insert>
+
+    <!--保存  修改后的指标内容和权重-->
+    <update id="saveTargetCategoryChange">
+        update target set target_name=#{targetName},target_weight=#{targetWeight} where target_id=#{targetId}
+    </update>
 </mapper>

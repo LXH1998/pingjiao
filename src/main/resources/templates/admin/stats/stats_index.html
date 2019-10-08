@@ -8,19 +8,497 @@
     <script type="text/javascript" th:src="@{/static/js/echarts.js}"></script>
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
+<style>
+    @font-face {
+        font-family: 'webfont';
+        font-display: swap;
+        src: url('//at.alicdn.com/t/webfont_bsba623q5hu.eot'); /* IE9*/
+        src: url('//at.alicdn.com/t/webfont_bsba623q5hu.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+        url('//at.alicdn.com/t/webfont_bsba623q5hu.woff2') format('woff2'),
+        url('//at.alicdn.com/t/webfont_bsba623q5hu.woff') format('woff'), /* chrome、firefox */
+        url('//at.alicdn.com/t/webfont_bsba623q5hu.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+        url('//at.alicdn.com/t/webfont_bsba623q5hu.svg#杨任东竹石体-Bold') format('svg'); /* iOS 4.1- */
+    }
+    .web-font{
+        font-family:"webfont" !important;
+        font-size:16px;font-style:normal;
+        -webkit-font-smoothing: antialiased;
+        -webkit-text-stroke-width: 0.2px;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    body{
+        margin:0 auto;
+        padding: 0 auto;
+    }
+
+    #top{
+        width: 100%;
+        height: 50px;
+    }
+    #contert{
+        width: 100%;
+        height: 450px;
+    }
+    #leftDiv{
+        width: 600px;
+        height:450px;
+        float: left;
+    }
+    #rightDiv{
+        width: 675px;
+        height:450px;
+        float: right;
+    }
+    #evaluation_Situation{
+        width: 550px;
+        height:250px;
+        margin-left:25px;
+    }
+    #evaluation_top{
+        width: 550px;
+        height:25px;
+    }
+    .detailsFrist{
+        width: 170px;
+        height: 100px;
+        float: left;
+        margin-top: 10px;
+    }
+    .details{
+        width: 170px;
+        height: 100px;
+        float: left;
+        margin-top: 10px;
+        margin-left: 20px;
+    }
+
+    #pieChart{
+        width: 550px;
+        height:200px;
+        margin-left:25px;
+    }
+    .fountStyle{
+        font-size: 20px;
+        margin-top: 20px;
+        text-align: center;
+        font-size: 30px;
+    }
+    .fontDiv{
+        margin: 0 auto;
+        margin-left: 40px;
+    }
+    .fontDiv{
+        margin: 0 auto;
+    }
+    .fontsize{
+        font-size: 19px;
+        text-align: center;
+    }
+    .pieleft{
+        width: 250px;
+        height: 180px;
+        float: left;
+        margin-top: 10px;
+        margin-left: 15px;
+    }
+    .pieRight{
+        width: 250px;
+        height: 180px;
+        float: right;
+        margin-top: 10px;
+        margin-right: 15px;
+    }
+    .rightDivFrist{
+        width: 675px;
+        height: 215px;
+        margin-top: 10px;
+    }
+
+</style>
 <body>
-<div class="dBody">
-    <i class="layui-icon" style="font-size: 30px;">&#xe615;</i>
-    <input id="edt-search" type="text" placeholder="输入关键字"  style="margin-left: 20px"/>
-    <div class="layui-input-inline">
-        <select  name="questionnaire" id="questionnaire" lay-search>
-            <option value="">请选择问卷批次</option>
+<div id="top" >
+    <div class="layui-form layui-inline" style="width: 200px">
+        <select id="batchId" name="batchId"  lay-search>
+            <option value="">选择批次</option>
         </select>
     </div>
-    <button class="layui-btn" data-type="insert" id="insertPower" style="margin-left: 20px">搜索</button>
-    <table class="layui-hidden layui-table" id="treeTable" lay-filter="treeTable"></table>
+    <div class="layui-form layui-inline" style="width: 200px">
+    <select id="paperId" name="paperId"  lay-search>
+        <option value="">选择问卷</option>
+    </select>
+    </div>
+
+    <div style="width: 200px;float: right">
+        <button class="layui-btn" data-type="details" id="details" style="margin-left: 20px">详情</button>
+    </div>
 </div>
+<div id="contert">
+    <div id="leftDiv">
+        <div id="evaluation_Situation">
+            <div id="evaluation_top">
+                <div style="width: 100px;height: 25px;margin-left: 20px">
+                    <p class="web-font">评教详情</p>
+                </div>
+                <div class="detailsFrist">
+                    <div class="fontDiv">
+                        <p  class="fontsize">学院数量:</p>
+                        <p id="departmSize" class="fountStyle"></p>
+                    </div>
+                </div>
+
+                <div class="details">
+                    <div class="fontDiv">
+                        <p class="fontsize" >老师人数:</p>
+                        <p id="evaluationSize" class="fountStyle"></p>
+                    </div>
+                </div>
+
+                <div class="details">
+                    <div class="fontDiv">
+                        <p  class="fontsize">参与评价人数:</p>
+                        <p id="participateMen" class="fountStyle"></p>
+                    </div>
+                </div>
+
+                <div class="detailsFrist">
+                    <div class="fontDiv">
+                        <p  class="fontsize" >分数大与平均分:</p>
+                        <p id="GreatAvg" class="fountStyle"></p>
+                    </div>
+                </div>
+
+                <div class="details">
+                    敬请期待。。
+                </div>
 
 
+
+            </div>
+        </div>
+
+        <div id="pieChart">
+            <div class="pieleft">
+                <div id="main" style="width: 250px;height:180px;"></div>
+            </div>
+            <div class="pieRight">
+                敬请期待。。
+            </div>
+        </div>
+    </div>
+    <div id="rightDiv">
+        <div class="rightDivFrist">
+            <div id="lineMain" style="width: 675px;height:215px;"></div>
+        </div>
+
+    </div>
+</div>
+<script>
+    layui.use(['form', 'upload', 'layer'], function () {
+        $(function () {
+            $.ajax({
+                type:"post",
+                url:"/stats/evaluationTop",
+                dataType:"json",
+                data:{
+                    "batchId":1,
+                    "papersId":"1"
+                },
+                success:function (res) {
+                    dynamic_number($("#departmSize"),res[0].length);
+                    dynamic_number($("#evaluationSize"),res[1].length);
+                    dynamic_number($("#participateMen"),res[2].length);
+                    dynamic_number($("#GreatAvg"),res[3].length);
+                }
+            })
+
+            $.ajax({
+                type:"post",
+                url:"/stats/queryDeapratmentLike",
+                dataType:"json",
+                data:{
+                    "batchId":1,
+                    "papersId":1
+                },
+                success:function (result) {
+                    if (result[0].type =="试卷"){
+                        var departmentName = []
+                        var batch_id = []
+
+                        for (var i =0;i<result[0].departmentName.length;i++){
+                            departmentName.push(result[0].departmentName[i].departments_name)
+                        }
+
+
+                        for (var i =0;i<result[0].paperList.length;i++){
+                            batch_id.push(result[0].paperList[i].batch_id)
+                        }
+
+                        var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
+                        option = {
+                            title: {
+                                text: '院系平均分'
+                            },
+                            tooltip : {
+                                trigger: 'axis',
+                                axisPointer: {
+                                    type: 'cross',
+                                    label: {
+                                        backgroundColor: '#6a7985'
+                                    }
+                                }
+                            },
+                            legend: {
+                                data:batch_id
+                            },
+                            toolbox: {
+                                feature: {
+                                    saveAsImage: {}
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis : [
+                                {
+                                    type : 'category',
+                                    boundaryGap : false,
+                                    data : departmentName
+                                }
+                            ],
+                            yAxis : [
+                                {
+                                    type : 'value'
+                                }
+                            ],
+                            series:function() {
+                                var batchSize = []
+                                for (var i =0;i<result[0].paperList.length;i++){
+                                    var data = []
+                                    var itemName = []
+                                    itemName.push(result[0].paperList[i].batch_id)
+                                    for (var j = 0 ; j<result[0].paperList[i].batch_idList.length;j++){
+                                        data.push(result[0].paperList[i].batch_idList[j].avg)
+                                    }
+                                    var item={
+                                        name:itemName,
+                                        type:'line',
+                                        stack: '总量',
+                                        data:data,
+                                        areaStyle: {}
+                                    }
+                                    batchSize.push(item)
+                                }
+                                console.log(batchSize)
+                                return batchSize;
+                            }()
+                        };
+                    }
+                    else if (result[0].type =="问卷") {
+                        console.log(result)
+                        var departmentName = []
+                        var paperList = [];
+
+                        for (var i =0;i<result[0].batchList.length;i++){
+                            paperList.push(result[0].batchList[i].papers_id)
+                        }
+
+                        for (var i =0;i<result[0].departmentName.length;i++){
+                            departmentName.push(result[0].departmentName[i].departments_name)
+                        }
+                        var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
+                        option = {
+                            title: {
+                                text: '院系平均分'
+                            },
+                            tooltip : {
+                                trigger: 'axis',
+                                axisPointer: {
+                                    type: 'cross',
+                                    label: {
+                                        backgroundColor: '#6a7985'
+                                    }
+                                }
+                            },
+                            legend: {
+                                data:paperList
+                            },
+                            toolbox: {
+                                feature: {
+                                    saveAsImage: {}
+                                }
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            xAxis : [
+                                {
+                                    type : 'category',
+                                    boundaryGap : false,
+                                    data : departmentName
+                                }
+                            ],
+                            yAxis : [
+                                {
+                                    type : 'value'
+                                }
+                            ],
+                            series:function() {
+                                var paperSize = []
+
+                                for (var i =0;i<result[0].batchList.length;i++){
+                                    var data = []
+                                    var itemName = [] ;
+                                    itemName = result[0].batchList[i].papers_id
+                                    for (var j=0;j<result[0].batchList[i].paperList.length;j++){
+                                        data.push(result[0].batchList[i].paperList[j].avg)
+                                    }
+                                    var item={
+                                        name:itemName,
+                                        type:'line',
+                                        stack: '总量',
+                                        areaStyle: {},
+                                        data:data
+                                    }
+                                    paperSize.push(item)
+                                }
+                                return paperSize;
+                            }()
+                        };
+                    }
+                    else{
+
+                    }
+                    TypeSalesChart.setOption(option);
+                }
+            })
+
+
+            var names=[];
+            var nums=[];
+            $.ajax({
+                type : "post",
+                async : true,
+                url : "/stats/queryPie",
+                data:{
+                    "batchId":1,
+                    "papersId":1
+                },
+                dataType : "json",
+                success : function(result) {
+                    var TypeSalesChart = echarts.init(document.getElementById('main'));
+                    var option = {
+                        tooltip : {
+                            trigger: 'item',
+                            formatter: "{a} <br/>{b} : {c} ({d}%)"
+                        },
+                        legend: {
+                            orient : 'vertical',
+                            x : 'left',
+                            itemWidth: 5,
+                            itemHeight: 5,
+                            data:(function(){
+                                var res = [];
+                                var len = result.length;
+                                for(var i=0,size=len;i<size;i++) {
+                                    res.push({
+                                        name: result[i].name,
+                                    });
+                                }
+                                return res;
+                            })()
+
+                        },
+                        title : {
+                            text: '教学质量 ',
+                            x:'center'
+                        },
+                        series : [
+                            {
+                                name:'教学质量',
+                                type:'pie',
+                                radius : '55%',
+                                center: ['50%', '60%'],
+                                data:(function(){
+                                    var res = [];
+                                    var len = result.length;
+                                    for(var i=0,size=len;i<size;i++) {
+                                        res.push({
+                                            //通过把result进行遍历循环来获取数据并放入Echarts中
+                                            name: result[i].name,
+                                            value: result[i].size
+                                        });
+                                    }
+                                    return res;
+                                })()
+                            }
+                        ]
+                    };
+
+                    TypeSalesChart.setOption(option);
+                }
+            })
+        })
+        $('#details').on('click', function(){
+            layer.open({
+                type: 2
+                ,skin: 'layui-layer-rim'
+                ,maxmin: true
+                ,area: ["800px","500px"]
+                ,title: "评教详情"
+                ,content:"/stats/godetails"
+                ,success: function (layero,index) {
+                }
+            })
+        });
+    })
+
+    function dynamic_number(id,value) {
+        var temp = id;
+        temp.animate({count: value}, {
+            duration: 2000,
+            step: function () {
+                temp.text(String(parseInt(this.count)));
+            }
+        });
+    }
+</script>
+
+<!--动态生成角色下拉框-->
+<script>
+    layui.use(['form', 'upload', 'layer'], function () {
+        $.ajax({
+            url:"/stats/queryPaper",
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#paperId').append(new Option(item.papers_name,item.papers_id));
+                });
+                layui.form.render("select");
+                console.log(data)
+            }
+        })
+    });
+
+    layui.use(['form', 'upload', 'layer'], function () {
+        $.ajax({
+            url:"/stats/queryBatch",
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#batchId').append(new Option(item.batch_name,item.batch_id));
+                });
+                layui.form.render("select");
+            }
+        })
+    });
+</script>
 </body>
 </html>
