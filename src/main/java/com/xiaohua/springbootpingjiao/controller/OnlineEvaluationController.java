@@ -6,8 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: luquanlin
@@ -37,15 +44,22 @@ public class OnlineEvaluationController {
 
     @ResponseBody
     @RequestMapping("OnlineEvaluationFraction")
-    public Map OnlineEvaluationFraction(String optionsAll_id,int rater,int gradeds,int papers_id,int courses_id,String answers){
+    public Map OnlineEvaluationFraction(String optionsAll_id,int gradeds,int papers_id,int courses_id,String answers,String target_name_id){
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
+        HttpSession session = request.getSession();
+        int rater = Integer.parseInt(session.getAttribute("user_id").toString());
         String a[]=optionsAll_id.split(",");
+        String t[]=target_name_id.split(",");
         Map result =new HashMap();
         float sum = 0;
         for (int i=0;i<a.length;i++){
             String options = a[i];
+            String targets_id = t[i];
             int options_id = Integer.parseInt(options);
+            int target_id = Integer.parseInt(targets_id);
             FractionSum fractionSum = new FractionSum();
-            List<FractionSum> fractions = onlineEvaluationService.OnlineEvaluationFraction(options_id);
+            List<FractionSum> fractions = onlineEvaluationService.OnlineEvaluationFraction(options_id,target_id);
             sum = sum + fractions.get(0).getFraction();
         }
         String fractions = String.valueOf(sum);

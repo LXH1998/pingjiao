@@ -3,6 +3,7 @@ package com.xiaohua.springbootpingjiao.mapper;
 import com.xiaohua.springbootpingjiao.entity.Fraction;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -13,4 +14,5 @@ import java.util.List;
 @Repository
 public interface SelectOnlineEvaluationMapper {
     List<Fraction> selectEvaluationAnswers(int rater,int gradeds,int papers_id,int courses_id);
+    List<HashMap> selectFractions(int rater,int gradeds,int papers_id,int courses_id);
 }

@@ -3,7 +3,7 @@
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.ColleagueEvaluationMapper">
     <!--同行评教页面-->
     <select id="selectColleagueEvaluation" resultType="HashMap">
-        select cs.courses_id,ps.papers_id,b.batch_name,c.class_id,cs.courses_name,uu.user_id,uu.user_name,ds.departments_name,ur.role_id from user u
+        select cs.courses_id,ps.papers_id,b.batch_name,b.batch_id,c.class_id,cs.courses_name,uu.user_id,uu.user_name,ds.departments_name,ur.role_id from user u
           left join user uu on u.departments_id=uu.departments_id
           left join userrole ur on uu.user_id=ur.user_id
           left join role r on r.role_id=ur.role_id
@@ -18,7 +18,7 @@
 
     <!--批次模糊查询-->
     <select id="selectBatchIdColleagueEvaluation" resultType="HashMap">
-        select cs.courses_id,ps.papers_id,b.batch_name,c.class_id,cs.courses_name,uu.user_id,uu.user_name,ds.departments_name from user u
+        select cs.courses_id,ps.papers_id,b.batch_name,b.batch_id,c.class_id,cs.courses_name,uu.user_id,uu.user_name,ds.departments_name from user u
           left join user uu on u.departments_id=uu.departments_id
           left join userrole ur on uu.user_id=ur.user_id
           left join role r on r.role_id=ur.role_id
@@ -34,5 +34,10 @@
     <!--查询是否评教-->
     <select id="selectIfEvaluation" resultType="HashMap">
         select * from fraction where rater=#{rater} and gradeds=#{gradeds} and papers_id=#{papers_id} and courses_id=#{courses_id}
+    </select>
+
+    <!--查询是否开启评教-->
+    <select id="selectIfStartEvaluation" resultType="com.xiaohua.springbootpingjiao.entity.Batch">
+        select batch_hide from batch where batch_id=${batch_Id}
     </select>
 </mapper>
