@@ -4,7 +4,16 @@ public class Scores{
     private Integer scores_Id;
     private Integer gradeds_Id;
     private String scores_Sum;
+    private Integer papers_Id;
     private Integer batch_Id;
+    public Integer getBatch_id() {
+        return batch_Id;
+    }
+
+    public void setBatch_id(Integer batch_id) {
+        this.batch_Id = batch_id;
+    }
+
 
     public Integer getScores_Id() {
         return scores_Id;
@@ -30,11 +39,11 @@ public class Scores{
         this.scores_Sum = scores_Sum;
     }
 
-    public Integer getBatch_Id() {
-        return batch_Id;
+    public Integer getPapers_id() {
+        return papers_Id;
     }
 
-    public void setBatch_Id(Integer batch_Id) {
-        this.batch_Id = batch_Id;
+    public void setPapers_id(Integer papers_id) {
+        this.papers_Id = papers_id;
     }
 }
