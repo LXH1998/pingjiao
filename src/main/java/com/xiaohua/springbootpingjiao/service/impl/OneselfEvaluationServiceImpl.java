@@ -27,4 +27,9 @@ public class OneselfEvaluationServiceImpl implements OneselfEvaluationService{
     public List<HashMap> selectOneselfEvaluation(int user_id) {
         return oneselfEvaluationMapper.selectOneselfEvaluation(user_id);
     }
+
+    @Override
+    public List<HashMap> selectIfOneselfEvaluation(int rater, int gradeds, int papers_id, int courses_id) {
+        return oneselfEvaluationMapper.selectIfOneselfEvaluation(rater, gradeds, papers_id, courses_id);
+    }
 }
