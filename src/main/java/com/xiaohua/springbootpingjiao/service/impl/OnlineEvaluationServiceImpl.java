@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.service.impl;
 
+import com.xiaohua.springbootpingjiao.entity.FractionSum;
 import com.xiaohua.springbootpingjiao.entity.TargetOptins;
 import com.xiaohua.springbootpingjiao.mapper.OnlineEvaluationMapper;
 import com.xiaohua.springbootpingjiao.service.OnlineEvaluationService;
@@ -49,4 +50,20 @@ public class OnlineEvaluationServiceImpl implements OnlineEvaluationService {
 
         return ret;
     }
+
+    @Override
+    public List<FractionSum> OnlineEvaluationFraction(int options_id) {
+        return onlineEvaluationMapper.OnlineEvaluationFraction(options_id);
+    }
+
+    @Override
+    public Boolean insertOnlineEvaluation(int rater, int gradeds, int papers_id, int courses_id, String answers, String fractions) {
+        int userResult = onlineEvaluationMapper.insertOnlineEvaluation(rater, gradeds, papers_id, courses_id, answers, fractions);
+        if(userResult > 0){
+            return true;
+        }
+        return false;
+    }
+
 }
+

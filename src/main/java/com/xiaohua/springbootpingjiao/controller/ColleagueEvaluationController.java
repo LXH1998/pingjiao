@@ -49,4 +49,17 @@ public class ColleagueEvaluationController {
         result.put("data",users);
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping("selectIfEvaluation")
+    public Map selectIfEvaluation(int rater,int gradeds,int papers_id,int courses_id){
+        Map result = new HashMap();
+        List<HashMap> users = colleagueEvaluationService.selectIfEvaluation(rater, gradeds, papers_id, courses_id);
+        if (users.size()>0){
+            result.put("data",1);
+        }else{
+            result.put("data",0);
+        }
+        return result;
+    }
 }

@@ -1,5 +1,7 @@
 package com.xiaohua.springbootpingjiao.service;
 
+import com.xiaohua.springbootpingjiao.entity.FractionSum;
+
 import java.util.List;
 import java.util.Map;
 
@@ -10,4 +12,6 @@ import java.util.Map;
  **/
 public interface OnlineEvaluationService {
     List<Map<String, Object>> selectOnlineEvaluation(int papers_id);
+    List<FractionSum> OnlineEvaluationFraction(int options_id);
+    Boolean insertOnlineEvaluation(int rater, int gradeds, int papers_id, int courses_id, String answers, String fractions);
 }
