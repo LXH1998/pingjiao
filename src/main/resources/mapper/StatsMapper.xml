@@ -1,32 +1,291 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.StatsMapper">
-
-    <resultMap id="Departments" type="com.xiaohua.springbootpingjiao.entity.Departments">
-        <result column="departments_Id" jdbcType="INTEGER" property="departments_Id" />
-        <result column="departments_Name" jdbcType="VARCHAR" property="departments_Name" />
+    <resultMap id="fractionResultMap" type="com.xiaohua.springbootpingjiao.entity.WaterPojo">
+        <id column="fraction_id" property="fraction_id"></id>
+        <result column="role_name" property="role_name"></result>
+        <result column="user_id" property="user_id"></result>
+        <result column="fractions" property="fractions"></result>
+        <result column="batch_id" property="batch_id"></result>
+        <result column="courses_id" property="courses_id"></result>
+        <result column="papers_id" property="papers_id"></result>
     </resultMap>
-
-<!-- 查询所有院系数量-->
-    <select id="queryDepartmentSize" resultType="Map" >
-        SELECT COUNT(departments_id) as departmentSize FROM departments where departments_state!=0
+<!-- 整理流水表信息-->
+    <select id="clearUpFraction" parameterType="hashmap" resultMap="fractionResultMap">
+    SELECT
+      f.`fraction_id`,
+      f.`fractions`,
+      r.`role_name` ,
+      u.`user_id` ,
+      b.`batch_id`,
+      p.`papers_id`,
+      f.`courses_id`
+    FROM
+      fraction f
+      LEFT JOIN papers p
+        ON p.`papers_id` = f.`papers_id`
+      LEFT JOIN batch b
+        ON b.`batch_id` = p.`batch_id`
+      LEFT JOIN USER u
+        ON u.`user_id` = f.`gradeds`
+      LEFT JOIN USER uu
+        ON uu.`user_id` = f.`rater`
+      LEFT JOIN userrole ur
+        ON ur.`user_id` = uu.`user_id`
+      LEFT JOIN role r
+        ON r.`role_id` = ur.`role_id`
+    WHERE u.`user_state` != 0
+      AND uu.`user_state` != 0
+      AND p.`oapers_visible` != 0
+      AND b.`batch_hide` = 2
+      AND b.`batch_id` = #{batchId}
+      And f.`papers_id` = #{papersId}
     </select>
-<!-- 查询所有在职老师数量-->
-    <select id="querTeacherSize" resultType="Map" >
-        SELECT COUNT(u.user_id) as userSize FROM USER u
-        LEFT JOIN userrole ur ON u.`user_id` = ur.`user_id`
-        LEFT JOIN role r ON r.`role_id` = ur.`role_id`
-        WHERE u.`user_state`!=0 AND r.`role_state`!=0
-                AND r.`role_name`="教师"
+
+<!--查询所有参加评教老师-->
+    <select id="queryTeacherStats" parameterType="hashmap" resultType="hashmap">
+    SELECT
+      f.gradeds
+    FROM
+      fraction f
+      LEFT JOIN papers p
+        ON p.`papers_id` = f.`papers_id`
+      LEFT JOIN batch b
+        ON b.`batch_id` = p.`batch_id`
+    WHERE b.`batch_id` = #{batchId}
+      And f.`papers_id` = #{papersId}
+    GROUP BY f.gradeds
+     </select>
+<!--查询评教老师评教的科目-->
+    <select id="queryTeacherCourse" parameterType="hashmap" resultType="hashmap">
+    SELECT
+      f.`courses_id`
+    FROM
+      fraction f
+      LEFT JOIN papers p
+        ON p.`papers_id` = f.`papers_id`
+      LEFT JOIN batch b
+        ON b.`batch_id` = p.`batch_id`
+    WHERE b.`batch_id` = #{batchId}
+      AND f.`gradeds` = #{gradeds}
+      AND f.`papers_id` = #{papersId}
+    GROUP BY f.`courses_id`
     </select>
 
-<!--    查询问卷部门总数-->
-    <select id="qeryDepartmentCount" parameterType="string" resultType="hashmap">
-        SELECT d.`departments_id`,d.departments_name,COUNT(d.`departments_id`)AS '院系教师数',COUNT(f.`rater`) AS '参与评教人数'
-FROM departments d  LEFT JOIN USER u ON d.`departments_id` = u.`departments_id` LEFT JOIN  fraction f ON f.`fraction_id` =u.`user_id`
-LEFT JOIN papers p ON f.`papers_id` = p.`papers_id` LEFT JOIN batch b ON b.`batch_id` = p.`batch_id`
-WHERE b.`batch_name`="2019-2020第一学期" AND b.`batch_hide`=2 AND p.`oapers_visible`=1 AND u.`user_state`!=0 AND d.`departments_state`!=0
-GROUP BY u.departments_id
 
+<!--批量插入成绩-->
+    <insert id="insertBatchScore" parameterType="java.util.List">
+    INSERT INTO scores (
+      gradeds,
+      scores_sum,
+      batch_id,
+      courses_id,
+      papers_id
+    )
+    VALUES
+    <foreach collection="list" item="item" index="index" separator=",">
+    (
+        #{item.gradeds_Id},
+        #{item.scores_Sum},
+        #{item.batch_Id},
+        #{item.scores_Id},
+        #{item.papers_Id}
+     )
+    </foreach>
+    </insert>
+
+<!--统计参与评教学院-->
+    <select id="queryScoreDepartment" parameterType="hashmap" resultType="hashmap">
+     SELECT
+      d.`departments_id`,
+      d.`departments_name`,
+      COUNT(d.departments_id)
+    FROM
+      scores s
+      LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+      LEFT JOIN departments d
+        ON d.`departments_id` = u.`departments_id`
+    <where>
+        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+    </where>
+    GROUP BY d.departments_id
+    </select>
+<!--查询参与评教老师-->
+    <select id="queryScoreTeacher"  parameterType="hashmap" resultType="hashmap">
+    SELECT DISTINCT
+      f.`gradeds`,
+      f.`courses_id`,
+      p.`papers_id`,
+      b.`batch_id`
+    FROM
+      fraction f
+      LEFT JOIN papers p
+        ON p.`papers_id` = f.`papers_id`
+      LEFT JOIN batch b
+        ON b.`batch_id` = p.`batch_id`
+    <where>
+        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+    </where>
+    </select>
+
+<!--查询评价人数-->
+    <select id="queryScoreMan"  parameterType="hashmap" resultType="hashmap">
+    SELECT DISTINCT
+      f.`rater`,
+      f.`courses_id`,
+      p.`papers_id`,
+      b.`batch_id`
+    FROM
+      fraction f
+      LEFT JOIN papers p
+        ON p.`papers_id` = f.`papers_id`
+      LEFT JOIN batch b
+        ON b.`batch_id` = p.`batch_id`
+    <where>
+       <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
+       <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+    </where>
+    </select>
+<!--查询老师评价高于平均分的老师-->
+    <select id="queryAverageTeacherDayu" parameterType="hashmap" resultType="hashmap" >
+    SELECT
+      *
+    FROM
+      scores
+    WHERE scores_sum >
+      (SELECT
+        AVG(scores_sum)
+      FROM
+        scores)
+        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">AND batch_Id=#{papers_Id}</if>
+    </select>
+
+<!--生成评教质量好坏饼图优秀-->
+    <select id="queryTeacherDaYu90" parameterType="hashmap" resultType="hashmap" >
+        SELECT
+        *
+        FROM
+        scores
+        WHERE scores_sum >90
+        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">AND batch_Id=#{papers_Id}</if>
+    </select>
+
+    <!--生成评教质量好坏饼图中等-->
+    <select id="queryTeacherDaYu60XiaoYu90" parameterType="hashmap" resultType="hashmap" >
+        SELECT
+        *
+        FROM
+        scores
+        WHERE scores_sum BETWEEN 60 and 90
+        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">AND batch_Id=#{papers_Id}</if>
+    </select>
+
+    <!--生成评教质量好坏饼图差-->
+    <select id="queryTeacherXiaoyu60" parameterType="hashmap" resultType="hashmap" >
+        SELECT
+        *
+        FROM
+        scores
+        WHERE scores_sum &lt;60
+        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">AND batch_Id=#{papers_Id}</if>
+    </select>
+
+<!--模糊查询院系平均分-->
+    <select id="queryDepartmentLike" parameterType="hashmap" resultType="hashmap">
+        SELECT
+        d.`departments_name`,
+        s.`scores_sum`,
+        s.`batch_id`,
+        s.`papers_id`
+        FROM
+        scores s
+        LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+        LEFT JOIN departments d
+        ON d.`departments_id` = u.`departments_id`
+     <where>
+        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+     </where>
+    </select>
+<!--模糊查询paperid-->
+    <select id="queryPaperIdLike" parameterType="hashmap" resultType="hashmap">
+     SELECT
+      s.`papers_id`
+    FROM
+      scores s
+      LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+      LEFT JOIN departments d
+        ON d.`departments_id` = u.`departments_id`
+    <where>
+        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+    </where>
+    GROUP BY papers_id
+    </select>
+
+<!-- 模糊查询batchId    -->
+    <select id="queryBatchIdLike" parameterType="hashmap" resultType="hashmap">
+        SELECT
+        s.`batch_id`
+        FROM
+        scores s
+        LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+        LEFT JOIN departments d
+        ON d.`departments_id` = u.`departments_id`
+        <where>
+            <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
+            <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+        </where>
+        GROUP BY batch_id
+    </select>
+
+
+    <select id="queryDartpmentName" resultType="hashmap">
+        select departments_name from departments
+    </select>
+
+    <select id="queryBatch" resultType="hashmap">
+        select  * from batch
+    </select>
+
+    <select id="queryPaper" resultType="hashmap">
+        select  * from papers
+    </select>
+
+    <select id="queryScoreDealits" parameterType="hashmap" resultType="hashmap">
+     SELECT
+      u.`user_name`,
+      d.`departments_name`,
+      c.`courses_name`,
+      s.`scores_sum`,
+      p.`papers_name`,
+      b.`batch_name`
+    FROM
+      scores s
+      LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+      LEFT JOIN departments d
+        ON d.`departments_id` = u.`departments_id`
+      LEFT JOIN courses c
+        ON c.`courses_id` = s.`courses_id`
+      LEFT JOIN batch b
+        ON b.`batch_id` = s.`batch_id`
+      LEFT JOIN papers p
+        ON p.`papers_id` = s.`papers_id`
+    WHERE u.`user_state` != 0
+      AND p.`oapers_visible` != 0
+      AND b.`batch_hide` != 0
+        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null "> AND batch_Id=#{papers_Id}</if>
     </select>
 </mapper>
