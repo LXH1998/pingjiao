@@ -76,4 +76,61 @@ public class BatchController {
         }
         return result;
     }
+    //修改批次状态为关闭
+    @ResponseBody
+    @RequestMapping("/modifyOpenBatch")
+    public Map ModifyOpenBatch(int batch_Id)
+    {
+        int batchIf = batchService.ModifyOpenBatch(batch_Id);
+        Map result = new HashMap();
+        if(batchIf == 1){
+            result.put("result","操作成功");
+        }else {
+            result.put("result","操作失败");
+        }
+        return result;
+    }
+    //修改批次状态为暂停
+    @ResponseBody
+    @RequestMapping("/modifySuspendBatch")
+    public Map ModifySuspendBatch(int batch_Id)
+    {
+        int batchIf = batchService.ModifySuspendBatch(batch_Id);
+        Map result = new HashMap();
+        if(batchIf == 1){
+            result.put("result","操作成功");
+        }else {
+            result.put("result","操作失败");
+        }
+        return result;
+    }
+    //修改批次状态为关闭
+    @ResponseBody
+    @RequestMapping("/modifyEndBatch")
+    public Map ModifyEndBatch(int batch_Id)
+    {
+        int batchIf = batchService.ModifyEndBatch(batch_Id);
+        Map result = new HashMap();
+        if(batchIf == 1){
+            result.put("result","操作成功");
+        }else {
+            result.put("result","操作失败");
+        }
+        return result;
+    }
+    //删除某个批次
+    @ResponseBody
+    @RequestMapping("/deleteOneBatch")
+    public Map DeleteOneBatch(int batch_Id)
+    {
+        int batchIf = batchService.DeleteOneBatch(batch_Id);
+        Map result = new HashMap();
+        if(batchIf == 1){
+            result.put("result","操作成功");
+        }else {
+            result.put("result","操作失败");
+        }
+        return result;
+    }
+
 }

@@ -3,19 +3,19 @@
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.BatchMapper">
     <!--查找所有批次-->
     <select id="SelectBatch" resultType="com.xiaohua.springbootpingjiao.entity.Batch">
-        select * from batch  limit #{pages},#{limit}
+        select * from batch where batch_State = '1' limit #{pages},#{limit}
     </select>
     <!--查找所有批次数量-->
     <select id="SelectBatchCount" resultType="int">
-        select count(*) from batch
+        select count(*) from batch where batch_State = '1'
     </select>
     <!--根据批次名模糊搜索-->
     <select id="SelectBatchName" resultType="com.xiaohua.springbootpingjiao.entity.Batch">
-        select * from batch where batch_name like concat('%',#{batch_Name},'%')  limit #{pages},#{limit}
+        select * from batch where batch_name like concat('%',#{batch_Name},'%') and batch_State = '1' limit #{pages},#{limit}
     </select>
     <!--根据批次名模糊搜索的数量-->
     <select id="SelectBatchNameCount" parameterType="String" resultType="int">
-        select count(*) from batch where batch_name like concat('%',#{batch_Name},'%')
+        select count(*) from batch where batch_name like concat('%',#{batch_Name},'%') and batch_State = '1'
     </select>
     <!--增加批次-->
     <insert id="InsertBatch" parameterType="String">
@@ -23,6 +23,22 @@
     </insert>
     <!--判断具体某个批次是否存在-->
     <select id="SelectBatchOne" parameterType="String" resultType="int" >
-        select count(*) from batch where batch_name = #{batch_Name}
+        select count(*) from batch where batch_name = #{batch_Name} and batch_State = '1'
     </select>
+    <!--修改批次状态为开启-->
+    <update id="ModifyOpenBatch" parameterType="int">
+        update batch set batch_hide = 1 where batch_id = #{batch_Id}
+    </update>
+    <!--修改批次状态为暂停-->
+    <update id="ModifySuspendBatch" parameterType="int">
+        update batch set batch_hide = 2 where batch_id = #{batch_Id}
+    </update>
+    <!--修改批次状态为结束-->
+    <update id="ModifyEndBatch" parameterType="int">
+        update batch set batch_hide = 3 where batch_id = #{batch_Id}
+    </update>
+    <!--删除某个批次-->
+    <update id="DeleteOneBatch" parameterType="int">
+        update batch set batch_state = '0' where batch_id = #{batch_Id}
+    </update>
 </mapper>

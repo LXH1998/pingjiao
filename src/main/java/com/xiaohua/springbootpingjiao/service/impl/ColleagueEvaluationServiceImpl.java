@@ -27,4 +27,9 @@ public class ColleagueEvaluationServiceImpl implements ColleagueEvaluationServic
     public List<HashMap> selectColleagueEvaluation(int user_id) {
         return colleagueEvaluationMapper.selectColleagueEvaluation(user_id);
     }
+
+    @Override
+    public List<HashMap> selectIfEvaluation(int rater, int gradeds, int papers_id, int courses_id) {
+        return colleagueEvaluationMapper.selectIfEvaluation(rater, gradeds, papers_id, courses_id);
+    }
 }
