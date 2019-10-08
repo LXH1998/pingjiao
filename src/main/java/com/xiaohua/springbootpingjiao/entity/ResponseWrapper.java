@@ -154,6 +154,23 @@ public class ResponseWrapper {
     }
 
 
+    /**
+     * @Author xiaoyi
+     * @Return
+     * @Date 2019/9/12 17:47
+     * @param data 权限列表集合 total 权限条数
+     * @Description  查询所有权限成功
+     */
+    public static ResponseWrapper querySuccess(Object data,int total){
+        ResponseWrapper responseWrapper = new ResponseWrapper();
+        responseWrapper.setCount(total);
+        responseWrapper.setCode(ReturnCode.SUCCESS.getCode());
+        responseWrapper.setMsg(ReturnCode.SUCCESS.getMsg());
+        responseWrapper.setData(data);
+        return  responseWrapper;
+    }
+
+
     public String getCode() {
         return code;
     }
