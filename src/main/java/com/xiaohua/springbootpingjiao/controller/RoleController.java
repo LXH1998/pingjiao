@@ -193,20 +193,24 @@ public class RoleController {
     public Map insertThePowers(String codeId,int role_Id){
         boolean isdelete = deleteThePowerTest(role_Id);
         Map result = new HashMap();
-//        if (isdelete == true){
+        if (codeId.length()==0){
+            result.put("code",1);
+        }else {
+            //        if (isdelete == true){
             List<Power> powers = roleService.selectTheDeletePower(role_Id);
             String powerIds[]=codeId.split(",");
+//            if (powerIds.length==)
             try {
                 for (int i=0;i<powerIds.length;i++){
                     String powerId = powerIds[i];
                     int power_Id = Integer.valueOf(powerId);
                     int isupdate = roleService.updateTheDeletePowerTest(role_Id,power_Id);
-                        if (isupdate == 0){
-                            roleService.insertRolePower(role_Id,power_Id);
-                            result.put("code",1);
-                        }else {
-                            result.put("code",1);
-                        }
+                    if (isupdate == 0){
+                        roleService.insertRolePower(role_Id,power_Id);
+                        result.put("code",1);
+                    }else {
+                        result.put("code",1);
+                    }
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -215,6 +219,8 @@ public class RoleController {
 //        }else {
 //            result.put("code", -1);
 //        }
+        }
+
         return result;
     }
 

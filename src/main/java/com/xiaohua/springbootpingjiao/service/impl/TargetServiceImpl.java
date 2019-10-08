@@ -53,4 +53,36 @@ public class TargetServiceImpl implements TargetService {
         return targetMapper.deleteTarget(target_Id);
     }
 
+//    插入下级指标类别（查看当前指标类别下是否存在相同下级指标类别）
+    @Override
+    public int selectSubordinateTargetCategory(String target_Name, int target_Id) {
+        return targetMapper.selectSubordinateTargetCategory(target_Name,target_Id);
+    }
+//    插入下级指标类别
+    @Override
+    public int insertSubordinateTargetCategory(String target_Name, Float target_Weight, int target_Id) {
+        return targetMapper.insertSubordinateTargetCategory(target_Name,target_Weight,target_Id);
+    }
+
+    @Override
+    public int insertTarget(String target_Name, Float target_Weight, int target_Id, Target target) {
+//        return targetMapper.insertTarget(target_Name,target_Weight,target_Id);
+        return targetMapper.insertTarget(target_Name,target_Weight,target_Id,target);
+    }
+
+    @Override
+    public int insertOptions(String options_Content, Float options_Weight, Options options) {
+        return targetMapper.insertOptions(options_Content,options_Weight,options);
+    }
+
+    @Override
+    public int insertTargetOptions(int target_Id, int options_Id) {
+        return targetMapper.insertTargetOptions(target_Id,options_Id);
+    }
+
+    @Override
+    public int saveTargetCategoryChange(String targetName, Float targetWeight, int targetId) {
+        return targetMapper.saveTargetCategoryChange(targetName,targetWeight,targetId);
+    }
+
 }
