@@ -15,4 +15,5 @@ import java.util.List;
 public interface ColleagueEvaluationMapper {
     List<HashMap> selectColleagueEvaluation(int user_id);
     List<HashMap> selectBatchIdColleagueEvaluation(int user_id,int batch_id);
+    List<HashMap> selectIfEvaluation(int rater,int gradeds,int papers_id,int courses_id);
 }

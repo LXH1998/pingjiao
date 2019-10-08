@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.mapper;
 
+import com.xiaohua.springbootpingjiao.entity.FractionSum;
 import com.xiaohua.springbootpingjiao.entity.TargetOptins;
 import org.springframework.stereotype.Repository;
 
@@ -14,4 +15,6 @@ import java.util.List;
 @Repository
 public interface OnlineEvaluationMapper {
     List<TargetOptins> selectOnlineEvaluation(int papers_id);
+    List<FractionSum> OnlineEvaluationFraction(int options_id);
+    int insertOnlineEvaluation(int rater,int gradeds,int papers_id,int courses_id,String answers,String fractions);
 }
