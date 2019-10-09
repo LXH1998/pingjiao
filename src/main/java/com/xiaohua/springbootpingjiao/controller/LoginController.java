@@ -61,7 +61,7 @@ public class LoginController {
     */
     @RequestMapping("validation")
     @ResponseBody
-    public Map validation(String name, String password, HttpSession session){
+    public Map validation(String name, String password){
         User user  = new User();
         user.setUser_Password(password);
         user.setUser_Account(name);
@@ -91,6 +91,7 @@ public class LoginController {
         session.invalidate();
         return ResponseWrapper.loginOutSuccess();
     }
-
+    
 }
+
 

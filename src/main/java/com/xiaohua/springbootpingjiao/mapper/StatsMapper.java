@@ -80,4 +80,6 @@ public interface StatsMapper {
     List<HashMap> queryBatch();
     List<HashMap> queryPaper();
     List<HashMap> queryScoreDealits(HashMap map);
+    List<HashMap> queryPaperdd(String papersId);
+    List<HashMap> queryBatchdd(String batch_id);
 }
