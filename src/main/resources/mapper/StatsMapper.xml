@@ -203,48 +203,64 @@
         d.`departments_name`,
         s.`scores_sum`,
         s.`batch_id`,
-        s.`papers_id`
+        s.`papers_id`,
+        b.batch_name,
+        p.papers_name
         FROM
         scores s
         LEFT JOIN USER u
         ON u.`user_id` = s.`gradeds`
         LEFT JOIN departments d
         ON d.`departments_id` = u.`departments_id`
+        LEFT JOIN batch b
+        ON b.`batch_id` = s.`batch_id`
+        LEFT JOIN papers p
+        ON p.`papers_id` = s.`papers_id`
      <where>
-        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+        <if test=" batch_Id != null ">and batch_Id=#{batch_Id}</if>
+        <if test=" papers_Id != null ">and batch_Id=#{papers_Id}</if>
      </where>
     </select>
 <!--模糊查询paperid-->
     <select id="queryPaperIdLike" parameterType="hashmap" resultType="hashmap">
      SELECT
-      s.`papers_id`
+      s.`papers_id`,
+      p.`papers_name`
     FROM
       scores s
       LEFT JOIN USER u
         ON u.`user_id` = s.`gradeds`
       LEFT JOIN departments d
         ON d.`departments_id` = u.`departments_id`
-    <where>
-        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
-    </where>
+        LEFT JOIN batch b
+        ON b.`batch_id` = s.`batch_id`
+        LEFT JOIN papers p
+        ON p.`papers_id` = s.`papers_id`
+        <where>
+            <if test=" batchId!=null ">  b.batch_id=#{batchId}</if>
+            <if test=" papersId!=null "> And p.papers_id=#{papersId}</if>
+        </where>
     GROUP BY papers_id
     </select>
 
 <!-- 模糊查询batchId    -->
     <select id="queryBatchIdLike" parameterType="hashmap" resultType="hashmap">
         SELECT
-        s.`batch_id`
+        s.`batch_id`,
+        b.`batch_name`
         FROM
         scores s
         LEFT JOIN USER u
         ON u.`user_id` = s.`gradeds`
         LEFT JOIN departments d
         ON d.`departments_id` = u.`departments_id`
+        LEFT JOIN batch b
+        ON b.`batch_id` = s.`batch_id`
+        LEFT JOIN papers p
+        ON p.`papers_id` = s.`papers_id`
         <where>
-            <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-            <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+            <if test=" batchId!=null ">  b.batch_id=#{batchId}</if>
+            <if test=" papersId!=null "> And p.papers_id=#{papersId}</if>
         </where>
         GROUP BY batch_id
     </select>
@@ -287,5 +303,13 @@
       AND b.`batch_hide` != 0
         <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
         <if test=" papers_Id != null "> AND batch_Id=#{papers_Id}</if>
+    </select>
+
+    <select id="queryPaperdd" parameterType="string" resultType="hashmap">
+        select * from papers where papers_id=#{papers_id}
+    </select>
+
+    <select id="queryBatchdd" parameterType="string" resultType="hashmap">
+        select * from batch where batch_id=#{batch_id}
     </select>
 </mapper>

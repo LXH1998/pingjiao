@@ -127,10 +127,12 @@
         <option value="">选择问卷</option>
     </select>
     </div>
-
-    <div style="width: 200px;float: right">
+    <div class="layui-form layui-inline" style="width: 200px">
+        <button class="layui-btn" data-type="search" id="search" style="margin-left: 20px">查询</button>
         <button class="layui-btn" data-type="details" id="details" style="margin-left: 20px">详情</button>
     </div>
+
+
 </div>
 <div id="contert">
     <div id="leftDiv">
@@ -195,254 +197,7 @@
 <script>
     layui.use(['form', 'upload', 'layer'], function () {
         $(function () {
-            $.ajax({
-                type:"post",
-                url:"/stats/evaluationTop",
-                dataType:"json",
-                data:{
-                    "batchId":1,
-                    "papersId":"1"
-                },
-                success:function (res) {
-                    dynamic_number($("#departmSize"),res[0].length);
-                    dynamic_number($("#evaluationSize"),res[1].length);
-                    dynamic_number($("#participateMen"),res[2].length);
-                    dynamic_number($("#GreatAvg"),res[3].length);
-                }
-            })
-
-            $.ajax({
-                type:"post",
-                url:"/stats/queryDeapratmentLike",
-                dataType:"json",
-                data:{
-                    "batchId":1,
-                    "papersId":1
-                },
-                success:function (result) {
-                    if (result[0].type =="试卷"){
-                        var departmentName = []
-                        var batch_id = []
-
-                        for (var i =0;i<result[0].departmentName.length;i++){
-                            departmentName.push(result[0].departmentName[i].departments_name)
-                        }
-
-
-                        for (var i =0;i<result[0].paperList.length;i++){
-                            batch_id.push(result[0].paperList[i].batch_id)
-                        }
-
-                        var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
-                        option = {
-                            title: {
-                                text: '院系平均分'
-                            },
-                            tooltip : {
-                                trigger: 'axis',
-                                axisPointer: {
-                                    type: 'cross',
-                                    label: {
-                                        backgroundColor: '#6a7985'
-                                    }
-                                }
-                            },
-                            legend: {
-                                data:batch_id
-                            },
-                            toolbox: {
-                                feature: {
-                                    saveAsImage: {}
-                                }
-                            },
-                            grid: {
-                                left: '3%',
-                                right: '4%',
-                                bottom: '3%',
-                                containLabel: true
-                            },
-                            xAxis : [
-                                {
-                                    type : 'category',
-                                    boundaryGap : false,
-                                    data : departmentName
-                                }
-                            ],
-                            yAxis : [
-                                {
-                                    type : 'value'
-                                }
-                            ],
-                            series:function() {
-                                var batchSize = []
-                                for (var i =0;i<result[0].paperList.length;i++){
-                                    var data = []
-                                    var itemName = []
-                                    itemName.push(result[0].paperList[i].batch_id)
-                                    for (var j = 0 ; j<result[0].paperList[i].batch_idList.length;j++){
-                                        data.push(result[0].paperList[i].batch_idList[j].avg)
-                                    }
-                                    var item={
-                                        name:itemName,
-                                        type:'line',
-                                        stack: '总量',
-                                        data:data,
-                                        areaStyle: {}
-                                    }
-                                    batchSize.push(item)
-                                }
-                                console.log(batchSize)
-                                return batchSize;
-                            }()
-                        };
-                    }
-                    else if (result[0].type =="问卷") {
-                        console.log(result)
-                        var departmentName = []
-                        var paperList = [];
-
-                        for (var i =0;i<result[0].batchList.length;i++){
-                            paperList.push(result[0].batchList[i].papers_id)
-                        }
-
-                        for (var i =0;i<result[0].departmentName.length;i++){
-                            departmentName.push(result[0].departmentName[i].departments_name)
-                        }
-                        var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
-                        option = {
-                            title: {
-                                text: '院系平均分'
-                            },
-                            tooltip : {
-                                trigger: 'axis',
-                                axisPointer: {
-                                    type: 'cross',
-                                    label: {
-                                        backgroundColor: '#6a7985'
-                                    }
-                                }
-                            },
-                            legend: {
-                                data:paperList
-                            },
-                            toolbox: {
-                                feature: {
-                                    saveAsImage: {}
-                                }
-                            },
-                            grid: {
-                                left: '3%',
-                                right: '4%',
-                                bottom: '3%',
-                                containLabel: true
-                            },
-                            xAxis : [
-                                {
-                                    type : 'category',
-                                    boundaryGap : false,
-                                    data : departmentName
-                                }
-                            ],
-                            yAxis : [
-                                {
-                                    type : 'value'
-                                }
-                            ],
-                            series:function() {
-                                var paperSize = []
-
-                                for (var i =0;i<result[0].batchList.length;i++){
-                                    var data = []
-                                    var itemName = [] ;
-                                    itemName = result[0].batchList[i].papers_id
-                                    for (var j=0;j<result[0].batchList[i].paperList.length;j++){
-                                        data.push(result[0].batchList[i].paperList[j].avg)
-                                    }
-                                    var item={
-                                        name:itemName,
-                                        type:'line',
-                                        stack: '总量',
-                                        areaStyle: {},
-                                        data:data
-                                    }
-                                    paperSize.push(item)
-                                }
-                                return paperSize;
-                            }()
-                        };
-                    }
-                    else{
-
-                    }
-                    TypeSalesChart.setOption(option);
-                }
-            })
-
-
-            var names=[];
-            var nums=[];
-            $.ajax({
-                type : "post",
-                async : true,
-                url : "/stats/queryPie",
-                data:{
-                    "batchId":1,
-                    "papersId":1
-                },
-                dataType : "json",
-                success : function(result) {
-                    var TypeSalesChart = echarts.init(document.getElementById('main'));
-                    var option = {
-                        tooltip : {
-                            trigger: 'item',
-                            formatter: "{a} <br/>{b} : {c} ({d}%)"
-                        },
-                        legend: {
-                            orient : 'vertical',
-                            x : 'left',
-                            itemWidth: 5,
-                            itemHeight: 5,
-                            data:(function(){
-                                var res = [];
-                                var len = result.length;
-                                for(var i=0,size=len;i<size;i++) {
-                                    res.push({
-                                        name: result[i].name,
-                                    });
-                                }
-                                return res;
-                            })()
-
-                        },
-                        title : {
-                            text: '教学质量 ',
-                            x:'center'
-                        },
-                        series : [
-                            {
-                                name:'教学质量',
-                                type:'pie',
-                                radius : '55%',
-                                center: ['50%', '60%'],
-                                data:(function(){
-                                    var res = [];
-                                    var len = result.length;
-                                    for(var i=0,size=len;i<size;i++) {
-                                        res.push({
-                                            //通过把result进行遍历循环来获取数据并放入Echarts中
-                                            name: result[i].name,
-                                            value: result[i].size
-                                        });
-                                    }
-                                    return res;
-                                })()
-                            }
-                        ]
-                    };
-
-                    TypeSalesChart.setOption(option);
-                }
-            })
+            functionD()
         })
         $('#details').on('click', function(){
             layer.open({
@@ -455,6 +210,13 @@
                 ,success: function (layero,index) {
                 }
             })
+        });
+
+        $('#search').on('click', function(){
+          layer.msg("我点击了查询")
+            batchId =   $("#batchId").val()
+            paperId =   $("#paperId").val()
+            functionD(batchId,paperId);
         });
     })
 
@@ -469,6 +231,334 @@
     }
 </script>
 
+<script type="text/javascript">
+    function functionD(batchId,papersId) {
+        console.log(batchId,papersId)
+        $.ajax({
+            type:"post",
+            url:"/stats/evaluationTop",
+            dataType:"json",
+            data:{
+                "batchId":batchId,
+                "papersId":papersId
+            },
+            success:function (res) {
+                dynamic_number($("#departmSize"),res[0].length);
+                dynamic_number($("#evaluationSize"),res[1].length);
+                dynamic_number($("#participateMen"),res[2].length);
+                dynamic_number($("#GreatAvg"),res[3].length);
+            }
+        })
+
+        $.ajax({
+            type:"post",
+            url:"/stats/queryDeapratmentLike",
+            dataType:"json",
+            data:{
+                "batchId":batchId,
+                "papersId":papersId
+            },
+            success:function (result) {
+                console.log(result)
+                if (result[0].type =="试卷"){
+                    var departmentName = []
+                    var batch_name = []
+
+                    for (var i =0;i<result[0].departmentName.length;i++){
+                        departmentName.push(result[0].departmentName[i].departments_name)
+                    }
+
+
+                    for (var i =0;i<result[0].paperList.length;i++){
+                        batch_name.push(result[0].paperList[i].batch_name)
+                    }
+
+                    var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
+                    option = {
+                        title: {
+                            text: '院系平均分'
+                        },
+                        tooltip : {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                label: {
+                                    backgroundColor: '#6a7985'
+                                }
+                            }
+                        },
+                        legend: {
+                            data:batch_name
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data : departmentName
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value'
+                            }
+                        ],
+                        series:function() {
+                            var batchSize = []
+                            for (var i =0;i<result[0].paperList.length;i++){
+                                var data = []
+                                var itemName = []
+                                itemName.push(result[0].paperList[i].batch_name)
+                                for (var j = 0 ; j<result[0].paperList[i].batch_idList.length;j++){
+                                    data.push(result[0].paperList[i].batch_idList[j].avg)
+                                }
+                                var item={
+                                    name:itemName,
+                                    type:'line',
+                                    stack: '总量',
+                                    data:data,
+                                    areaStyle: {}
+                                }
+                                batchSize.push(item)
+                            }
+                            console.log(batchSize)
+                            return batchSize;
+                        }()
+                    };
+                }
+                else if (result[0].type =="问卷") {
+                    console.log(result)
+                    var departmentName = []
+                    var paperList = [];
+
+                    for (var i =0;i<result[0].batchList.length;i++){
+                        paperList.push(result[0].paperList[i].papers_name)
+                    }
+
+                    for (var i =0;i<result[0].departmentName.length;i++){
+                        departmentName.push(result[0].departmentName[i].departments_name)
+                    }
+                    var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
+                    option = {
+                        title: {
+                            text: '院系平均分'
+                        },
+                        tooltip : {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                label: {
+                                    backgroundColor: '#6a7985'
+                                }
+                            }
+                        },
+                        legend: {
+                            data:paperList
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data : departmentName
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value'
+                            }
+                        ],
+                        series:function() {
+                            var paperSize = []
+
+                            for (var i =0;i<result[0].batchList.length;i++){
+                                var data = []
+                                var itemName = [] ;
+                                itemName = result[0].batchList[i].papers_name
+                                for (var j=0;j<result[0].batchList[i].paperList.length;j++){
+                                    data.push(result[0].batchList[i].paperList[j].avg)
+                                }
+                                var item={
+                                    name:itemName,
+                                    type:'line',
+                                    stack: '总量',
+                                    areaStyle: {},
+                                    data:data
+                                }
+                                paperSize.push(item)
+                            }
+                            return paperSize;
+                        }()
+                    };
+                }
+                else{
+                    var papers_name = [];
+                    var batch_name = [];
+                    for (var i =0;i<result[0].paperList.length;i++){
+                        papers_name.push(result[0].paperList[i].papers_name)
+                    }
+
+                    for (var i =0;i<result[0].paperList.length;i++){
+                        batch_name.push(result[i].batch_name)
+                    }
+                    var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
+                    option = {
+                        title: {
+                            text: '院系平均分'
+                        },
+                        tooltip : {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'cross',
+                                label: {
+                                    backgroundColor: '#6a7985'
+                                }
+                            }
+                        },
+                        legend: {
+                            data:batch_name
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis : [
+                            {
+                                type : 'category',
+                                boundaryGap : false,
+                                data : papers_name
+                            }
+                        ],
+                        yAxis : [
+                            {
+                                type : 'value'
+                            }
+                        ],
+                        series:function() {
+                            var paperSize = []
+                            var data = []
+                            var itemName = [] ;
+                            var sum =0.0
+                            for (var i =0;i<result[0].batchList.length;i++){
+                                itemName = result[i].batch_name
+                                for (var j=0;j<result[0].batchList[i].paperList.length;j++){
+                                    sum = sum+result[0].batchList[i].paperList[j].avg
+                                }
+                                var num =  sum/result[0].departmentName.length
+                                data.push(num.toFixed(2))
+                            }
+
+                            var item={
+                                name:itemName,
+                                type:'line',
+                                stack: '总量',
+                                areaStyle: {},
+                                data:data
+                            }
+                            paperSize.push(item)
+                            return paperSize;
+                        }()
+                    };
+
+                }
+                TypeSalesChart.setOption(option);
+            }
+        })
+
+
+        var names=[];
+        var nums=[];
+        $.ajax({
+            type : "post",
+            async : true,
+            url : "/stats/queryPie",
+            data:{
+                "batchId":batchId,
+                "papersId":papersId
+            },
+            dataType : "json",
+            success : function(result) {
+                var TypeSalesChart = echarts.init(document.getElementById('main'));
+                var option = {
+                    tooltip : {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        orient : 'vertical',
+                        x : 'left',
+                        itemWidth: 5,
+                        itemHeight: 5,
+                        data:(function(){
+                            var res = [];
+                            var len = result.length;
+                            for(var i=0,size=len;i<size;i++) {
+                                res.push({
+                                    name: result[i].name,
+                                });
+                            }
+                            return res;
+                        })()
+
+                    },
+                    title : {
+                        text: '教学质量 ',
+                        x:'center'
+                    },
+                    series : [
+                        {
+                            name:'教学质量',
+                            type:'pie',
+                            radius : '55%',
+                            center: ['50%', '60%'],
+                            data:(function(){
+                                var res = [];
+                                var len = result.length;
+                                for(var i=0,size=len;i<size;i++) {
+                                    res.push({
+                                        //通过把result进行遍历循环来获取数据并放入Echarts中
+                                        name: result[i].name,
+                                        value: result[i].size
+                                    });
+                                }
+                                return res;
+                            })()
+                        }
+                    ]
+                };
+
+                TypeSalesChart.setOption(option);
+            }
+        })
+    }
+</script>
 <!--动态生成角色下拉框-->
 <script>
     layui.use(['form', 'upload', 'layer'], function () {
@@ -481,7 +571,6 @@
                     $('#paperId').append(new Option(item.papers_name,item.papers_id));
                 });
                 layui.form.render("select");
-                console.log(data)
             }
         })
     });

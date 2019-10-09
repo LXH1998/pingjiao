@@ -141,7 +141,6 @@ public class PowerServiceImpl  implements PowerService {
             if(!childs.isEmpty()){
                 map.put("children", childs);
             }
-
             result.add(map);
         });
 

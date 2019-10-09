@@ -234,11 +234,14 @@ public class StatsServiceImpl  implements StatsService {
                    }
                    HashMap demo = new HashMap();
                    demo.put("batch_id",map1.get("batch_id"));
+                   demo.put("batch_name",map1.get("batch_name"));
                    demo.put("batch_idList",res);
                    list1.add(demo);
                }
                 HashMap mapt = new HashMap();
+                List<HashMap> papers = statsMapper.queryPaperdd(papersId);
                 mapt.put("paperId",papersId);
+                mapt.put("papers_name",papers.get(0).get("papers_name"));
                 mapt.put("paperList",list1);
                 mapt.put("type","试卷");
                 List<HashMap> aa = statsMapper.queryDartpmentName();
@@ -281,14 +284,19 @@ public class StatsServiceImpl  implements StatsService {
                         size = 0;
                     }
                     HashMap demo = new HashMap();
+
                     demo.put("papers_id",a1.get("papers_id"));
+                    demo.put("papers_name",a1.get("papers_name"));
                     demo.put("paperList",res);
                     list1.add(demo);
                 }
                 HashMap mapt = new HashMap();
                 mapt.put("batch_id",map1.get("batch_id"));
+                mapt.put("batch_name",map1.get("batch_name"));
+                List<HashMap> tt  = statsMapper.queryPaper();
                 mapt.put("type","问卷为空,试卷为空");
                 mapt.put("batchList",list1);
+                mapt.put("paperList",tt);
                 List<HashMap> aa = statsMapper.queryDartpmentName();
                 mapt.put("departmentName",aa);
                 result.add(mapt);
@@ -323,13 +331,18 @@ public class StatsServiceImpl  implements StatsService {
             }
             HashMap demo = new HashMap();
             demo.put("papers_id",a1.get("papers_id"));
+            demo.put("papers_name",a1.get("papers_name"));
             demo.put("paperList",res);
             list1.add(demo);
         }
         HashMap mapt = new HashMap();
         mapt.put("batch_id",batchId);
+        List<HashMap> batchName = statsMapper.queryBatchdd(batchId);
+        mapt.put("batch_name",batchName.get(0).get("batch_name"));
+        List<HashMap> tt  = statsMapper.queryPaper();
         mapt.put("type","问卷");
         mapt.put("batchList",list1);
+        mapt.put("paperList",tt);
         List<HashMap> aa = statsMapper.queryDartpmentName();
         mapt.put("departmentName",aa);
         result.add(mapt);
