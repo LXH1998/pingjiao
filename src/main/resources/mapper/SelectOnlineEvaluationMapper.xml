@@ -5,4 +5,11 @@
     <select id="selectEvaluationAnswers" resultType="com.xiaohua.springbootpingjiao.entity.Fraction">
         select * from fraction where rater=#{rater} and gradeds=#{gradeds} and papers_id=#{papers_id} and courses_id=#{courses_id}
     </select>
+
+    <!--计算分数-->
+    <select id="selectFractions" resultType="HashMap">
+        select ROUND(fractions/sum(target_allweight)*100) as fractions from paperstarget pst
+          left join fraction f on f.papers_id=pst.papers_id
+        where pst.papers_id=#{papers_id} and f.rater=#{rater} and f.gradeds=#{gradeds} and courses_id=#{courses_id}
+    </select>
 </mapper>
