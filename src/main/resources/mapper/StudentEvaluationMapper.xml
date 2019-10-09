@@ -3,7 +3,7 @@
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.StudentEvaluationMapper">
     <!--生成学生评教的页面-->
     <select id="selectStudentEvaluation" resultType="HashMap">
-        select u.class_id,c.courses_name,uu.user_id,uu.user_name,ur.role_id,batch_name,r.role_name,pp.papers_id,c.courses_id from user u
+        select u.class_id,c.courses_name,uu.user_id,uu.user_name,ur.role_id,batch_name,b.batch_id,r.role_name,pp.papers_id,c.courses_id from user u
           left join teach t on u.class_id=t.class_id
           left join courses c on t.courses_id=c.courses_id
           left join user uu on uu.user_id=t.user_id
@@ -21,7 +21,7 @@
 
     <!--根据批次模糊搜索-->
     <select id="selectBatchIdStudentEvaluation" resultType="HashMap">
-        select u.class_id,c.courses_name,uu.user_name,uu.user_id,ur.role_id,batch_name,r.role_name,pp.papers_id,c.courses_id from user u
+        select u.class_id,c.courses_name,uu.user_name,uu.user_id,ur.role_id,batch_name,b.batch_id,r.role_name,pp.papers_id,c.courses_id from user u
           left join teach t on u.class_id=t.class_id
           left join courses c on t.courses_id=c.courses_id
           left join user uu on uu.user_id=t.user_id

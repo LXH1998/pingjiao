@@ -2,6 +2,7 @@ package com.xiaohua.springbootpingjiao.service;
 
 import com.xiaohua.springbootpingjiao.entity.Fraction;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -11,4 +12,5 @@ import java.util.List;
  **/
 public interface SelectOnlineEvaluationService {
     List<Fraction> selectEvaluationAnswers(int rater, int gradeds, int papers_id, int courses_id);
+    List<HashMap> selectFractions(int rater, int gradeds, int papers_id, int courses_id);
 }

@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.service.impl;
 
+import com.xiaohua.springbootpingjiao.entity.Batch;
 import com.xiaohua.springbootpingjiao.mapper.ColleagueEvaluationMapper;
 import com.xiaohua.springbootpingjiao.service.ColleagueEvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,10 @@ public class ColleagueEvaluationServiceImpl implements ColleagueEvaluationServic
     @Override
     public List<HashMap> selectIfEvaluation(int rater, int gradeds, int papers_id, int courses_id) {
         return colleagueEvaluationMapper.selectIfEvaluation(rater, gradeds, papers_id, courses_id);
+    }
+
+    @Override
+    public List<Batch> selectIfStartEvaluation(int batch_Id) {
+        return colleagueEvaluationMapper.selectIfStartEvaluation(batch_Id);
     }
 }

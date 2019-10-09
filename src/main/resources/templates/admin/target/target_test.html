@@ -100,11 +100,33 @@
 
     //树的初始化
     function initzTree(data) {
-        // console.log(data);
+        console.log(data);
         //    初始化树
         zTreeObj = $.fn.zTree.init($("#tree"), setting, data);
         //    展开树的节点
         zTreeObj.expandAll(true);
+
+        fixIcon();//调用判断父节点显示文件夹图标的方法。
+
+    }
+
+    function fixIcon() {
+        // var treeObj = $.fn.zTree.getZTreeObj("tree");
+        // console.log(treeObj)
+        var treeObj = $.fn.zTree.getZTreeObj("tree");
+        var sNodes = treeObj.getNodes();
+        var nodesSysAll = treeObj.transformToArray(sNodes);
+        console.log(nodesSysAll)
+        for (var i=0;i<nodesSysAll.length;i++){
+            if (nodesSysAll[i].leafs==0){
+                // console.log(data[i]);
+                nodesSysAll[i].isParent = parent;
+                treeObj.updateNode(nodesSysAll[i]);
+            }
+        }
+
+        // treeObj.refresh();
+        // data.refresh();//调用api自带的refresh函数。
     }
 
     //用于捕获节点被点击的事件回调函数
@@ -151,7 +173,7 @@
                         '        </div>');
                 } else {
                     //右侧添加上半部div
-                    $("#targetManagement").append('        <div style="width: 100%;border-bottom: #4E5465 1px solid;padding-bottom: 25px;background-color:yellow;">\n' +
+                    $("#targetManagement").append('        <div style="width: 100%;border-bottom: #4E5465 1px solid;padding-bottom: 25px;">\n' +
                         '            <div class="layui-form-item" style="padding-left: 70px">\n' +
                         '                <label class="layui-form-label">指标:</label>\n' +
                         '                <div class="layui-input-inline">\n' +
@@ -174,7 +196,7 @@
 
                     //右侧下半部分div
                     if (treeNode.leafs==-1){
-                        $('#targetManagement').append('        <div style="width:100%;height:325px;background-color:red;">\n' +
+                        $('#targetManagement').append('        <div style="width:100%;height:325px;">\n' +
                             '            <fieldset class="layui-elem-field site-demo-button" >\n' +
                             '                <legend>指标维护</legend>\n' +
                             '                <div  style="margin-bottom: 10px;">\n' +

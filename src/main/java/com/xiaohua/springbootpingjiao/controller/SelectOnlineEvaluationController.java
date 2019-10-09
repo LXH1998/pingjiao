@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +35,26 @@ public class SelectOnlineEvaluationController {
 
     @ResponseBody
     @RequestMapping("selectIfEvaluation")
-    public Map selectIfEvaluation(int rater, int gradeds, int papers_id, int courses_id){
+    public Map selectIfEvaluation(int gradeds, int papers_id, int courses_id){
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
+        HttpSession session = request.getSession();
+        int rater = Integer.parseInt(session.getAttribute("user_id").toString());
         Map result=new HashMap();
         List<Fraction> fractions = selectOnlineEvaluationService.selectEvaluationAnswers(rater, gradeds, papers_id, courses_id);
+        result.put("data",fractions);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("selectFractions")
+    public Map selectFractions(int gradeds,int papers_id,int courses_id){
+        RequestAttributes ra = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
+        HttpSession session = request.getSession();
+        int rater = Integer.parseInt(session.getAttribute("user_id").toString());
+        Map result=new HashMap();
+        List<HashMap> fractions = selectOnlineEvaluationService.selectFractions(rater, gradeds, papers_id, courses_id);
         result.put("data",fractions);
         return result;
     }

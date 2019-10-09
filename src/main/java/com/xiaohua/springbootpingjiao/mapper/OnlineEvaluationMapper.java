@@ -15,6 +15,6 @@ import java.util.List;
 @Repository
 public interface OnlineEvaluationMapper {
     List<TargetOptins> selectOnlineEvaluation(int papers_id);
-    List<FractionSum> OnlineEvaluationFraction(int options_id);
+    List<FractionSum> OnlineEvaluationFraction(int options_id,int target_id);
     int insertOnlineEvaluation(int rater,int gradeds,int papers_id,int courses_id,String answers,String fractions);
 }

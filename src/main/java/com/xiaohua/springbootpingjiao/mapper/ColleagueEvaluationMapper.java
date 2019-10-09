@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.mapper;
 
+import com.xiaohua.springbootpingjiao.entity.Batch;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -16,4 +17,5 @@ public interface ColleagueEvaluationMapper {
     List<HashMap> selectColleagueEvaluation(int user_id);
     List<HashMap> selectBatchIdColleagueEvaluation(int user_id,int batch_id);
     List<HashMap> selectIfEvaluation(int rater,int gradeds,int papers_id,int courses_id);
+    List<Batch> selectIfStartEvaluation(int batch_Id);
 }

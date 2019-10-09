@@ -12,6 +12,6 @@ import java.util.Map;
  **/
 public interface OnlineEvaluationService {
     List<Map<String, Object>> selectOnlineEvaluation(int papers_id);
-    List<FractionSum> OnlineEvaluationFraction(int options_id);
+    List<FractionSum> OnlineEvaluationFraction(int options_id,int target_id);
     Boolean insertOnlineEvaluation(int rater, int gradeds, int papers_id, int courses_id, String answers, String fractions);
 }

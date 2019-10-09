@@ -52,8 +52,8 @@ public class OnlineEvaluationServiceImpl implements OnlineEvaluationService {
     }
 
     @Override
-    public List<FractionSum> OnlineEvaluationFraction(int options_id) {
-        return onlineEvaluationMapper.OnlineEvaluationFraction(options_id);
+    public List<FractionSum> OnlineEvaluationFraction(int options_id,int target_id) {
+        return onlineEvaluationMapper.OnlineEvaluationFraction(options_id,target_id);
     }
 
     @Override
