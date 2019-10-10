@@ -28,5 +28,9 @@ public interface QuestionnaireMapper {
     List<HashMap<String, String>> selectQuestionnaireinBR(String role_id,String batch_id, int pages, int limit);
     List<HashMap<String, String>> selectQuestionnaireinBRCount(String role_id,String batch_id);
 
+    List<HashMap<String, String>> selectTarget(String parent_Id);
+    List<HashMap<String, String>>  selectTargetzhi(String parent_Id);
+
+
   int deletePapers(Papers c);
 }
