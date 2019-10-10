@@ -18,9 +18,10 @@ public class WaterPojo {
     /**批次ID*/
     String batch_id;
     /**填写试卷ID*/
-    String papers_id;
+    Integer papers_id;
     /**课程ID*/
     Integer courses_id;
+
 
     public Integer getFraction_id() {
         return fraction_id;
@@ -62,11 +63,11 @@ public class WaterPojo {
         this.batch_id = batch_id;
     }
 
-    public String getPapers_id() {
+    public Integer getPapers_id() {
         return papers_id;
     }
 
-    public void setPapers_id(String papers_id) {
+    public void setPapers_id(Integer papers_id) {
         this.papers_id = papers_id;
     }
 

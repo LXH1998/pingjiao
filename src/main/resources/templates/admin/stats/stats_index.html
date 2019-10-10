@@ -51,7 +51,7 @@
     }
     #evaluation_Situation{
         width: 550px;
-        height:250px;
+        height:85px;
         margin-left:25px;
     }
     #evaluation_top{
@@ -60,13 +60,13 @@
     }
     .detailsFrist{
         width: 170px;
-        height: 100px;
+        height: 50px;
         float: left;
         margin-top: 10px;
     }
     .details{
         width: 170px;
-        height: 100px;
+        height: 50px;
         float: left;
         margin-top: 10px;
         margin-left: 20px;
@@ -74,14 +74,15 @@
 
     #pieChart{
         width: 550px;
-        height:200px;
+        height:150px;
         margin-left:25px;
     }
     .fountStyle{
         font-size: 20px;
-        margin-top: 20px;
+        margin-top: 10px;
         text-align: center;
-        font-size: 30px;
+        font-size: 15px;
+        color: #FFB800;
     }
     .fontDiv{
         margin: 0 auto;
@@ -91,26 +92,19 @@
         margin: 0 auto;
     }
     .fontsize{
-        font-size: 19px;
+        font-size: 12px;
         text-align: center;
     }
     .pieleft{
-        width: 250px;
-        height: 180px;
+        width: 550px;
+        height: 130px;
         float: left;
         margin-top: 10px;
         margin-left: 15px;
     }
-    .pieRight{
-        width: 250px;
-        height: 180px;
-        float: right;
-        margin-top: 10px;
-        margin-right: 15px;
-    }
     .rightDivFrist{
         width: 675px;
-        height: 215px;
+        height:450px;
         margin-top: 10px;
     }
 
@@ -162,36 +156,26 @@
                     </div>
                 </div>
 
-                <div class="detailsFrist">
-                    <div class="fontDiv">
-                        <p  class="fontsize" >分数大与平均分:</p>
-                        <p id="GreatAvg" class="fountStyle"></p>
-                    </div>
-                </div>
-
-                <div class="details">
-                    敬请期待。。
-                </div>
-
-
 
             </div>
         </div>
 
         <div id="pieChart">
             <div class="pieleft">
-                <div id="main" style="width: 250px;height:180px;"></div>
+                <div id="main" style="width: 250px;height:130px;"></div>
             </div>
-            <div class="pieRight">
-                敬请期待。。
+            <div class="pieleft">
+                <div id="barMain" style="width: 550px;height:280px;"></div>
             </div>
         </div>
     </div>
     <div id="rightDiv">
         <div class="rightDivFrist">
-            <div id="lineMain" style="width: 675px;height:215px;"></div>
+            <table id="demo" lay-filter="test"></table>
+            <script type="text/html" id="barDemo">
+                <a class="layui-btn layui-btn-xs" lay-event="detail">看</a>
+            </script>
         </div>
-
     </div>
 </div>
 <script>
@@ -213,10 +197,9 @@
         });
 
         $('#search').on('click', function(){
-          layer.msg("我点击了查询")
             batchId =   $("#batchId").val()
             paperId =   $("#paperId").val()
-            functionD(batchId,paperId);
+            functionD();
         });
     })
 
@@ -230,10 +213,24 @@
         });
     }
 </script>
-
 <script type="text/javascript">
-    function functionD(batchId,papersId) {
+    function dynamic_number(id,value) {
+        var temp = id;
+        temp.animate({count: value}, {
+            duration: 2000,
+            step: function () {
+                temp.text(String(parseInt(this.count)));
+            }
+        });
+    }
+    function functionD() {
+        $("#departmSize").text("")
+        $("#evaluationSize").text("")
+        $("#participateMen").text("")
+        $("#GreatAvg").text("")
         console.log(batchId,papersId)
+       var batchId =  $("#batchId").val()
+        var papersId =  $("#paperId").val()
         $.ajax({
             type:"post",
             url:"/stats/evaluationTop",
@@ -250,249 +247,190 @@
             }
         })
 
+        /**
+         * todo 柱状 图
+         * @type {Array}
+         */
         $.ajax({
-            type:"post",
-            url:"/stats/queryDeapratmentLike",
-            dataType:"json",
-            data:{
-                "batchId":batchId,
-                "papersId":papersId
+            type: "post",
+            async: true,
+            url: "/stats/querySocoreLimit5",
+            data: {
+                "batchId": batchId,
+                "papersId": papersId
             },
-            success:function (result) {
-                console.log(result)
-                if (result[0].type =="试卷"){
-                    var departmentName = []
-                    var batch_name = []
-
-                    for (var i =0;i<result[0].departmentName.length;i++){
-                        departmentName.push(result[0].departmentName[i].departments_name)
-                    }
-
-
-                    for (var i =0;i<result[0].paperList.length;i++){
-                        batch_name.push(result[0].paperList[i].batch_name)
-                    }
-
-                    var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
-                    option = {
-                        title: {
-                            text: '院系平均分'
-                        },
-                        tooltip : {
-                            trigger: 'axis',
-                            axisPointer: {
-                                type: 'cross',
-                                label: {
-                                    backgroundColor: '#6a7985'
-                                }
-                            }
-                        },
-                        legend: {
-                            data:batch_name
-                        },
-                        toolbox: {
-                            feature: {
-                                saveAsImage: {}
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis : [
-                            {
-                                type : 'category',
-                                boundaryGap : false,
-                                data : departmentName
-                            }
-                        ],
-                        yAxis : [
-                            {
-                                type : 'value'
-                            }
-                        ],
-                        series:function() {
-                            var batchSize = []
-                            for (var i =0;i<result[0].paperList.length;i++){
-                                var data = []
-                                var itemName = []
-                                itemName.push(result[0].paperList[i].batch_name)
-                                for (var j = 0 ; j<result[0].paperList[i].batch_idList.length;j++){
-                                    data.push(result[0].paperList[i].batch_idList[j].avg)
-                                }
-                                var item={
-                                    name:itemName,
-                                    type:'line',
-                                    stack: '总量',
-                                    data:data,
-                                    areaStyle: {}
-                                }
-                                batchSize.push(item)
-                            }
-                            console.log(batchSize)
-                            return batchSize;
-                        }()
-                    };
+            dataType: "json",
+            success: function (result) {
+                var app = {};
+                var nameList = [];
+                var xList =  [] ;
+                    nameList.push("总分");
+                    nameList.push("教师评价总分");
+                    nameList.push("学生评价总分");
+                var teacherData = [];
+                var studentData = [];
+                var scoreData = [];
+                for (var i = 0;i<result.length;i++){
+                    xList.push(result[i].user_name)
+                    teacherData.push(result[i].students_sum)
+                    studentData.push(result[i].teahcer_sum)
+                    scoreData.push(result[i].scores_sum)
                 }
-                else if (result[0].type =="问卷") {
-                    console.log(result)
-                    var departmentName = []
-                    var paperList = [];
+                var TypeLineChart = echarts.init(document.getElementById('barMain'));
+                var posList = [
+                    'left', 'right', 'top', 'bottom',
+                    'inside',
+                    'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+                    'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+                ];
 
-                    for (var i =0;i<result[0].batchList.length;i++){
-                        paperList.push(result[0].paperList[i].papers_name)
+                app.configParameters = {
+                    rotate: {
+                        min: -90,
+                        max: 90
+                    },
+                    align: {
+                        options: {
+                            left: 'left',
+                            center: 'center',
+                            right: 'right'
+                        }
+                    },
+                    verticalAlign: {
+                        options: {
+                            top: 'top',
+                            middle: 'middle',
+                            bottom: 'bottom'
+                        }
+                    },
+                    position: {
+                        options: echarts.util.reduce(posList, function (map, pos) {
+                            map[pos] = pos;
+                            return map;
+                        }, {})
+                    },
+                    distance: {
+                        min: 0,
+                        max: 100
                     }
+                };
 
-                    for (var i =0;i<result[0].departmentName.length;i++){
-                        departmentName.push(result[0].departmentName[i].departments_name)
+                app.config = {
+                    rotate: 90,
+                    align: 'left',
+                    verticalAlign: 'middle',
+                    position: 'insideBottom',
+                    distance: 15,
+                    onChange: function () {
+                        var labelOption = {
+                            normal: {
+                                rotate: app.config.rotate,
+                                align: app.config.align,
+                                verticalAlign: app.config.verticalAlign,
+                                position: app.config.position,
+                                distance: app.config.distance
+                            }
+                        };
+                        myChart.setOption({
+                            series: [{
+                                label: labelOption
+                            }, {
+                                label: labelOption
+                            }, {
+                                label: labelOption
+                            }, {
+                                label: labelOption
+                            }]
+                        });
                     }
-                    var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
-                    option = {
-                        title: {
-                            text: '院系平均分'
-                        },
-                        tooltip : {
-                            trigger: 'axis',
-                            axisPointer: {
-                                type: 'cross',
-                                label: {
-                                    backgroundColor: '#6a7985'
-                                }
-                            }
-                        },
-                        legend: {
-                            data:paperList
-                        },
-                        toolbox: {
-                            feature: {
-                                saveAsImage: {}
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis : [
-                            {
-                                type : 'category',
-                                boundaryGap : false,
-                                data : departmentName
-                            }
-                        ],
-                        yAxis : [
-                            {
-                                type : 'value'
-                            }
-                        ],
-                        series:function() {
-                            var paperSize = []
+                };
 
-                            for (var i =0;i<result[0].batchList.length;i++){
-                                var data = []
-                                var itemName = [] ;
-                                itemName = result[0].batchList[i].papers_name
-                                for (var j=0;j<result[0].batchList[i].paperList.length;j++){
-                                    data.push(result[0].batchList[i].paperList[j].avg)
-                                }
-                                var item={
-                                    name:itemName,
-                                    type:'line',
-                                    stack: '总量',
-                                    areaStyle: {},
-                                    data:data
-                                }
-                                paperSize.push(item)
+
+                var labelOption = {
+                    normal: {
+                        show: true,
+                        position: app.config.position,
+                        distance: app.config.distance,
+                        align: app.config.align,
+                        verticalAlign: app.config.verticalAlign,
+                        rotate: app.config.rotate,
+                        formatter: '{c}  {name|{a}}',
+                        fontSize: 16,
+                        rich: {
+                            name: {
+                                textBorderColor: '#fff'
                             }
-                            return paperSize;
-                        }()
-                    };
-                }
-                else{
-                    var papers_name = [];
-                    var batch_name = [];
-                    for (var i =0;i<result[0].paperList.length;i++){
-                        papers_name.push(result[0].paperList[i].papers_name)
+                        }
                     }
+                };
 
-                    for (var i =0;i<result[0].paperList.length;i++){
-                        batch_name.push(result[i].batch_name)
-                    }
-                    var TypeSalesChart = echarts.init(document.getElementById('lineMain'));
-                    option = {
-                        title: {
-                            text: '院系平均分'
+                option = {
+                    color: ['#003366', '#006699', '#4cabce'],
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {
+                        data: nameList
+                    },
+                    toolbox: {
+                        show: true,
+                        orient: 'vertical',
+                        left: 'right',
+                        top: 'center',
+                        feature: {
+                            mark: {show: true},
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [
+                        {
+                            type: 'category',
+                            axisTick: {show: false},
+                            data: xList
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '总分',
+                            type: 'bar',
+                            barGap: 0,
+                            label: labelOption,
+                            data: scoreData
                         },
-                        tooltip : {
-                            trigger: 'axis',
-                            axisPointer: {
-                                type: 'cross',
-                                label: {
-                                    backgroundColor: '#6a7985'
-                                }
-                            }
+                        {
+                            name: '教师评价总分',
+                            type: 'bar',
+                            label: labelOption,
+                            data: teacherData
                         },
-                        legend: {
-                            data:batch_name
-                        },
-                        toolbox: {
-                            feature: {
-                                saveAsImage: {}
-                            }
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        xAxis : [
-                            {
-                                type : 'category',
-                                boundaryGap : false,
-                                data : papers_name
-                            }
-                        ],
-                        yAxis : [
-                            {
-                                type : 'value'
-                            }
-                        ],
-                        series:function() {
-                            var paperSize = []
-                            var data = []
-                            var itemName = [] ;
-                            var sum =0.0
-                            for (var i =0;i<result[0].batchList.length;i++){
-                                itemName = result[i].batch_name
-                                for (var j=0;j<result[0].batchList[i].paperList.length;j++){
-                                    sum = sum+result[0].batchList[i].paperList[j].avg
-                                }
-                                var num =  sum/result[0].departmentName.length
-                                data.push(num.toFixed(2))
-                            }
-
-                            var item={
-                                name:itemName,
-                                type:'line',
-                                stack: '总量',
-                                areaStyle: {},
-                                data:data
-                            }
-                            paperSize.push(item)
-                            return paperSize;
-                        }()
-                    };
-
-                }
-                TypeSalesChart.setOption(option);
+                        {
+                            name: '学生评价总分',
+                            type: 'bar',
+                            label: labelOption,
+                            data: studentData
+                        }
+                    ]
+                };
+                TypeLineChart.setOption(option);
             }
         })
 
-
+        /**
+         * todo pie 图
+         * @type {Array}
+         */
         var names=[];
         var nums=[];
         $.ajax({
@@ -557,17 +495,50 @@
                 TypeSalesChart.setOption(option);
             }
         })
+
+        layui.use('table', function() {
+            var table = layui.table;
+
+            //数据表表头
+            table.render({
+                elem: '#demo'
+                // ,height: 400
+                , url: '/stats/querySocore'
+                , page: true //开启分页
+                ,data:{
+                    "batchId": batchId,
+                    "papersId": papersId
+                }
+                , cols: [
+                    [ //表头
+                        { title: '题号', toolbar: '#indexTpl',type:'numbers'}
+                        ,{field: 'user_name',  title: '姓名', width: '20%', sort: true,  align: 'center'}
+                        , {field: 'teahcer_sum', title: '教师评价总分', width: '20%', align: 'center'}
+                        , {field: 'students_sum', title: '学生评价总分', width: '20%', align: 'center'}
+                        , {field: 'scores_sum', title: '总分数', width: '20%', align: 'center'}
+                        ,{title: '操作', width: '10%', align: 'center', toolbar: '#barDemo'}
+                    ]
+                ]
+            });
+        })
     }
+</script>
+
+<script type="text/html" id="indexTpl">
+    {{d.LAY_TABLE_INDEX+1}}
 </script>
 <!--动态生成角色下拉框-->
 <script>
     layui.use(['form', 'upload', 'layer'], function () {
         $.ajax({
-            url:"/stats/queryPaper",
+            url:"/stats/queryPapersList",
             dataType: 'json',
             type: 'get',
+            data:{
+                "batchId":$("#batchId").val()
+            },
             success: function (data) {
-                $.each(data.data, function (index,item) {
+                $.each(data, function (index,item) {
                     $('#paperId').append(new Option(item.papers_name,item.papers_id));
                 });
                 layui.form.render("select");
@@ -577,11 +548,14 @@
 
     layui.use(['form', 'upload', 'layer'], function () {
         $.ajax({
-            url:"/stats/queryBatch",
+            url:"/stats/queryBatchsList",
             dataType: 'json',
             type: 'get',
+            data:{
+                "papersId":$("#paperId").val()
+            },
             success: function (data) {
-                $.each(data.data, function (index,item) {
+                $.each(data, function (index,item) {
                     $('#batchId').append(new Option(item.batch_name,item.batch_id));
                 });
                 layui.form.render("select");
