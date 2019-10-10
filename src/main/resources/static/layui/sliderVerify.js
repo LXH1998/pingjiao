@@ -164,7 +164,7 @@ layui.define(['jquery','layer','form'], function (exports) {
   		container = option.container;
   		var e = e || window.event;
         //鼠标移动后的水平位置
-        let moveX = e.clientX || e.touches[0].clientX;
+		var moveX = e.clientX || e.touches[0].clientX;
         //鼠标水平位置的偏移量（鼠标移动时的位置 - 鼠标按下时的位置）
         var offsetX = moveX - down;
 
