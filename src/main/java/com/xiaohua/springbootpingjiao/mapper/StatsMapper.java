@@ -34,6 +34,7 @@ public interface StatsMapper {
      * @return 统计参与评教学院
      */
     List<HashMap> queryScoreDepartment(HashMap map);
+    List<HashMap> queryPapers(HashMap map);
     /**
      * @param map
      * @return 查询参与评教老师
@@ -58,26 +59,22 @@ public interface StatsMapper {
     List<HashMap> queryTeacherXiaoyu60(HashMap map);
 
     /**
-     * 模糊查询院系平均分
-     * @param map
-     * @return
+     *二级联动查询批次
      */
-    List<HashMap> queryDepartmentLike(HashMap map);
+    List<HashMap> queryBatchsList(HashMap map);
 
     /**
-     * 模糊查询paperid
-     * @param map
-     * @return
+     * 二级联动查询问卷
      */
-    List<HashMap> queryPaperIdLike(HashMap map);
+    List<HashMap> queryPapersList(HashMap map);
+
+    /***
+     *取评教成绩前5
+     */
+    List<HashMap> querySocoreLimit5(HashMap map);
     /**
-     * 模糊查询batchID
-     * @param map
-     * @return
+     * 查询成绩
      */
-    List<HashMap> queryBatchIdLike(HashMap map);
-    List<HashMap> queryDartpmentName();
-    List<HashMap> queryBatch();
-    List<HashMap> queryPaper();
-    List<HashMap> queryScoreDealits(HashMap map);
+    List<HashMap> querySocore(HashMap map);
+    List<HashMap> queryScoreSize(HashMap map);
 }

@@ -33,13 +33,11 @@ public class StatsServiceImpl  implements StatsService {
     * @Description
     */
     @Override
-    public List<WaterPojo> clearUpFraction(String batchId,String papersId) {
+    public List<WaterPojo> clearUpFraction(String batchId) {
         HashMap map = new HashMap();
         map.put("batchId",batchId);
-        map.put("papersId",papersId);
         List<WaterPojo> list = statsMapper.clearUpFraction(map);
-        int result = statisticalFraction(list,batchId,papersId);
-        System.out.println("1234    ");
+        int result = statisticalFraction(list,batchId);
         return list;
     }
 
@@ -51,53 +49,57 @@ public class StatsServiceImpl  implements StatsService {
     * @Description 统计平价
     */
     @Override
-    public int statisticalFraction(List<WaterPojo> list,String batchId,String papers_Id) {
+    public int statisticalFraction(List<WaterPojo> list,String batchId) {
         HashMap mapOne = new HashMap();
         mapOne.put("batchId",batchId);
-        mapOne.put("papersId",papers_Id);
-        List<HashMap> ID = statsMapper.queryTeacherStats(mapOne);
         double studentFraction = 0;
         double teacherFraction = 0;
         double num = 0;
         List<Scores> statisticalDemo = new ArrayList<Scores>();
 
-        for (HashMap map : ID){
-            Integer papersId = 0;
-            List<WaterPojo> listA  = list.stream().filter(o -> o.getUser_id().equals(map.get("gradeds"))).collect(Collectors.toList());
-            HashMap hashMap = new HashMap();
-            papersId = Integer.parseInt(papers_Id);
-            hashMap.put("batchId",batchId);
-            hashMap.put("gradeds",map.get("gradeds"));
-            hashMap.put("papersId",papersId);
-            List<HashMap> coureseList  = statsMapper.queryTeacherCourse(hashMap);
-            for (HashMap hashMap1 :coureseList){
-                List<WaterPojo> listB  = listA.stream().filter(o -> o.getCourses_id().equals(hashMap1.get("courses_id"))).collect(Collectors.toList());
-                List<WaterPojo> listStudent  = listB.stream().filter(o -> o.getRole_name().equals("学生")).collect(Collectors.toList());
+        List<HashMap> papers_IdList =  statsMapper.queryPapers(mapOne);
+        Integer papersId;
+        for (HashMap papers_Idmap :papers_IdList ){
+            papersId = Integer.parseInt(papers_Idmap.get("papers_id").toString());
+            HashMap mapTwo = new HashMap();
+            mapTwo.put("batchId",batchId);
+            mapTwo.put("papersId",papersId);
+            List<HashMap> ID = statsMapper.queryTeacherStats(mapTwo);
+            List<WaterPojo> listPapers  = list.stream().filter(o -> o.getPapers_id().equals(papers_Idmap.get("papers_id"))).collect(Collectors.toList());
+            for (HashMap map : ID){
+                List<WaterPojo> listA  = listPapers.stream().filter(o -> o.getUser_id().equals(map.get("gradeds"))).collect(Collectors.toList());
+                HashMap hashMap = new HashMap();
+                hashMap.put("batchId",batchId);
+                hashMap.put("gradeds",map.get("gradeds"));
+                hashMap.put("papersId",papersId);
+                    List<WaterPojo> listStudent  = listA.stream().filter(o -> o.getRole_name().equals("学生")).collect(Collectors.toList());
 
-                for(WaterPojo demo:listStudent){
-                    studentFraction = studentFraction + demo.getFractions();
-                }
-                List<WaterPojo> listTeacher  = listB.stream().filter(o -> o.getRole_name().equals("教师")).collect(Collectors.toList());
+                    for(WaterPojo demo:listStudent){
+                        studentFraction = studentFraction + demo.getFractions();
+                    }
+                    List<WaterPojo> listTeacher  = listA.stream().filter(o -> o.getRole_name().equals("教师")).collect(Collectors.toList());
 
-                for(WaterPojo demo:listTeacher){
-                    teacherFraction = teacherFraction + demo.getFractions();
-                }
-
-                int f = list.size();
-                num = (studentFraction*0.3+teacherFraction*0.7);
-                Scores scores = new Scores();
-                Object teacherId = map.get("gradeds");
-                scores.setScores_Id(Integer.parseInt(hashMap1.get("courses_id").toString()));
-                scores.setGradeds_Id(Integer.parseInt(teacherId.toString()));
-                scores.setPapers_id(papersId);
-                scores.setBatch_id(Integer.parseInt(batchId));
-                scores.setScores_Sum(String.valueOf(num));
-                statisticalDemo.add(scores);
-                num = 0;
-                teacherFraction = 0;
-                studentFraction = 0;
+                    for(WaterPojo demo:listTeacher){
+                        teacherFraction = teacherFraction + demo.getFractions();
+                    }
+                    int f = list.size();
+                    num = (studentFraction*0.4+teacherFraction*0.6);
+                    Scores scores = new Scores();
+                    Object teacherId = map.get("gradeds");
+                    scores.setGradeds_Id(Integer.parseInt(teacherId.toString()));
+                    scores.setPapers_id(papersId);
+                    scores.setStudents_sum(studentFraction*0.4);
+                    scores.setTeahcer_sum(teacherFraction*0.6);
+                    scores.setBatch_id(Integer.parseInt(batchId));
+                    num = (double) Math.round(num * 100) / 100;
+                    scores.setScores_Sum(num);
+                    statisticalDemo.add(scores);
+                    num = 0;
+                    teacherFraction = 0;
+                    studentFraction = 0;
             }
         }
+
 
 
         int result = statsMapper.insertBatchScore(statisticalDemo);
@@ -180,175 +182,56 @@ public class StatsServiceImpl  implements StatsService {
         list.add(map3);
         return  list;
     }
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/10/10 9:50
+    * @param
+    * @Description 二级联动查询批次
+     *
+    */
+    @Override
+    public List<HashMap> queryBatchsList(HashMap map) {
+        return statsMapper.queryBatchsList(map);
+    }
+   /**
+   * @Author xiaoyi
+   * @Return
+   * @Date 2019/10/10 9:59
+   * @param
+   * @Description  二级联动查询问卷
+   */
+    @Override
+    public List<HashMap> queryPapersList(HashMap map) {
+        return statsMapper.queryPapersList(map);
+    }
 
     /**
     * @Author xiaoyi
     * @Return
-    * @Date 2019/10/5 10:47
+    * @Date 2019/10/10 14:56
     * @param
-    * @Description 模糊查询院系平均分
+    * @Description 取评教成绩前5
     */
     @Override
-    public List<HashMap> queryDepartmentLike(HashMap map) {
-        String  batchId = "0";
-        String papersId = "0";
-        List<HashMap> list = statsMapper.queryDepartmentLike(map);
-        if (map.containsKey("batchId")){
-              batchId = map.get("batchId").toString();
-        }
-        if (map.containsKey("papersId")){
-            papersId = map.get("papersId").toString();
-        }
-        List<HashMap> result = new ArrayList();
-        double avg = 0.0;
-        double sum = 0.0;
-        int size = 1;
-        List<HashMap> lsitDpartmentName = statsMapper.queryScoreDepartment(map);
-        if(batchId == "0"){
-            if(papersId != "0"){
-               List<HashMap> listBatchId = statsMapper.queryBatchIdLike(map);
-                List<HashMap> list1  = new ArrayList<>();
-               for(HashMap map1 : listBatchId){
-                   List<HashMap> res = new ArrayList<HashMap>();
-                   List<HashMap> listA  = list.stream().filter(o -> o.get("batch_id").equals(map1.get("batch_id"))).collect(Collectors.toList());
-                   for (HashMap map2 : lsitDpartmentName){
-                       List<HashMap> listB = listA.stream().filter(o -> o.get("departments_name").equals(map2.get("departments_name"))).collect(Collectors.toList());
-                       for (HashMap map3 : listB){
-                           sum = sum +Double.parseDouble(map3.get("scores_sum").toString());
-                           size = size+ 1;
-                       }
-                       HashMap map3 = new HashMap();
-                       if (size== 0){
-                           avg = 0;
-                       }else {
-                           avg = sum/size;
-                       }
-                       map3.put("avg",avg);
-                       map3.put("departmentName",map2.get("departments_name"));
-                       map3.put("batch_id", map1.get("batch_id"));
-                       map3.put("paperId", papersId);
-                       res.add(map3);
-                       avg = 0 ;
-                       sum = 0 ;
-                       size = 0;
-                   }
-                   HashMap demo = new HashMap();
-                   demo.put("batch_id",map1.get("batch_id"));
-                   demo.put("batch_idList",res);
-                   list1.add(demo);
-               }
-                HashMap mapt = new HashMap();
-                mapt.put("paperId",papersId);
-                mapt.put("paperList",list1);
-                mapt.put("type","试卷");
-                List<HashMap> aa = statsMapper.queryDartpmentName();
-                mapt.put("departmentName",aa);
-                result.add(mapt);
-
-                return  result;
-            }
-        }
-
-        List<HashMap> listBatchId = statsMapper.queryBatchIdLike(map);
-        List<HashMap> listPaperId = statsMapper.queryPaperIdLike(map);
-        //TODO 修改
-        if (batchId == "0"&&papersId == "0") {
-            for(HashMap map1 : listBatchId) {
-                List<HashMap> listA = list.stream().filter(o -> o.get("batch_id").equals(map1.get("batch_id"))).collect(Collectors.toList());
-                List<HashMap> list1  = new ArrayList<>();
-                for (HashMap a1 : listPaperId) {
-                    List<HashMap> listPaper = listA.stream().filter(o -> o.get("papers_id").equals(a1.get("papers_id"))).collect(Collectors.toList());
-                    List<HashMap> res = new ArrayList<HashMap>();
-                    for (HashMap map2 : lsitDpartmentName) {
-                        List<HashMap> listB = listPaper.stream().filter(o -> o.get("departments_name").equals(map2.get("departments_name"))).collect(Collectors.toList());
-                        for (HashMap map3 : listB) {
-                            sum = sum + Double.parseDouble(map3.get("scores_sum").toString());
-                            size = size + 1;
-                        }
-                        HashMap mm3 = new HashMap();
-                        if (size== 0){
-                            avg = 0;
-                        }else {
-                            avg = sum/size;
-                        }
-                        mm3.put("avg", avg);
-                        mm3.put("departmentName", map2.get("departments_name"));
-                        mm3.put("paperId", a1.get("papers_id"));
-                        mm3.put("batch_id", map1.get("batch_id"));
-                        res.add(mm3);
-                        avg = 0;
-                        sum = 0;
-                        size = 0;
-                    }
-                    HashMap demo = new HashMap();
-                    demo.put("papers_id",a1.get("papers_id"));
-                    demo.put("paperList",res);
-                    list1.add(demo);
-                }
-                HashMap mapt = new HashMap();
-                mapt.put("batch_id",map1.get("batch_id"));
-                mapt.put("type","问卷为空,试卷为空");
-                mapt.put("batchList",list1);
-                List<HashMap> aa = statsMapper.queryDartpmentName();
-                mapt.put("departmentName",aa);
-                result.add(mapt);
-            }
-            return result;
-        }
-
-        List<HashMap> list1  = new ArrayList<>();
-        for (HashMap a1 : listPaperId) {
-            List<HashMap> listPaper = list.stream().filter(o -> o.get("papers_id").equals(a1.get("papers_id"))).collect(Collectors.toList());
-            List<HashMap> res = new ArrayList<HashMap>();
-            for (HashMap map2 : lsitDpartmentName) {
-                List<HashMap> listB = listPaper.stream().filter(o -> o.get("departments_name").equals(map2.get("departments_name"))).collect(Collectors.toList());
-                for (HashMap map3 : listB) {
-                    sum = sum + Double.parseDouble(map3.get("scores_sum").toString());
-                    size = size + 1;
-                }
-                HashMap mm3 = new HashMap();
-                if (size== 0){
-                    avg = 0;
-                }else {
-                    avg = sum/size;
-                }
-                mm3.put("avg", avg);
-                mm3.put("departmentName", map2.get("departments_name"));
-                mm3.put("paperId", a1.get("papers_id"));
-                mm3.put("batch_id", batchId);
-                res.add(mm3);
-                avg = 0;
-                sum = 0;
-                size = 0;
-            }
-            HashMap demo = new HashMap();
-            demo.put("papers_id",a1.get("papers_id"));
-            demo.put("paperList",res);
-            list1.add(demo);
-        }
-        HashMap mapt = new HashMap();
-        mapt.put("batch_id",batchId);
-        mapt.put("type","问卷");
-        mapt.put("batchList",list1);
-        List<HashMap> aa = statsMapper.queryDartpmentName();
-        mapt.put("departmentName",aa);
-        result.add(mapt);
-        return result;
+    public List<HashMap> querySocoreLimit5(HashMap map) {
+        return statsMapper.querySocoreLimit5(map);
+    }
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/10/10 16:44
+    * @param
+    * @Description 查询成绩
+    */
+    @Override
+    public List<HashMap> querySocore(HashMap map) {
+        return statsMapper.querySocore(map);
     }
 
     @Override
-    public List<HashMap> queryBatch() {
-        return statsMapper.queryBatch();
-    }
-
-    @Override
-    public List<HashMap> queryPaper() {
-        return statsMapper.queryPaper();
-    }
-
-    @Override
-    public List<HashMap> queryScoreDealits(HashMap map) {
-        return statsMapper.queryScoreDealits(map);
+    public List<HashMap> queryScoreSize(HashMap map) {
+        return statsMapper.queryScoreSize(map);
     }
 }
 

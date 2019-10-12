@@ -55,6 +55,16 @@ public class QuestionnaireServiceImpl  implements QuestionnaireService {
     }
 
     @Override
+    public List<HashMap<String, String>> selectTargetzhi(String parent_Id) {
+        return QuestionnaireMapper.selectTargetzhi(parent_Id);
+    }
+
+    @Override
+    public List<HashMap<String, String>> selectTarget(String parent_Id) {
+        return QuestionnaireMapper.selectTarget(parent_Id);
+    }
+
+    @Override
     public boolean deletePapers(Papers c) {
         int result = QuestionnaireMapper.deletePapers(c);
         if (result > 0) {

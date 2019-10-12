@@ -37,9 +37,9 @@
     WHERE u.`user_state` != 0
       AND uu.`user_state` != 0
       AND p.`oapers_visible` != 0
-      AND b.`batch_hide` = 2
+      AND b.`batch_hide` = 3
+      AND b.`batch_state` != 0
       AND b.`batch_id` = #{batchId}
-      And f.`papers_id` = #{papersId}
     </select>
 
 <!--查询所有参加评教老师-->
@@ -79,8 +79,9 @@
       gradeds,
       scores_sum,
       batch_id,
-      courses_id,
-      papers_id
+      papers_id,
+      teahcer_sum,
+      students_sum
     )
     VALUES
     <foreach collection="list" item="item" index="index" separator=",">
@@ -88,8 +89,9 @@
         #{item.gradeds_Id},
         #{item.scores_Sum},
         #{item.batch_Id},
-        #{item.scores_Id},
-        #{item.papers_Id}
+        #{item.papers_Id},
+        #{item.teahcer_sum},
+        #{item.students_sum}
      )
     </foreach>
     </insert>
@@ -107,8 +109,8 @@
       LEFT JOIN departments d
         ON d.`departments_id` = u.`departments_id`
     <where>
-        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+        <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </where>
     GROUP BY d.departments_id
     </select>
@@ -126,8 +128,8 @@
       LEFT JOIN batch b
         ON b.`batch_id` = p.`batch_id`
     <where>
-        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+        <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
     </where>
     </select>
 
@@ -145,8 +147,8 @@
       LEFT JOIN batch b
         ON b.`batch_id` = p.`batch_id`
     <where>
-       <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-       <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
+        <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
     </where>
     </select>
 <!--查询老师评价高于平均分的老师-->
@@ -160,8 +162,8 @@
         AVG(scores_sum)
       FROM
         scores)
-        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">AND batch_Id=#{papers_Id}</if>
+        <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
 
 <!--生成评教质量好坏饼图优秀-->
@@ -171,8 +173,8 @@
         FROM
         scores
         WHERE scores_sum >90
-        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">AND batch_Id=#{papers_Id}</if>
+        <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
 
     <!--生成评教质量好坏饼图中等-->
@@ -182,8 +184,8 @@
         FROM
         scores
         WHERE scores_sum BETWEEN 60 and 90
-        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">AND batch_Id=#{papers_Id}</if>
+        <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
 
     <!--生成评教质量好坏饼图差-->
@@ -193,99 +195,105 @@
         FROM
         scores
         WHERE scores_sum &lt;60
-        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">AND batch_Id=#{papers_Id}</if>
+        <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND papers_id=#{papersId}</if>
+    </select>
+<!--二级联动查询批次-->
+     <select id="queryBatchsList" parameterType="hashmap" resultType="hashmap" >
+        SELECT
+          *
+        FROM
+        batch b
+        LEFT JOIN papers p
+        ON p.`batch_id` = b.`batch_id`
+        WHERE p.`oapers_visible`!=0
+        AND b.`batch_state`!=0
+        AND b.`batch_hide` = 3
+        <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
+     </select>
+
+    <!--二级联动查询问卷-->
+    <select id="queryPapersList" parameterType="hashmap" resultType="hashmap" >
+         SELECT
+          *
+        FROM
+          papers p
+          LEFT JOIN batch b
+            ON p.`batch_id` = b.`batch_id`
+        WHERE p.`oapers_visible` != 0
+          AND b.`batch_state` != 0
+          AND b.`batch_hide` = 3
+        <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
     </select>
 
-<!--模糊查询院系平均分-->
-    <select id="queryDepartmentLike" parameterType="hashmap" resultType="hashmap">
+    <!--查询批次下的所有问卷-->
+    <select id="queryPapers" parameterType="hashmap" resultType="hashmap" >
         SELECT
-        d.`departments_name`,
-        s.`scores_sum`,
-        s.`batch_id`,
-        s.`papers_id`
+        *
+        FROM
+        papers p
+        LEFT JOIN batch b
+        ON p.`batch_id` = b.`batch_id`
+        WHERE p.`oapers_visible` != 0
+        AND b.`batch_state` != 0
+        AND b.`batch_hide` = 3
+        AND b.batch_Id=#{batchId}
+    </select>
+
+<!--取评教成绩前5-->
+    <select id="querySocoreLimit5" parameterType="hashmap" resultType="hashmap" >
+        SELECT
+        s.`scores_id`,s.`scores_sum`,u.`user_name`,b.`batch_name`,p.`papers_name`, s.`students_sum`, s.`teahcer_sum`
         FROM
         scores s
-        LEFT JOIN USER u
-        ON u.`user_id` = s.`gradeds`
-        LEFT JOIN departments d
-        ON d.`departments_id` = u.`departments_id`
-     <where>
-        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
-     </where>
-    </select>
-<!--模糊查询paperid-->
-    <select id="queryPaperIdLike" parameterType="hashmap" resultType="hashmap">
-     SELECT
-      s.`papers_id`
-    FROM
-      scores s
-      LEFT JOIN USER u
-        ON u.`user_id` = s.`gradeds`
-      LEFT JOIN departments d
-        ON d.`departments_id` = u.`departments_id`
-    <where>
-        <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
-    </where>
-    GROUP BY papers_id
-    </select>
-
-<!-- 模糊查询batchId    -->
-    <select id="queryBatchIdLike" parameterType="hashmap" resultType="hashmap">
-        SELECT
-        s.`batch_id`
-        FROM
-        scores s
-        LEFT JOIN USER u
-        ON u.`user_id` = s.`gradeds`
-        LEFT JOIN departments d
-        ON d.`departments_id` = u.`departments_id`
-        <where>
-            <if test=" batch_Id != null ">batch_Id=#{batch_Id}</if>
-            <if test=" papers_Id != null ">batch_Id=#{papers_Id}</if>
-        </where>
-        GROUP BY batch_id
-    </select>
-
-
-    <select id="queryDartpmentName" resultType="hashmap">
-        select departments_name from departments
-    </select>
-
-    <select id="queryBatch" resultType="hashmap">
-        select  * from batch
-    </select>
-
-    <select id="queryPaper" resultType="hashmap">
-        select  * from papers
-    </select>
-
-    <select id="queryScoreDealits" parameterType="hashmap" resultType="hashmap">
-     SELECT
-      u.`user_name`,
-      d.`departments_name`,
-      c.`courses_name`,
-      s.`scores_sum`,
-      p.`papers_name`,
-      b.`batch_name`
-    FROM
-      scores s
-      LEFT JOIN USER u
-        ON u.`user_id` = s.`gradeds`
-      LEFT JOIN departments d
-        ON d.`departments_id` = u.`departments_id`
-      LEFT JOIN courses c
-        ON c.`courses_id` = s.`courses_id`
-      LEFT JOIN batch b
+        LEFT JOIN batch b
         ON b.`batch_id` = s.`batch_id`
-      LEFT JOIN papers p
+        LEFT JOIN papers p
         ON p.`papers_id` = s.`papers_id`
-    WHERE u.`user_state` != 0
-      AND p.`oapers_visible` != 0
-      AND b.`batch_hide` != 0
-        <if test=" batch_Id != null ">AND batch_Id=#{batch_Id}</if>
-        <if test=" papers_Id != null "> AND batch_Id=#{papers_Id}</if>
+        LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+        <where>
+        <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
+         </where>
+        ORDER BY scores_sum DESC
+        LIMIT 0, 3
+    </select>
+
+<!--  查询成绩  -->
+    <select id="querySocore" parameterType="hashmap" resultType="hashmap" >
+        SELECT
+        s.`scores_id`,s.`scores_sum`,u.`user_name`, s.`students_sum`, s.`teahcer_sum`
+        FROM
+        scores s
+        LEFT JOIN batch b
+        ON b.`batch_id` = s.`batch_id`
+        LEFT JOIN papers p
+        ON p.`papers_id` = s.`papers_id`
+        LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+        <where>
+            <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
+            <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
+        </where>
+        ORDER BY scores_sum DESC
+        LIMIT ${page},${limit}
+    </select>
+
+    <select id="queryScoreSize" parameterType="hashmap" resultType="hashmap">
+        SELECT
+            *
+        FROM
+        scores s
+        LEFT JOIN batch b
+        ON b.`batch_id` = s.`batch_id`
+        LEFT JOIN papers p
+        ON p.`papers_id` = s.`papers_id`
+        LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+        <where>
+            <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
+            <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
+        </where>
     </select>
 </mapper>

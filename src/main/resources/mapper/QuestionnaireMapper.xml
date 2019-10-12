@@ -93,5 +93,12 @@
     </update>
 
 
-
+<!--查询根目录-->
+ <select id="selectTarget" resultType="HashMap">
+    select target_id,target_name,target_weight ,leafs_id from target where parent_id=#{parent_Id} and hides=1
+   </select>
+<!--查询指标-->
+    <select id="selectTargetzhi" resultType="HashMap">
+    select target_id,target_name,target_weight from target where parent_id=#{parent_Id} and hides=1 and leafs_id=-1
+   </select>
 </mapper>

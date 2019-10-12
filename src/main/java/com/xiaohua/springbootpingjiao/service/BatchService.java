@@ -28,4 +28,7 @@ public interface BatchService {
     int ModifyEndBatch(int batch_Id);
     //删除某个批次
     int DeleteOneBatch(int batch_Id);
+    //判断是否有批次开启
+    String IfBatchOpen();
+
 }

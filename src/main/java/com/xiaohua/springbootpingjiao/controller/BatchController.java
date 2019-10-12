@@ -132,5 +132,21 @@ public class BatchController {
         }
         return result;
     }
+    //判断是否有批次是开启状态
+    @ResponseBody
+    @RequestMapping("/ifOpen")
+    public Map IfBatchOpen()
+    {
+        String ifOpen = batchService.IfBatchOpen();
+        Map result = new HashMap();
+        if(ifOpen != null)
+        {
+            result.put("result","1");
+        }else {
+            result.put("result","0");
+        }
+
+        return  result;
+    }
 
 }

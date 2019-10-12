@@ -18,13 +18,25 @@
                 <div class="layui-card" id="targetOptions">
                 </div>
             </div>
+
+            <div >
+               <h1 style="float: right;padding-right: 200px;padding-top: 4px" id="fractions"></h1><h1 style="float: right">总得分:</h1>
+            </div>
         </div>
 </form>
+<style>
+    .layui-form-radio span{
+        font-size:13px;
+    }
+    .layui-form-radio i{
+        font-size:14px;
+    }
+</style>
 
 <script>
-    function inputDataHandle(obj,user_id_session){
+    function inputDataHandle(obj){
         console.log(obj)
-        console.log(user_id_session)
+
         layui.use(['form', 'upload', 'layer'], function () {
             var form = layui.form;
             $.ajax({
@@ -37,13 +49,13 @@
                     var i=1
                     for(var index in a) {
                         b=a[index].options
-                        $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;" >\n' +
-                            '            <label class="layui-form-label" style="font-size: 18px;width: 30%;text-align: left">'+i+'.'+a[index].target_name+'</label>\n' +
+                        $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;margin-top:20px " >\n' +
+                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'</label>\n' +
 
                             '        </div>');
                         i++
                         for(var index1 in b) {
-                            $('#targetOptions').append('<div class="layui-card-body">\n' +
+                            $('#targetOptions').append('<div class="layui-card-body" style="margin: 0;padding: 0 0 2px 20px">\n' +
                                 '            <span>\n' +
                                 '                <input lay-filter="options" type="radio"\n' +
                                 '                       name="'+a[index].target_id+'" value="'+b[index1].options_id+'" title="'+b[index1].options_content+'" lay-skin="primary">\n' +
@@ -51,15 +63,30 @@
                                 '        </div>')
                         };
 
-                        var rater = user_id_session;//评分人
+
                         var gradeds = obj.data.user_id;//被评分人
                         var papers_id = obj.data.papers_id;//批次id
                         var courses_id = obj.data.courses_id;//课程id
+                        //得出总分
+                        $.ajax({
+                            type:"get",
+                            url:"/SelectOnlineEvaluationController/selectFractions",
+                            data:{
+                                gradeds:gradeds,
+                                papers_id:papers_id,
+                                courses_id:courses_id,
+                            },
+                            success:function (res) {
+                                console.log("分数："+res.data[0].fractions);
+                                $("#fractions").html(res.data[0].fractions)
+                            }
+                        })
+                        
+                        //查看详情
                         $.ajax({
                             type:"get",
                             url:"/SelectOnlineEvaluationController/selectIfEvaluation",
                             data:{
-                                rater:rater,
                                 gradeds:gradeds,
                                 papers_id:papers_id,
                                 courses_id:courses_id,
