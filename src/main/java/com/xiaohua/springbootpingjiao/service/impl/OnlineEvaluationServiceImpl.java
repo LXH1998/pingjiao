@@ -52,6 +52,34 @@ public class OnlineEvaluationServiceImpl implements OnlineEvaluationService {
     }
 
     @Override
+    public List<Map<String, Object>> selectHistoryOnlineEvaluation(int papers_id) {
+        List<TargetOptins> list = onlineEvaluationMapper.selectHistoryOnlineEvaluation(papers_id);
+        Map<Integer, List<TargetOptins>> map = list.stream().collect(Collectors.groupingBy(TargetOptins::getTarget_Id));
+        List<Map<String, Object>> ret = new LinkedList<Map<String, Object>>();
+        map.forEach( (k,v)->{
+            Map<String, Object> tmap = new LinkedHashMap<>();
+            tmap.put("target_id", k);
+
+            List<Map<String, Object>> optionList = new LinkedList<>();
+            v.stream().forEach(item->{
+                Map<String, Object> omap = new LinkedHashMap<>();
+                tmap.put("target_name", item.getTarget_Name());
+                tmap.put("target_weight", item.getTarget_Weight());
+
+                omap.put("options_id", item.getOptions_Id());
+                omap.put("options_content", item.getOptions_Content());
+                omap.put("options_weight", item.getOptions_Weight());
+                optionList.add(omap);
+            });
+            tmap.put("options", optionList);
+
+            ret.add(tmap);
+        });
+
+        return ret;
+    }
+
+    @Override
     public List<FractionSum> OnlineEvaluationFraction(int options_id,int target_id) {
         return onlineEvaluationMapper.OnlineEvaluationFraction(options_id,target_id);
     }
