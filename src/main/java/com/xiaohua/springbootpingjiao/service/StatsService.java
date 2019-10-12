@@ -8,9 +8,9 @@ import java.util.Map;
 
 public interface StatsService {
     /**整理流水表信息*/
-    List<WaterPojo> clearUpFraction(String batchId,String papersId);
+    List<WaterPojo> clearUpFraction(String batchId);
     /**统计平价*/
-    int statisticalFraction(List<WaterPojo> list,String batchId,String papers_Id);
+    int statisticalFraction(List<WaterPojo> list,String batchId);
     /**统计参与评教学院*/
     List<HashMap> queryScoreDepartment(HashMap map);
     /**查询参与评教老师*/
@@ -21,10 +21,24 @@ public interface StatsService {
     List<HashMap> queryAverageTeacherDayu(HashMap map);
     /**好坏饼图*/
     List<HashMap> queryPie(HashMap map);
-    /**模糊查询院系平均分*/
-    List<HashMap> queryDepartmentLike(HashMap map);
+    /**
+     *二级联动查询批次
+     */
+    List<HashMap> queryBatchsList(HashMap map);
 
-    List<HashMap> queryBatch();
-    List<HashMap> queryPaper();
-    List<HashMap> queryScoreDealits(HashMap map);
+    /**
+     * 二级联动查询问卷
+     */
+    List<HashMap> queryPapersList(HashMap map);
+
+    /***
+     *取评教成绩前5
+     */
+    List<HashMap> querySocoreLimit5(HashMap map);
+    /**
+     * 查询成绩
+     */
+    List<HashMap> querySocore(HashMap map);
+    List<HashMap> queryScoreSize(HashMap map);
+
 }

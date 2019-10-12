@@ -94,14 +94,27 @@
 
             if(layEvent === 'open'){ //开启按钮
                 $.ajax({
-                    url:'/batch/modifyOpenBatch',
-                    type:'post',
-                    data:{
-                        batch_Id: data.batch_Id
-                    },
+                   url:'/batch/ifOpen',
+                   type:'get',
+                    data:{},
                     success:function (res) {
-                        layer.msg(res.result);
-                        batchRelode();
+                        if (res.result == 1)
+                        {
+                            //当有批次已经在开启中
+                            layer.msg('当前已有批次在开启中，请先暂停或结束已开启批次！');
+                        }else {
+                            $.ajax({
+                                url:'/batch/modifyOpenBatch',
+                                type:'post',
+                                data:{
+                                    batch_Id: data.batch_Id
+                                },
+                                success:function (res) {
+                                    layer.msg(res.result);
+                                    batchRelode();
+                                }
+                            })
+                        }
                     }
                 })
             } else if(layEvent === 'suspend'){ //暂停

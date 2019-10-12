@@ -43,8 +43,8 @@ public class StatsController {
     */
     @ResponseBody
     @RequestMapping("/cc")
-    public List<WaterPojo> ccc(){
-        List<WaterPojo> list =  service.clearUpFraction("1","1");
+    public List<WaterPojo> ccc(String batchId){
+        List<WaterPojo> list =  service.clearUpFraction("1");
         return list;
     }
 
@@ -58,13 +58,7 @@ public class StatsController {
     @ResponseBody
     @RequestMapping("/evaluationTop")
     public List<HashMap> ddd(String batchId,String papersId){
-        HashMap map = new HashMap();
-        if(batchId != null && batchId.length()!=0){
-            map.put("batchId",batchId);
-        }
-        if(papersId != null && papersId.length()!=0){
-            map.put("papersId",papersId);
-        }
+        HashMap map = hashmapB(batchId,papersId);
         List<HashMap> listA =  service.queryScoreDepartment(map);
         List<HashMap> listB =  service.queryScoreTeacher(map);
         List<HashMap> listC =  service.queryScoreMan(map);
@@ -77,6 +71,16 @@ public class StatsController {
         return list;
     }
 
+    public HashMap hashmapB(String batchId,String papersId){
+        HashMap map = new HashMap();
+        if(batchId != null && batchId.length()!=0){
+            map.put("batchId",batchId);
+        }
+        if(papersId != null && papersId.length()!=0){
+            map.put("papersId",papersId);
+        }
+        return  map;
+    }
     /**
     * @Author xiaoyi
     * @Return
@@ -87,85 +91,90 @@ public class StatsController {
     @ResponseBody
     @RequestMapping("/queryPie")
     public List<HashMap> QueryPie(String batchId,String papersId){
-        HashMap map = new HashMap();
-        if(batchId != null && batchId.length()!=0){
-            map.put("batchId",batchId);
-        }
-        if(papersId != null && papersId.length()!=0){
-            map.put("papersId",papersId);
-        }
-
+        HashMap map = hashmapB(batchId,papersId);
         List<HashMap> list = service.queryPie(map);
         return  list;
     }
+
+    /**
+     * @Author xiaoyi
+     * @Return
+     * @Date 2019/10/10 9:50
+     * @param
+     * @Description 二级联动查询批次
+     *
+     */
     @ResponseBody
-    @RequestMapping("/queryDeapratmentLike")
-    public List<HashMap> dddd(String batchId,String papersId){
+    @RequestMapping("/queryBatchsList")
+    public List<HashMap> queryBatchsList(String papersId){
         HashMap map = new HashMap();
-        if(batchId != null && batchId.length()!=0){
-            map.put("batchId",batchId);
-        }
-        if(papersId != null && papersId.length()!=0){
+        if(papersId != null && papersId.length()!=0&&papersId != ""){
             map.put("papersId",papersId);
+        }else{
+            map.put("papersId","null");
         }
-        List<HashMap> list = service.queryDepartmentLike(map);
-        return list;
+        List<HashMap> list = service.queryPapersList(map);
+        return  list;
+    }
+
+    /**
+     * @Author xiaoyi
+     * @Return
+     * @Date 2019/10/10 9:50
+     * @param
+     * @Description 二级联动查询问卷
+     *
+     */
+    @ResponseBody
+    @RequestMapping("/queryPapersList")
+    public List<HashMap> queryPapersList(String batchId){
+        HashMap map = new HashMap();
+        if(batchId != null && batchId.length()!=0&&batchId!=""){
+            map.put("batchId",batchId);
+        }else {
+            map.put("batchId","null");
+        }
+        List<HashMap> list = service.queryBatchsList(map);
+        return  list;
     }
 
     /**
     * @Author xiaoyi
     * @Return
-    * @Date 2019/10/4 10:01
+    * @Date 2019/10/10 15:04
     * @param
-    * @Description
+    * @Description 取评教成绩前5
     */
     @ResponseBody
-    @RequestMapping("/queryBatch")
-    public HashMap queryBatch(){
-        HashMap map = new HashMap();
-        List<HashMap> list = service.queryBatch();
-        map.put("code",0);
-        map.put("msg","");
-        map.put("count",list.size());
-        map.put("data",list);
-        return map;
+    @RequestMapping("/querySocoreLimit5")
+    public List<HashMap> querySocoreLimit5(String batchId,String papersId){
+        HashMap map = hashmapB(batchId,papersId);
+        List<HashMap> list = service.querySocoreLimit5(map);
+        return  list;
     }
+
     /**
     * @Author xiaoyi
     * @Return
-    * @Date 2019/10/4 10:10
+    * @Date 2019/10/10 16:44
     * @param
-    * @Description
+    * @Description 查询成绩
     */
     @ResponseBody
-    @RequestMapping("/queryPaper")
-    public HashMap queryPaper(){
-        HashMap map = new HashMap();
-        List<HashMap> list = service.queryPaper();
-        map.put("code",0);
-        map.put("msg","");
-        map.put("count",list.size());
-        map.put("data",list);
-        return map;
+    @RequestMapping("/querySocore")
+    public HashMap querySocore(String batchId,String papersId,int page,int limit){
+        HashMap map = hashmapB(batchId,papersId);
+        int pageing = (page-1)*limit;
+        map.put("page",Integer.toString(pageing));
+        map.put("limit",Integer.toString(limit));
+        List<HashMap> list = service.querySocore(map);
+        List<HashMap> size = service.queryScoreSize(map);
+        int count = size.size();
+        HashMap result = hashmapB(batchId,papersId);
+        result.put("code",0);
+        result.put("msg","");
+        result.put("count",count);
+        result.put("data",list);
+        return  result;
     }
-
-    @ResponseBody
-    @RequestMapping("/queryScoreDealits")
-    public HashMap queryScoreDealits(String batchId,String papersId){
-        HashMap map = new HashMap();
-        if(batchId != null && batchId.length()!=0){
-            map.put("batchId",batchId);
-        }
-        if(papersId != null && papersId.length()!=0){
-            map.put("papersId",papersId);
-        }
-        List<HashMap> list = service.queryScoreDealits(map);
-        HashMap map1 = new HashMap();
-        map1.put("code",0);
-        map1.put("msg","");
-        map1.put("count",list.size());
-        map1.put("data",list);
-        return map1;
-    }
-
 }

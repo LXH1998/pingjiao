@@ -3,9 +3,28 @@ package com.xiaohua.springbootpingjiao.entity;
 public class Scores{
     private Integer scores_Id;
     private Integer gradeds_Id;
-    private String scores_Sum;
+    private Double scores_Sum;
     private Integer papers_Id;
     private Integer batch_Id;
+    private double teahcer_sum;
+    private double students_sum;
+
+    public double getTeahcer_sum() {
+        return teahcer_sum;
+    }
+
+    public void setTeahcer_sum(double teahcer_sum) {
+        this.teahcer_sum = teahcer_sum;
+    }
+
+    public double getStudents_sum() {
+        return students_sum;
+    }
+
+    public void setStudents_sum(double students_sum) {
+        this.students_sum = students_sum;
+    }
+
     public Integer getBatch_id() {
         return batch_Id;
     }
@@ -31,12 +50,28 @@ public class Scores{
         this.gradeds_Id = gradeds_Id;
     }
 
-    public String getScores_Sum() {
+    public Double getScores_Sum() {
         return scores_Sum;
     }
 
-    public void setScores_Sum(String scores_Sum) {
+    public void setScores_Sum(Double scores_Sum) {
         this.scores_Sum = scores_Sum;
+    }
+
+    public Integer getPapers_Id() {
+        return papers_Id;
+    }
+
+    public void setPapers_Id(Integer papers_Id) {
+        this.papers_Id = papers_Id;
+    }
+
+    public Integer getBatch_Id() {
+        return batch_Id;
+    }
+
+    public void setBatch_Id(Integer batch_Id) {
+        this.batch_Id = batch_Id;
     }
 
     public Integer getPapers_id() {

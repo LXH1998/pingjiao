@@ -168,7 +168,7 @@ public HashMap selectQuestionnaireinBatch(String batch_id,int page, int limit){
         return result;
     }
 
-
+//删除问卷
     @ResponseBody
     @RequestMapping("/deletePapers")
     public  boolean deletePapers(String papers_Id){
@@ -181,11 +181,31 @@ public HashMap selectQuestionnaireinBatch(String batch_id,int page, int limit){
         return  false;
 
     }
+//查父子指标
+    @ResponseBody
+    @RequestMapping("/selectTarget")
+    public HashMap selectTarget(String parent_Id){
+        HashMap result = new HashMap();
+        List<HashMap<String,String>> classes = QuestionnaireService.selectTarget(parent_Id);
+        result.put("data",classes);
+        return result;
+    }
+//查询子指标
+
+    @ResponseBody
+    @RequestMapping("/selectTargetzhi")
+    public HashMap selectTargetzhi(String parent_Id){
+        HashMap result = new HashMap();
+        List<HashMap<String,String>> classes = QuestionnaireService.selectTargetzhi(parent_Id);
+        result.put("data",classes);
+        return result;
+    }
 
 
     @RequestMapping("Questionnaire")
     public String details(){ return "admin/Questionnaire/Questionnaire"; }
-
+    @RequestMapping("GoOnlineEvaluation")
+    public String GoOnlineEvaluation(){ return "admin/Questionnaire/onlineEvaluation"; }
     @RequestMapping("addQuestionnaire")
     public String addQuestionnaire(){ return "admin/Questionnaire/addQuestionnaire"; }
 

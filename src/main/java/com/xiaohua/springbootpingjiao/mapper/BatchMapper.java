@@ -29,4 +29,10 @@ public interface BatchMapper {
     int ModifyEndBatch(int batch_Id);
     //删除某个批次
     int DeleteOneBatch(int batch_Id);
+    //判断是否有批次开启
+    String IfBatchOpen();
+    //复制问卷的指标到历史指标表中
+    int CopyTarget(int papers_Id);
+    //复制问卷的选项到历史指标表中
+    int CopyOptions(int papers_Id);
 }
