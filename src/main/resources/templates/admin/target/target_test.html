@@ -84,6 +84,23 @@
         $.ajaxSettings.async = false;
         $.post(url,function (data) {
             initzTree(data);
+
+            //声明一个集合，对得到的数据进行排序，使父节点在不是父节点的兄弟节点之前显示
+            var list=[];
+            for (var i=0;i<data.length;i++){
+                if (data[i].leafs==0){
+                    list.push(data[i]);
+                }
+            }
+            // console.log(list)
+            for (var i=0;i<data.length;i++) {
+                if (data[i].leafs == -1) {
+                    list.push(data[i]);
+                }
+            }
+
+            //    调用初始化zTree的方法
+            initzTree(list);
             // console.log("我先执行")
         },"json")
         $.ajaxSettings.async = true;
@@ -563,7 +580,7 @@
     function addTopTargetCategory() {
         //获取右侧div的全部子元素
         var divList = $('#targetManagement').children();
-        console.log(divList)
+        // console.log(divList)
         for (var i=1;i<divList.length;i++){
             divList[i].remove()
         }
@@ -772,6 +789,7 @@
 
     //指标添加 触发添加按钮(插入指标和选项)
     function addTarget(targetId) {
+        console.log(targetId)
         //获取指标和指标权重的值
         var targetName = $('input[name=targetName]').val();
         var targetWeight = $('input[name=targetWeight]').val();
@@ -863,6 +881,7 @@
 
                             console.log(weightStr)
                             }
+                        // console.log($('#targetManagement>div:last'))
                         $.ajax({
                             url:'/TargetManagement/addTarget',
                             data:{
@@ -875,8 +894,12 @@
                             success:function (res) {
                                 if (res.message=="操作成功") {
                                     layer.msg(res.message)
+                                    $('#targetManagement>div').eq(-1).empty()
+                                    $('#targetManagement>div').eq(-2).empty()
+
                                     //重新加载zTree
                                     reInit(targetId);
+
                                 }else {
                                     layer.msg(res.message)
                                 }
@@ -892,6 +915,8 @@
                 optionStr = "未添加选项";
                 weightStr = "未添加选项";
 
+                // console.log($('#targetManagement>div:last').empty())
+
                 $.ajax({
                     url:'/TargetManagement/addTarget',
                     data:{
@@ -904,6 +929,8 @@
                     success:function (res) {
                         if (res.message=="操作成功") {
                             layer.msg(res.message)
+                            $('#targetManagement>div').eq(-1).empty()
+                            $('#targetManagement>div').eq(-2).empty()
                             //重新加载zTree
                             reInit(targetId);
                         }else {

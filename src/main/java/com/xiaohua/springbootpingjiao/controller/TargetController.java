@@ -193,7 +193,7 @@ public class TargetController {
     public Map addTarget(String target_Name,Float target_Weight,String optionList,String weightList,int target_Id){
         Map result = new HashMap();
         if (optionList.equals("未添加选项")&&weightList.equals("未添加选项")){
-            int categoryCount = targetService.selectSubordinateTargetCategory(target_Name,target_Id);
+            int categoryCount = targetService.selectSubordinateTargetOption(target_Name,target_Id);
             if (categoryCount==0){
                 Target target = new Target();
                 int insertTargetCount = targetService.insertTarget(target_Name, target_Weight, target_Id, target);

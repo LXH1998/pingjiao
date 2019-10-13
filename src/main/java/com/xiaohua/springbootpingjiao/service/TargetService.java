@@ -41,6 +41,8 @@ public interface TargetService {
 //   插入指标
     int insertTarget(String target_Name,Float target_Weight,int target_Id,Target target);
 
+    //    插入指标（查看当前指标类别下是否存在相同指标）
+    int selectSubordinateTargetOption(String target_Name, int target_Id);
     //    插入选项
     int insertOptions(String options_Content, Float options_Weight, Options options);
 

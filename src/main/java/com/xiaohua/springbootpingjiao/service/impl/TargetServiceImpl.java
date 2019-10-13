@@ -76,6 +76,12 @@ public class TargetServiceImpl implements TargetService {
         return targetMapper.insertTarget(target_Name,target_Weight,target_Id,target);
     }
 
+    //    插入指标（查看当前指标类别下是否存在相同指标）
+    @Override
+    public int selectSubordinateTargetOption(String target_Name, int target_Id) {
+        return targetMapper.selectSubordinateTargetOption(target_Name,target_Id);
+    }
+
     @Override
     public int insertOptions(String options_Content, Float options_Weight, Options options) {
         return targetMapper.insertOptions(options_Content,options_Weight,options);

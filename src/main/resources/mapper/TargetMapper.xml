@@ -53,13 +53,17 @@
 
     <!--插入下级指标类别（查看当前指标类别下是否存在相同下级指标类别）-->
     <select id="selectSubordinateTargetCategory" resultType="int">
-        select  IFNULL(MAX(target_id),0) AS target_id from target where parent_id = #{target_Id} and target_name = #{target_Name} and hides = 1;
+        select  IFNULL(MAX(target_id),0) AS target_id from target where parent_id = #{target_Id} and target_name = #{target_Name} and hides = 1 and leafs_id=0;
     </select>
     <!--插入下级指标类别-->
     <insert id="insertSubordinateTargetCategory">
         insert into target(target_name,target_weight,parent_id,leafs_id) value (#{target_Name},#{target_Weight},#{target_Id},0)
     </insert>
 
+    <!--插入指标（查看当前指标类别下是否存在相同指标）-->
+    <select id="selectSubordinateTargetOption" resultType="int">
+        select  IFNULL(MAX(target_id),0) AS target_id from target where parent_id = #{target_Id} and target_name = #{target_Name} and hides = 1 and leafs_id=-1;
+    </select>
     <!--插入指标-->
     <insert id="insertTarget" useGeneratedKeys="true" keyProperty="target.target_Id">
         insert into target(target_name,target_weight,parent_id,leafs_id) value (#{target_Name},#{target_Weight},#{target_Id},-1)

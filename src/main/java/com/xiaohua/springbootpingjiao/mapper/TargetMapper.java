@@ -42,6 +42,8 @@ public interface TargetMapper {
 //    插入下级指标类别
     int insertSubordinateTargetCategory(String target_Name,Float target_Weight,int target_Id);
 
+//    插入指标（查看当前指标类别下是否存在相同指标）
+    int selectSubordinateTargetOption(String target_Name, int target_Id);
 //    插入指标
     int insertTarget(String target_Name,Float target_Weight,int target_Id,Target target);
 
