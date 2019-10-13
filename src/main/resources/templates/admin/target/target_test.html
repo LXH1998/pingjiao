@@ -55,7 +55,16 @@
     //
     //     })
     // })
-    $(initIndex());
+    $(function () {
+        initIndex();
+        var docHeight = $(document).height(); //获取窗口高度
+        var docWidth = $(document).width(); //获取串口宽度
+        console.log("窗口高度"+docHeight);
+        console.log("窗口宽度"+docWidth);
+        $('#firstDiv')
+            .height(docHeight)
+            .width(docWidth)
+    })
 
 
     // zTree的设置
@@ -105,12 +114,12 @@
         },"json")
         $.ajaxSettings.async = true;
 
-        var treeObj = $.fn.zTree.getZTreeObj("tree");
-        //获得指定id节点
-        var node = treeObj.getNodeByParam("id", targetId);
-        // console.log(node.tId)
-        debugger
-        $("#"+node.tId+"_a").click();
+        // var treeObj = $.fn.zTree.getZTreeObj("tree");
+        // //获得指定id节点
+        // var node = treeObj.getNodeByParam("id", targetId);
+        // // console.log(node.tId)
+        // debugger
+        // $("#"+node.tId+"_a").click();
 
     }
 
@@ -145,7 +154,7 @@
 
             //页面初始化，显示添加一级类别的表单
             $('#targetManagement').append('        <div id="topDiv" style="width: 100%;">\n' +
-                '            <div class="layui-form-item" style="padding:0 0 15px 70px;margin-bottom: 0px;pa;border-bottom: #4E5465 1px solid;">\n' +
+                '            <div class="layui-form-item" style="padding:0 0 2% 6%;margin-bottom: 0px;box-sizing:border-box;border-bottom: #4E5465 1px solid;">\n' +
                 '                <label class="layui-form-label">指标类别:</label>\n' +
                 '                <div class="layui-input-inline">\n' +
                 '                    <input type="text" name="targetCategory" lay-verify="required" class="layui-input">\n' +
@@ -213,8 +222,8 @@
 
                 if (treeNode.leafs==0){
                     //右侧添加上半部div
-                    $("#targetManagement").append('        <div id="topDiv" style="width: 100%;border-bottom: #4E5465 1px solid;padding-bottom: 25px;">\n' +
-                        '            <div class="layui-form-item" style="padding-left: 70px">\n' +
+                    $("#targetManagement").append('        <div id="topDiv" style="width: 100%;border-bottom: #4E5465 1px solid;box-sizing:border-box;padding-bottom: 2%;">\n' +
+                        '            <div class="layui-form-item" style="padding-left: 10%">\n' +
                         '                <label class="layui-form-label">指标类别:</label>\n' +
                         '                <div class="layui-input-inline">\n' +
                         '                    <input type="text" name="targetCategory" lay-verify="required" class="layui-input" value="'+treeNode.targetName+'">\n' +
@@ -250,8 +259,8 @@
                     //     // console.log(optionsIdList.length)
                     // }
                     //右侧添加上半部div
-                    $("#targetManagement").append('        <div style="width: 100%;border-bottom: #4E5465 1px solid;padding-bottom: 25px;">\n' +
-                        '            <div class="layui-form-item" style="padding-left: 70px">\n' +
+                    $("#targetManagement").append('        <div style="width: 100%;border-bottom: #4E5465 1px solid;box-sizing:border-box;padding-bottom: 2%;">\n' +
+                        '            <div class="layui-form-item" style="padding-left: 10%">\n' +
                         '                <label class="layui-form-label">指标:</label>\n' +
                         '                <div class="layui-input-inline">\n' +
                         '                    <input type="text" name="targetName" lay-verify="required" class="layui-input" value="'+treeNode.targetName+'">\n' +
@@ -263,7 +272,7 @@
                         '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px" onclick="deleteTargetCategory('+treeNode.id+','+treeNode.pId+')"><i class="layui-icon"></i> 删除</button>\n' +
                         '            </div>\n' +
                         '\n' +
-                        '            <div style="width:400px;margin: 0 auto">\n' +
+                        '            <div style="width:35%;margin: 0 auto">\n' +
                         '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" onclick="targetMaintenance()" style="margin-left: 20px;padding: 0 20px">指标维护</button>\n' +
                         '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" onclick="saveTargetChange('+"'"+treeNode.targetName+"'"+","+treeNode.targetWeight+","+treeNode.id+')" style="margin-left: 20px;padding: 0 20px">保存</button>\n' +
                         '            </div>\n' +
@@ -272,14 +281,14 @@
 
                     //右侧下半部分div
                     if (treeNode.leafs==-1){
-                        $('#targetManagement').append('        <div style="width:100%;height:325px;">\n' +
+                        $('#targetManagement').append('        <div style="width:100%;height:76%;">\n' +
                             '            <fieldset class="layui-elem-field site-demo-button" >\n' +
                             '                <legend>指标维护</legend>\n' +
-                            '                <div id="addButton"  style="margin-bottom: 10px;visibility: hidden;text-align: right;padding-right: 175px">\n' +
+                            '                <div id="addButton"  style="margin-bottom: 10px;visibility: hidden;text-align: right;padding-right: 20%">\n' +
                             '                    <button type="button" onclick="addOptions()" class="layui-btn layui-btn-sm">添加选项</button>\n' +
                             '                    <button type="button" onclick="saveTargetMaintenance('+treeNode.id+')"  class="layui-btn layui-btn-sm layui-btn-normal">保存</button>\n' +
                             '                </div>\n' +
-                            '                <form id="addOptions" class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">\n' +
+                            '                <form id="addOptions" class="layui-form layui-form-pane" style="height:252px;padding-left:17%;overflow: auto">\n' +
                             '                </form>\n' +
                             '            </fieldset>\n' +
                             '        </div>')
@@ -320,9 +329,9 @@
     };
 </script>
 <body>
-<div style="width: 1120px;height: 435px;">
-    <div style="width: 19%;height: 435px;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;">
-        <ul id="tree" class="ztree" style="height:435px; overflow:auto;"></ul>
+<div id="firstDiv" >
+    <div id="leftDiv" style="width: 19%;height: 100%;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;overflow:auto;">
+        <ul id="tree" class="ztree"></ul>
     </div>
     <div id="targetManagement" style="width: 81%;height: 100%; float: left;">
         <!--&lt;!&ndash;<div style="background-color:#007DDB;width: 100%">&ndash;&gt;-->
@@ -542,7 +551,7 @@
                             $('#targetManagement').empty();
                             //页面初始化，显示添加一级类别的表单
                             $('#targetManagement').append('        <div id="topDiv" style="width: 100%;">\n' +
-                                '            <div class="layui-form-item" style="padding:0 0 15px 70px;margin-bottom: 0px;pa;border-bottom: #4E5465 1px solid">\n' +
+                                '            <div class="layui-form-item" style="padding:0 0 2% 6%;margin-bottom: 0px;pa;border-bottom: #4E5465 1px solid">\n' +
                                 '                <label class="layui-form-label">指标类别:</label>\n' +
                                 '                <div class="layui-input-inline">\n' +
                                 '                    <input type="text" name="targetName" lay-verify="required" class="layui-input">\n' +
@@ -589,7 +598,7 @@
         //     // console.log("已删除")
         // }
         $('#targetManagement').append('        <div id="bottomDiv" style="width: 100%;">\n' +
-            '            <div class="layui-form-item" style="padding:0 0 15px 70px;margin-bottom: 0px;pa;">\n' +
+            '            <div class="layui-form-item" style="padding:0 0 2% 10%;margin-bottom: 0px;">\n' +
             '                <label class="layui-form-label">指标类别:</label>\n' +
             '                <div class="layui-input-inline">\n' +
             '                    <input type="text" name="targetCategory" lay-verify="required" class="layui-input">\n' +
@@ -611,7 +620,7 @@
             divList[i].remove()
         }
         $('#targetManagement').append('        <div id="bottomDiv" style="width: 100%;">\n' +
-            '            <div class="layui-form-item" style="padding:0 0 15px 70px;margin-bottom: 0px;pa;">\n' +
+            '            <div class="layui-form-item" style="padding:0 0 2% 8%;margin-bottom: 0px;">\n' +
             '                <label class="layui-form-label" style="width: 120px">下级指标类别:</label>\n' +
             '                <div class="layui-input-inline">\n' +
             '                    <input type="text" name="targetCategory" lay-verify="required" class="layui-input">\n' +
@@ -667,7 +676,7 @@
             divList[i].remove()
         }
         $('#targetManagement').append('        <div id="bottomDiv" style="width: 100%;">\n' +
-            '            <div class="layui-form-item" style="padding:0 0 15px 70px;margin-bottom: 0px;pa;">\n' +
+            '            <div class="layui-form-item" style="padding:0 0 2% 6%;margin-bottom: 0px;pa;">\n' +
             '                <label class="layui-form-label">指标:</label>\n' +
             '                <div class="layui-input-inline">\n' +
             '                    <input type="text" name="targetName" lay-verify="required" class="layui-input">\n' +
@@ -677,14 +686,15 @@
             '                    <input type="text" name="targetWeight" lay-verify="required" class="layui-input">\n' +
             '                </div>\n' +
             '                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" style="margin-top: 4px" onclick="addTarget('+targetId+')">添加</button>\n' +
+            '                    <button type="button" onclick="addOptions()" class="layui-btn layui-btn-sm" style="margin-top: 4px">添加选项</button>\n' +
             '            </div>')
         $('#targetManagement').append('        <div style="width:100%;height:272px;">\n' +
 
 
-            '                <div  style="margin-bottom: 10px;text-align: right;padding-right: 195px">\n' +
-            '                    <button type="button" onclick="addOptions()" class="layui-btn layui-btn-sm">添加选项</button>\n' +
-            '                </div>\n' +
-            '                <form id="addOptions" class="layui-form layui-form-pane" style="height:198px;padding-left:130px;overflow: auto;">\n' +
+            // '                <div  style="margin-bottom: 10px;text-align: right;padding-right: 195px">\n' +
+            // '                    <button type="button" onclick="addOptions()" class="layui-btn layui-btn-sm">添加选项</button>\n' +
+            // '                </div>\n' +
+            '                <form id="addOptions" class="layui-form layui-form-pane" style="height:260px;padding-left:130px;overflow: auto;">\n' +
             '                </form>\n' +
 
             '        </div>')
@@ -699,16 +709,16 @@
                 '                            <label class="layui-form-label">选项:</label>\n' +
                 '                            <div class="layui-input-inline" style="width: 400px">\n' +
                 '                                <input type="hidden" name="id" value="">\n' +
-                '                                <input type="text" name="option" lay-verify="required" class="layui-input">\n' +
+                '                                <input type="text" name="option" lay-verify="required"  class="layui-input">\n' +
                 '                            </div>\n' +
                 '                        </div>\n' +
                 '                        <div class="layui-inline">\n' +
-                '                            <div class="layui-input-inline" style="width: 50px">\n' +
-                '                                <input type="text" name="optionWeight" lay-verify="required" class="layui-input"  style="padding-left:0px;text-align: center">\n' +
+                '                            <div class="layui-input-inline" style="width: 50px;">\n' +
+                '                                <input type="text" name="optionWeight" lay-verify="required" class="layui-input"   style="padding-left:0px;text-align: center">\n' +
                 '                            </div>\n' +
                 '                        </div>\n' +
                 '                        <div class="layui-inline">\n' +
-                '                            <div class="layui-input-inline" style="width: 50px">\n' +
+                '                            <div class="layui-input-inline deleteButton" style="width: 50px;visibility: visible">\n' +
                 '                                <button type="button" onclick="deleteTheOption(this)" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>\n' +
                 '                            </div>\n' +
                 '                        </div>\n' +
@@ -1038,9 +1048,9 @@
 //    指标维护后隐藏按钮
     function buttonHidden() {
         $('#addButton').css("visibility","hidden")
-        $('.deleteButton').css("visibility","hidden")
-        $('input[name=option]').attr("readonly",true)
-        $('input[name=optionWeight]').attr("readonly",true)
+        // $('.deleteButton').css("visibility","hidden")
+        // $('input[name=option]').attr("readonly",true)
+        // $('input[name=optionWeight]').attr("readonly",true)
 
     }
     
@@ -1156,6 +1166,7 @@
                     }
                     // console.log(optionStr);
 
+
                     $.ajax({
                         url:'/TargetManagement/saveOptionsChange',
                         // type:'post',
@@ -1167,10 +1178,14 @@
                         },
                         success:function (res) {
                             if (res.message=="操作成功"){
-                                console.log("进入")
-                                debugger
+                                // console.log("进入")
+                                // debugger
                                 layer.msg(res.message)
-                                buttonHidden()
+                                $('#addButton').css("visibility","hidden")
+                                $('#addOptions>div').empty()
+                                zzz(targetId)
+                                reInit(targetId)
+                                // buttonHidden()
                             }else {
                                 layer.msg(res.message)
                             }
@@ -1201,6 +1216,7 @@
                 success:function (res) {
                     if (res.message=="操作成功"){
                         layer.msg(res.message)
+                        reInit(targetId)
                         //重新加载zTree
                         // reInit(targetId);
                         buttonHidden();
@@ -1210,6 +1226,43 @@
                 }
             })
         }
+    }
+
+    function zzz(targetId) {
+        $.ajax({
+            url:"/TargetManagement/targetOptions",
+            data:{
+                target_id:targetId
+            },
+            async: false,
+            success:function (res) {
+                    //右侧下半部分div
+
+                console.log(res.options)
+                            for (var i=0;i<res.options.length;i++){
+                                console.log("我执行了")
+                                $('#addOptions').append('<div class="layui-form-item">\n' +
+                                    '                        <div class="layui-inline">\n' +
+                                    '                            <label class="layui-form-label">选项:</label>\n' +
+                                    '                            <div class="layui-input-inline" style="width: 400px">\n' +
+                                    '                                <input type="hidden" name="id" value="'+res.options[i].options_Id+'">\n' +
+                                    '                                <input type="text" name="option" lay-verify="required" class="layui-input" readonly="true" value="'+res.options[i].options_Content+'">\n' +
+                                    '                            </div>\n' +
+                                    '                        </div>\n' +
+                                    '                        <div class="layui-inline">\n' +
+                                    '                            <div class="layui-input-inline" style="width: 50px">\n' +
+                                    '                                <input type="text" name="optionWeight" lay-verify="required" class="layui-input" readonly="true" style="padding-left:0px;text-align: center" value="'+res.options[i].options_Weight+'">\n' +
+                                    '                            </div>\n' +
+                                    '                        </div>\n' +
+                                    '                        <div class="layui-inline">\n' +
+                                    '                            <div class="layui-input-inline deleteButton" style="width: 50px;visibility: hidden">\n' +
+                                    '                                <button type="button" onclick="deleteTheOption(this)" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>\n' +
+                                    '                            </div>\n' +
+                                    '                        </div>\n' +
+                                    '                    </div>')
+                            }
+                        }
+        })
     }
 
 </script>
