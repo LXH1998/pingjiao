@@ -18,6 +18,9 @@ import java.util.List;
 public interface TargetMapper {
 //
 
+//    查询是否有批次已开启
+    int selectBatchHide();
+
 //    查询所有指标
     List<Target> selectAllTarget();
 
@@ -48,4 +51,22 @@ public interface TargetMapper {
 
 //    保存--修改后的指标内容和权重
     int saveTargetCategoryChange(String targetName,Float targetWeight, int targetId);
+
+//    查询指标选项表中是否存在指定指标的选项
+    int selectTheTargetOptions(int targetId);
+
+//    删除指定指标的选项
+    int deleteTheTargetOptions(int targetId);
+
+//    恢复指定指标选项
+    int restoreTheTargetOptions(int targetId,int optionId);
+
+//    修改指定选项内容
+    int updataOptionsContent(String optionContent,Float optionWeight,int optionId);
+
+//    查询指定指标全部删除的选项
+    List<Integer> selectAllDeletedOptions(int targetId);
+
+//
+    int selectTheSameOption(int optionsId, String optionsContent);
 }

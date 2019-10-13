@@ -24,7 +24,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/TargetManagement")
 public class TargetController {
-//
+    //
 
     @Autowired
     private TargetService targetService;
@@ -33,6 +33,21 @@ public class TargetController {
     @RequestMapping("/toIndex")
     public String toTargetManagement(){
         return "admin/target/target_test";
+    }
+
+    /**
+     * 查询是否有批次已开启
+     */
+    @ResponseBody
+    @RequestMapping("/selectBatchHide")
+    public Map selectBatchHide(){
+        Map result = new HashMap();
+        result.put("message","批次未开启");
+        int count = targetService.selectBatchHide();
+        if (count!=0){
+            result.put("message","批次已开启");
+        }
+        return result;
     }
 
 
@@ -208,6 +223,127 @@ public class TargetController {
             result.put("message","操作失败");
         }
 
+        return result;
+    }
+
+    /**
+     * 修改选项 触发保存按钮
+     */
+    @ResponseBody
+    @RequestMapping("/saveOptionsChange")
+    public Map saveOptionsChange(String idList,String optionList,String weightList,int target_Id){
+        Map result = new HashMap();
+        result.put("message","操作失败");
+
+        if (optionList.equals("未添加选项")&&weightList.equals("未添加选项")){
+            int optionsCount = targetService.selectTheTargetOptions(target_Id);
+            if (optionsCount==0){
+                result.put("message","操作成功");
+            }else {
+                int deleteCount = targetService.deleteTheTargetOptions(target_Id);
+                if (deleteCount!=0){
+                    result.put("message","操作成功");
+                }
+            }
+        }else {
+            Options options = new Options();
+            String optionsContentList[]=optionList.split(",");
+            String optionsWeightList[]=weightList.split(",");
+            int test = targetService.deleteTheTargetOptions(target_Id);
+            int insertCount=0;
+            if (idList.equals("")){
+                List<Integer> list = targetService.selectAllDeletedOptions(target_Id);
+                if (list.size()==0){
+                    for (int i=0;i<optionsContentList.length;i++) {
+                        String optionContent = optionsContentList[i];
+                        Float optionWeight = Float.parseFloat(optionsWeightList[i]);
+                        int addCount = targetService.insertOptions(optionContent,optionWeight,options);
+                        if (addCount==1){
+                            int insertOptionId = options.getOptions_Id();
+                            int count1 = targetService.insertTargetOptions(target_Id, insertOptionId);
+                            if (count1==1){
+                                insertCount +=1;
+                            }
+                        }
+                    }
+                }else {
+                    for (int i=0;i<optionsContentList.length;i++){
+                        String optionContent = optionsContentList[i];
+                        Float optionWeight = Float.parseFloat(optionsWeightList[i]);
+                        int isUpdate = 0;
+                        for (Integer theOptionsIdlist:list){
+                            int sameContent = targetService.selectTheSameOption(theOptionsIdlist,optionContent);
+                            if (sameContent==1){
+                                int updataCount = targetService.updataOptionsContent(optionContent,optionWeight,theOptionsIdlist);
+                                if (updataCount==1){
+                                    int restoreCount = targetService.restoreTheTargetOptions(target_Id,theOptionsIdlist);
+                                    if (restoreCount==1){
+                                        insertCount +=1;
+                                        isUpdate +=1;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (isUpdate==0){
+                            int addCount = targetService.insertOptions(optionContent,optionWeight,options);
+                            if (addCount==1){
+                                int insertOptionId = options.getOptions_Id();
+                                int count1 = targetService.insertTargetOptions(target_Id, insertOptionId);
+                                if (count1==1){
+                                    insertCount +=1;
+                                }
+                            }
+                        }
+//                    Float optionWeight = Float.parseFloat(optionsWeightList[i]);
+//                    int count = targetService.insertOptions(optionContent,optionWeight,options);
+//                    if (count==1){
+//                        int insertOptionId = options.getOptions_Id();
+//                        int count1 = targetService.insertTargetOptions(target_Id, insertOptionId);
+//                        if (count1==1){
+//                            insertCount +=1;
+//                        }
+//                    }
+                    }
+                }
+                if (insertCount==optionsContentList.length){
+                    result.put("message","操作成功");
+                }
+            }else {
+                String optionsIdList[] = idList.split(",");
+                int updateCount=0;
+
+                for (int i=0;i<optionsIdList.length;i++){
+                    String optionContent = optionsContentList[i];
+                    Float optionWeight = Float.parseFloat(optionsWeightList[i]);
+                    int optionId = Integer.parseInt(optionsIdList[i]);
+                    int count = targetService.updataOptionsContent(optionContent,optionWeight,optionId);
+                    if (count==1){
+                        targetService.restoreTheTargetOptions(target_Id,optionId);
+                        updateCount +=1;
+                    }
+                }
+                if (updateCount==optionsIdList.length){
+                    for (int i=updateCount;i<optionsContentList.length;i++){
+                        String optionContent = optionsContentList[i];
+                        Float optionWeight = Float.parseFloat(optionsWeightList[i]);
+                        int count = targetService.insertOptions(optionContent,optionWeight,options);
+                        if (count==1){
+                            int insertOptionId = options.getOptions_Id();
+                            int count1 = targetService.insertTargetOptions(target_Id, insertOptionId);
+                            if (count1==1){
+                                insertCount +=1;
+                            }
+                        }
+                    }
+                }
+                if (insertCount==(optionsContentList.length-updateCount)){
+                    result.put("message","操作成功");
+                }
+            }
+
+        }
+//        }
         return result;
     }
 }

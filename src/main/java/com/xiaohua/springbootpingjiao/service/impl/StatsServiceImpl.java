@@ -1,6 +1,7 @@
 package com.xiaohua.springbootpingjiao.service.impl;
 
 import com.xiaohua.springbootpingjiao.entity.Departments;
+import com.xiaohua.springbootpingjiao.entity.Fraction;
 import com.xiaohua.springbootpingjiao.entity.Scores;
 import com.xiaohua.springbootpingjiao.entity.WaterPojo;
 import com.xiaohua.springbootpingjiao.mapper.StatsMapper;
@@ -73,23 +74,30 @@ public class StatsServiceImpl  implements StatsService {
                 hashMap.put("gradeds",map.get("gradeds"));
                 hashMap.put("papersId",papersId);
                     List<WaterPojo> listStudent  = listA.stream().filter(o -> o.getRole_name().equals("学生")).collect(Collectors.toList());
+                    double stuSize = 1;
+                    double teaSize = 1;
+                    if (listStudent.size() != 0){
+                        stuSize = listStudent.size();
+                    }
 
                     for(WaterPojo demo:listStudent){
                         studentFraction = studentFraction + demo.getFractions();
                     }
                     List<WaterPojo> listTeacher  = listA.stream().filter(o -> o.getRole_name().equals("教师")).collect(Collectors.toList());
-
+                    if (listTeacher.size() != 0){
+                        teaSize = listTeacher.size();
+                    }
                     for(WaterPojo demo:listTeacher){
                         teacherFraction = teacherFraction + demo.getFractions();
                     }
                     int f = list.size();
-                    num = (studentFraction*0.4+teacherFraction*0.6);
+                    num = (studentFraction*0.4/stuSize+teacherFraction*0.6/teaSize);
                     Scores scores = new Scores();
                     Object teacherId = map.get("gradeds");
                     scores.setGradeds_Id(Integer.parseInt(teacherId.toString()));
                     scores.setPapers_id(papersId);
-                    scores.setStudents_sum(studentFraction*0.4);
-                    scores.setTeahcer_sum(teacherFraction*0.6);
+                    scores.setStudents_sum((studentFraction*0.4)/stuSize);
+                    scores.setTeahcer_sum((teacherFraction*0.6)/teaSize);
                     scores.setBatch_id(Integer.parseInt(batchId));
                     num = (double) Math.round(num * 100) / 100;
                     scores.setScores_Sum(num);
@@ -232,6 +240,95 @@ public class StatsServiceImpl  implements StatsService {
     @Override
     public List<HashMap> queryScoreSize(HashMap map) {
         return statsMapper.queryScoreSize(map);
+    }
+
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/10/12 9:17
+    * @param
+    * @Description 查询某老师 课程成绩
+    */
+    @Override
+    public List<HashMap> queryTeacherScore(HashMap map) {
+        List<HashMap> res = new ArrayList<HashMap>();
+        List<HashMap> list = statsMapper.queryTeacherScore(map);
+        List<HashMap> courseList = statsMapper.queryTeacherScoreList(map);
+        String teacherName= list.get(0).get("user_name").toString();
+        String teacherID= list.get(0).get("user_id").toString();
+        String paperId= list.get(0).get("papers_id").toString();
+        String couresName = null;
+        String couresNID = null;
+        for (HashMap coursID :courseList){
+            double studentFraction = 0.0;
+            double teacherFraction = 0.0;
+            double stuSize = 1;
+            double teaSize = 1;
+            List<HashMap> listCourse  = list.stream().filter(o -> o.get("courses_id").equals(coursID.get("courses_id"))).collect(Collectors.toList());
+                couresName = listCourse.get(0).get("courses_name").toString();
+                couresNID =   listCourse.get(0).get("courses_id").toString();
+                List<HashMap>  listStudent =listCourse.stream().filter(o -> o.get("role_name").equals("学生")).collect(Collectors.toList());
+                if (listStudent.size() != 0){
+                    stuSize = listStudent.size();
+                }
+
+                for(HashMap demo:listStudent){
+                    studentFraction = studentFraction + Double.parseDouble(demo.get("fractions").toString());
+                }
+                List<HashMap>  listTeacher =listCourse.stream().filter(o -> o.get("role_name").equals("教师")).collect(Collectors.toList());
+                if (listTeacher.size() != 0){
+                    teaSize = listTeacher.size();
+                }
+                for(HashMap demo:listTeacher){
+
+                    teacherFraction = teacherFraction + Double.parseDouble(demo.get("fractions").toString());
+                }
+            HashMap map1 = new HashMap();
+            double score  = studentFraction*0.4/stuSize+teacherFraction*0.6/teaSize;
+            map1.put("studentScore",(double) Math.round(studentFraction/stuSize * 100) / 100);
+            map1.put("teacherScore",(double) Math.round(teacherFraction/teaSize * 100) / 100);
+            map1.put("score",(double) Math.round(score * 100) / 100);
+            map1.put("teacherID",teacherID);
+            map1.put("teacherName",teacherName);
+            map1.put("couresName",couresName);
+            map1.put("couresID",couresNID);
+            map1.put("paperId",paperId);
+            res.add(map1);
+            teacherFraction = 0.0;
+            studentFraction = 0.0;
+
+        }
+        return res;
+    }
+
+    @Override
+    public List<HashMap> queryTeacherScoreSize(HashMap map) {
+        return statsMapper.queryTeacherScoreSize(map);
+    }
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/10/12 11:54
+    * @param
+    * @Description 查询被评分人具体评教详情
+    */
+    @Override
+    public List<HashMap> querydetail(HashMap map) {
+        return statsMapper.querydetail(map);
+    }
+
+    @Override
+    public List<HashMap> querydetailSize(HashMap map) {
+        return statsMapper.querydetailSize(map);
+    }
+    @Override
+    public List<Fraction> selectEvaluationAnswers(int rater, int gradeds, int papers_id, int courses_id) {
+        return statsMapper.selectEvaluationAnswers(rater, gradeds, papers_id, courses_id);
+    }
+
+    @Override
+    public List<HashMap> selectFractions(int rater, int gradeds, int papers_id, int courses_id) {
+        return statsMapper.selectFractions(rater, gradeds, papers_id, courses_id);
     }
 }
 

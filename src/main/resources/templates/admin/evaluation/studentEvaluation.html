@@ -65,7 +65,7 @@
 <script type="text/html" id="xuHao">
     {{d.LAY_INDEX}}
 </script>
-<table class="layui-table" lay-data="{width:1100,url:'/StudentEvaluation/selectStudentEvaluation', id:'idTest',where:{user_id:1}}" lay-filter="demo">
+<table class="layui-table" lay-data="{width:1100, id:'idTest',where:{user_id:1}}" lay-filter="demo">
     <thead>
     <tr>
         <th lay-data="{field: '序号',templet: '#xuHao',sort: true,width:80}">序号</th>
@@ -81,8 +81,18 @@
 
 <!--表格的操作-->
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">开始评教</a>
-    <a class="layui-btn layui-btn-xs" lay-event="detail">查看评教</a>
+    {{#
+    if(d.batch_hide == "1"){
+    }}
+    <a class="layui-btn layui-btn-xs" lay-event="edit" id="edit">开始评教</a>
+    <a class="layui-btn layui-btn-xs" lay-event="detail" id="detail">查看评教</a>
+    {{#
+    }else{
+    }}
+    <a class="layui-btn layui-btn-xs" lay-event="detail" id="detail">查看评教</a>
+    {{#
+    }
+    }}
 </script>
 
 

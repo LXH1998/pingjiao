@@ -51,38 +51,32 @@
     }
     #evaluation_Situation{
         width: 550px;
-        height:85px;
+        height:25px;
         margin-left:25px;
     }
     #evaluation_top{
         width: 550px;
         height:25px;
     }
-    .detailsFrist{
-        width: 170px;
-        height: 50px;
+    .leftDivFristDiv{
+        width: 200px;
+        height: 190px;
         float: left;
-        margin-top: 10px;
     }
-    .details{
-        width: 170px;
-        height: 50px;
-        float: left;
-        margin-top: 10px;
-        margin-left: 20px;
+    .detailsFrist{
+        width: 200px;
+        height: 60px;
     }
 
-    #pieChart{
-        width: 550px;
-        height:150px;
-        margin-left:25px;
+    .details{
+        width: 200px;
+        height: 60px;
+        margin-top: 5px;
     }
-    .fountStyle{
-        font-size: 20px;
-        margin-top: 10px;
-        text-align: center;
-        font-size: 15px;
-        color: #FFB800;
+    .pieLeftOne{
+        width: 250px;
+        height:190px;
+        float: right;;
     }
     .fontDiv{
         margin: 0 auto;
@@ -92,22 +86,32 @@
         margin: 0 auto;
     }
     .fontsize{
-        font-size: 12px;
+        font-size: 15px;
         text-align: center;
     }
     .pieleft{
         width: 550px;
-        height: 130px;
+        height: 260px;
         float: left;
-        margin-top: 10px;
         margin-left: 15px;
     }
+    #pieChart{
+        width: 550px;
+        height:260px;
+        margin-left:25px;
+    }
+
     .rightDivFrist{
         width: 675px;
         height:450px;
         margin-top: 10px;
     }
-
+    .fountStyle{
+        font-size: 25px;
+        margin-top: 10px;
+        text-align: center;
+        color: #FFB800;
+    }
 </style>
 <body>
 <div id="top" >
@@ -123,7 +127,6 @@
     </div>
     <div class="layui-form layui-inline" style="width: 200px">
         <button class="layui-btn" data-type="search" id="search" style="margin-left: 20px">查询</button>
-        <button class="layui-btn" data-type="details" id="details" style="margin-left: 20px">详情</button>
     </div>
 
 
@@ -135,13 +138,14 @@
                 <div style="width: 100px;height: 25px;margin-left: 20px">
                     <p class="web-font">评教详情</p>
                 </div>
+            </div>
+            <div class="leftDivFristDiv">
                 <div class="detailsFrist">
                     <div class="fontDiv">
                         <p  class="fontsize">学院数量:</p>
                         <p id="departmSize" class="fountStyle"></p>
                     </div>
                 </div>
-
                 <div class="details">
                     <div class="fontDiv">
                         <p class="fontsize" >老师人数:</p>
@@ -155,25 +159,26 @@
                         <p id="participateMen" class="fountStyle"></p>
                     </div>
                 </div>
-
-
             </div>
+            <div class="pieLeftOne">
+                <div id="main" style="width: 250px;height:190px;"></div>
+            </div>
+
         </div>
 
         <div id="pieChart">
             <div class="pieleft">
-                <div id="main" style="width: 250px;height:130px;"></div>
-            </div>
-            <div class="pieleft">
-                <div id="barMain" style="width: 550px;height:280px;"></div>
+                <div id="barMain" style="width: 550px;height:260px;"></div>
             </div>
         </div>
     </div>
+
+
     <div id="rightDiv">
         <div class="rightDivFrist">
             <table id="demo" lay-filter="test"></table>
             <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-xs" lay-event="detail">看</a>
+                <a class="layui-btn layui-btn-xs" lay-event="detail" id="detail">详情</a>
             </script>
         </div>
     </div>
@@ -183,18 +188,6 @@
         $(function () {
             functionD()
         })
-        $('#details').on('click', function(){
-            layer.open({
-                type: 2
-                ,skin: 'layui-layer-rim'
-                ,maxmin: true
-                ,area: ["800px","500px"]
-                ,title: "评教详情"
-                ,content:"/stats/godetails"
-                ,success: function (layero,index) {
-                }
-            })
-        });
 
         $('#search').on('click', function(){
             batchId =   $("#batchId").val()
@@ -203,15 +196,6 @@
         });
     })
 
-    function dynamic_number(id,value) {
-        var temp = id;
-        temp.animate({count: value}, {
-            duration: 2000,
-            step: function () {
-                temp.text(String(parseInt(this.count)));
-            }
-        });
-    }
 </script>
 <script type="text/javascript">
     function dynamic_number(id,value) {
@@ -498,27 +482,70 @@
 
         layui.use('table', function() {
             var table = layui.table;
-
             //数据表表头
             table.render({
                 elem: '#demo'
                 // ,height: 400
                 , url: '/stats/querySocore'
                 , page: true //开启分页
-                ,data:{
+                ,cellMinWidth: 20 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                ,skin: 'line ' //表格风格 line （行边框风格）row （列边框风格）nob （无边框风格）
+                //,even: true    //隔行换色
+                ,limits: [9,10,11]  //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
+                ,limit: 9 //每页默认显示的数量
+                ,where:{
                     "batchId": batchId,
                     "papersId": papersId
                 }
                 , cols: [
                     [ //表头
-                        { title: '题号', toolbar: '#indexTpl',type:'numbers'}
-                        ,{field: 'user_name',  title: '姓名', width: '20%', sort: true,  align: 'center'}
-                        , {field: 'teahcer_sum', title: '教师评价总分', width: '20%', align: 'center'}
-                        , {field: 'students_sum', title: '学生评价总分', width: '20%', align: 'center'}
-                        , {field: 'scores_sum', title: '总分数', width: '20%', align: 'center'}
-                        ,{title: '操作', width: '10%', align: 'center', toolbar: '#barDemo'}
+                        { title: '题号', toolbar: '#indexTpl',type:'numbers',width: '8%' , sort: true}
+                        , {field: 'gradeds', title: 'ID', width: 50,hide:true}
+                        , {field: 'papers_id', title: '试卷编号',width: 50,hide:true}
+                        , {field: 'user_name',  title: '姓名', width: '20%', align: 'center'}
+                        , {field: 'teahcer_sum', title: '教师评价总分', width: '20%', align: 'center', sort: true}
+                        , {field: 'students_sum', title: '学生评价总分', width: '20%', align: 'center', sort: true}
+                        , {field: 'scores_sum', title: '总分数', width: '20%', align: 'center', sort: true}
+                        , {title: '操作', width: '12%', align: 'center', toolbar: '#barDemo'}
                     ]
                 ]
+                ,done: function(res, curr, count){
+                    $("[data-field='gradeds']").css('display','none'); //关键代码
+                    $("[data-field='papers_id']").css('display','none'); //关键代码
+                }
+            })
+            table.on('tool(test)', function(obj){
+                var data = obj.data;
+                var batchId =   $("#batchId").find("option:selected").text();
+                var papersId =   $("#paperId").find("option:selected").text();
+
+                console.log(obj)
+                if(obj.event === 'detail'){
+                    layer.open({
+                        type: 2
+                        ,skin: 'layui-layer-rim'
+                        ,maxmin: true
+                        ,area: ["1200px","520px"]
+                        ,title: "评教详情"
+                        ,content:"/stats/godetails?gradeds="+obj.data.gradeds
+                        ,success: function (layero,index) {
+                            var body = layer.getChildFrame('body', index);
+                            var iframeWin = window[layero.find('iframe')[0]['name']];
+                            console.log(body.find("#batchId"))
+                            if(papersId == "选择问卷" ){
+                                    body.find("#paperId").text("历年来所有问卷")
+                            } else{
+                                body.find("#paperId").text(papersId)
+                            }
+                            body.find("#teacherId").text(obj.data.user_name)
+                            console.log(obj)
+                            teacherID = obj.data.gradeds
+                            papersIds = obj.data.papers_id
+                            batchIds = $("#batchId").val()
+                            iframeWin.selectDataCallBack(teacherID,papersIds,batchIds)
+                        }
+                    })
+                }
             });
         })
     }
