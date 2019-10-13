@@ -366,9 +366,9 @@
                  dataType:"json",
                  data:{role_id:addrole_id,batch_id:addbatch_id},
                  success:function (e) {
-                    // console.log(e)
-                    // console.log(e.datalength)
-                     if (e.data.length==0||yishuan.length!=0) {
+                     console.log(e)
+                     console.log(e.datalength)
+                     if (e.data.length==0&&yishuan.length!=0) {
                          console.log(yishuan)
                         $.ajax({
                             url:"/Questionnaire/insertPapers",
@@ -377,6 +377,7 @@
                             data:{batch_Id:addbatch_id,role_Id:addrole_id,papers_Name:addpapers_name},
                             success:function (e) {
                                 if (e){//插入表是否成功
+
                                    // console.log(e)
                                     $.ajax({
                                         url:"/Questionnaire/selectifTarget",//查询插入的问卷id
@@ -384,14 +385,24 @@
                                         datatype:"json",
                                         data:{batch_id:addbatch_id,role_id:addrole_id},
                                         success:function (e) {
-                                            //console.log(e)
+                                            console.log(e)
+                                            for (keys in yishuan){
+                                                // console.log(yishuan[keys].id)
+                                                $.ajax({
+                                                    url:"/Questionnaire/insertTarget",
+                                                    type:"get",
+                                                    datatype:"json",
+                                                    data:{papers_Id:e.data[0].papers_id,target_Id:yishuan[keys].id,target_allweight:yishuan[keys].allweight},
+                                                    success:function (e) {
 
+                                                    }
+
+                                                })
+
+                                            }
                                         }
                                     })
-                                    for (keys in yishuan){
-                                       // console.log(yishuan[keys].id)
-
-                                    }
+                                    
                                 }else {
                                     layer.msg('操作失败', {icon: 2});
                                 }
