@@ -29,7 +29,7 @@
 
     <!--根据指标id查询该指标拥有的选项-->
     <select id="selectTargetOptions" resultMap="optionResultMap">
-        select o.*,tos.* from options o join targetoptions tos on o.options_id =  tos.options_id where tos.target_id=#{target_id} and tos.state=1 order by o.options_id
+        select o.*,tos.* from options o join targetoptions tos on o.options_id =  tos.options_id where tos.target_id=#{target_id} and tos.state=1 order by o.options_weight desc
     </select>
 
     <!--插入指标类别（查看数据库是否存在完全相同指标类别）-->
@@ -41,11 +41,15 @@
         insert into target(target_name,target_weight,parent_id,leafs_id) value (#{target_Name},#{target_Weight},0,0)
     </insert>
 
-
+    <!--删除指标选项表中指定的选项-->
+    <delete id="deleteTargetOptions">
+        delete from targetoptions where target_id=#{targetId}
+    </delete>
     <!--删除指标-->
-    <update id="deleteTarget">
-        update target set hides=0 where target_id = #{target_Id}
-    </update>
+    <delete id="deleteTarget">
+        delete from target where target_id=#{targetId}
+    </delete>
+
 
     <!--插入下级指标类别（查看当前指标类别下是否存在相同下级指标类别）-->
     <select id="selectSubordinateTargetCategory" resultType="int">
@@ -107,5 +111,16 @@
         select count(*) from options where options_id=#{optionsId} and options_content=#{optionsContent}
     </select>
 
-    <!--修改-->
+    <!--删除指定指标的全部选项-->
+    <delete id="deleteAllOptions">
+        delete from options where options_id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--查询指定指标是否存在子级-->
+    <select id="isExitSublevel" resultType="int">
+        select target_id from target where parent_id=#{targetId}
+    </select>
 </mapper>
