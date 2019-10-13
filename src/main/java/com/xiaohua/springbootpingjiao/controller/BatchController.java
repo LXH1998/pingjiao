@@ -104,17 +104,36 @@ public class BatchController {
         }
         return result;
     }
+
     //修改批次状态为关闭
     @ResponseBody
     @RequestMapping("/modifyEndBatch")
     public Map ModifyEndBatch(int batch_Id)
     {
-        int batchIf = batchService.ModifyEndBatch(batch_Id);
+        int ifCopy = 1;
         Map result = new HashMap();
-        if(batchIf == 1){
-            result.put("result","操作成功");
+        //复制当前批次下的所有问卷表到历史表中
+        List<Map<String, Integer>>  papers_Ids = batchService.SelectBatchPapers(batch_Id);
+        for(Map<String, Integer> paper:papers_Ids)
+        {
+            int papers_id =  paper.get("papers_id");
+            if(batchService.CopyTargetOptions(papers_id) == 0)
+            {
+                ifCopy = 0;
+                break;
+            }
+            System.out.println(papers_id);
+        }
+        if(ifCopy == 1)
+        {
+            int batchIf = batchService.ModifyEndBatch(batch_Id);;//修改状态量
+            if(batchIf == 1){
+                result.put("result","1");
+            }else {
+                result.put("result","2");
+            }
         }else {
-            result.put("result","操作失败");
+            result.put("result","0");//未复制成功
         }
         return result;
     }
@@ -132,5 +151,37 @@ public class BatchController {
         }
         return result;
     }
+    //判断是否有批次是开启状态
+    @ResponseBody
+    @RequestMapping("/ifOpen")
+    public Map IfBatchOpen()
+    {
+        String ifOpen = batchService.IfBatchOpen();
+        Map result = new HashMap();
+        if(!ifOpen.equals("0"))
+        {
+            result.put("result","1");
+        }else {
+            result.put("result","0");
+        }
+
+        return  result;
+    }
+
+//    @ResponseBody
+//    @RequestMapping("/batch_papers")
+//    public  List<Map<String, Integer>> CopyTargetOptions(int batch_Id)
+//    {
+//        List<Map<String, Integer>>  papers_Ids = batchService.SelectBatchPapers(batch_Id);
+//        for(Map<String, Integer> paper:papers_Ids)
+//        {
+//            int papers_id =  paper.get("papers_id");
+//            batchService.CopyTargetOptions(papers_id);
+//            System.out.println(papers_id);
+//        }
+////        Map result = new HashMap();
+////        int ifCopy = 1;
+//        return papers_Ids;
+//    }
 
 }

@@ -40,7 +40,7 @@
         layui.use(['form', 'upload', 'layer'], function () {
             var form = layui.form;
             $.ajax({
-                url:"/OnlineEvaluationController/selectOnlineEvaluation",
+                url:"/OnlineEvaluationController/selectHistoryOnlineEvaluation",
                 type:"get",
                 data:{papers_id:obj.data.papers_id},
                 success:function (res) {
@@ -50,7 +50,7 @@
                     for(var index in a) {
                         b=a[index].options
                         $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;margin-top:20px " >\n' +
-                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'</label>\n' +
+                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'('+a[index].target_weight+')</label>\n' +
 
                             '        </div>');
                         i++
@@ -58,7 +58,7 @@
                             $('#targetOptions').append('<div class="layui-card-body" style="margin: 0;padding: 0 0 2px 20px">\n' +
                                 '            <span>\n' +
                                 '                <input lay-filter="options" type="radio"\n' +
-                                '                       name="'+a[index].target_id+'" value="'+b[index1].options_id+'" title="'+b[index1].options_content+'" lay-skin="primary">\n' +
+                                '                       name="'+a[index].target_id+'" value="'+b[index1].options_id+'" title="'+b[index1].options_content+'('+b[index1].options_weight+')" lay-skin="primary">\n' +
                                 '            </span>\n' +
                                 '        </div>')
                         };

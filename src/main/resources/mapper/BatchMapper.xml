@@ -41,4 +41,33 @@
     <update id="DeleteOneBatch" parameterType="int">
         update batch set batch_state = '0' where batch_id = #{batch_Id}
     </update>
+    <!--
+    //复制问卷ID为1的指标到历史指标表中
+     INSERT INTO targethistory(target_id,target_name,target_weight,papers_id) (SELECT t.target_id,t.target_name,t.target_weight,ps.papers_id FROM target as t  join paperstarget as ps on t.target_id = ps.target_id where ps.papers_id = 1)
+     将指标转化成100分制存入历史表中
+     INSERT INTO targethistory(target_id,target_name,target_weight,papers_id) SELECT  t.target_id,t.target_name,ROUND(ps.target_allweight/( select sum(target_allweight) as target_Num  from paperstarget where papers_id = 1)*100,2) as taget_weight,ps.papers_id FROM target as t  join paperstarget as ps on t.target_id = ps.target_id where ps.papers_id = 1
+
+    -->
+    <!--复制问卷ID为1的选项到历史选项表中
+    insert into optionshistory (papers_id,target_id,options_id,options_content,options_weight) select ps.papers_id,ps.target_id,op.options_id,op.options_content,op.options_weight from (options as op join targetoptions as tao on op.options_id = tao.options_id )join  paperstarget as ps on tao.target_id = ps.target_id where ps.papers_id = 1
+    -->
+
+    <!--判断是否有批次开启
+    select batch_id  from batch where batch_hide = '1'   -->
+    <select id="IfBatchOpen" resultType="String">
+        select count(*) from batch where batch_hide = '1'
+    </select>
+    <!--复制问卷的指标到历史指标表中-->
+    <insert id="CopyTarget" parameterType="int">
+           INSERT INTO targethistory(target_id,target_name,target_weight,papers_id) SELECT  t.target_id,t.target_name,ROUND(ps.target_allweight/( select sum(target_allweight) as target_Num  from paperstarget where papers_id = #{papers_Id1})*100,2) as taget_weight,ps.papers_id FROM target as t  join paperstarget as ps on t.target_id = ps.target_id where ps.papers_id = #{papers_Id2}
+    </insert>
+    <!--复制问卷的选项到历史循选项表中-->
+    <insert id="CopyOptions" parameterType="int">
+           insert into optionshistory (papers_id,target_id,options_id,options_content,options_weight) (select ps.papers_id,ps.target_id,op.options_id,op.options_content,op.options_weight from (options as op join targetoptions as tao on op.options_id = tao.options_id )join  paperstarget as ps on tao.target_id = ps.target_id where ps.papers_id = #{papers_Id})
+    </insert>
+    <!--查询某批次下的所有问卷-->
+    <select id="SelectBatchPapers" parameterType="int" resultType="Map">
+        select papers_id from papers where batch_id = #{batch_Id}
+    </select>
+
 </mapper>

@@ -6,6 +6,7 @@ import com.xiaohua.springbootpingjiao.entity.TeachData;
 import com.xiaohua.springbootpingjiao.entity.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BatchService {
     //查找所有批次
@@ -28,4 +29,10 @@ public interface BatchService {
     int ModifyEndBatch(int batch_Id);
     //删除某个批次
     int DeleteOneBatch(int batch_Id);
+    //判断是否有批次开启
+    String IfBatchOpen();
+    //复制问卷的指标到历史指标表中
+    int CopyTargetOptions(int papers_Id);
+
+    List<Map<String, Integer>>  SelectBatchPapers(int batch_Id);
 }

@@ -43,6 +43,15 @@ public class OnlineEvaluationController {
     }
 
     @ResponseBody
+    @RequestMapping("selectHistoryOnlineEvaluation")
+    public Map selectHistoryOnlineEvaluation(int papers_id){
+        Map result=new HashMap();
+        List<Map<String, Object>> online = onlineEvaluationService.selectHistoryOnlineEvaluation(papers_id);
+        result.put("data",online);
+        return result;
+    }
+
+    @ResponseBody
     @RequestMapping("OnlineEvaluationFraction")
     public Map OnlineEvaluationFraction(String optionsAll_id,int gradeds,int papers_id,int courses_id,String answers,String target_name_id){
         RequestAttributes ra = RequestContextHolder.getRequestAttributes();

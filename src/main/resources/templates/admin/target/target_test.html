@@ -12,24 +12,54 @@
     <script type="text/javascript" th:src="@{/static/zTree_v3/js/jquery.ztree.excheck.js}"></script>
     <!---->
 </head>
-<style type="text/css">
-    /*html{*/
-        /*margin: 0;*/
-        /*padding: 0;*/
-    /*}*/
-    body{
-
-    }
-</style>
 
 <script type="text/javascript">
 
     //页面初始化
+    // $(function () {
+    //     $.ajax({
+    //         type: "get",
+    //         url:'/TargetManagement/selectBatchHide',
+    //         dataType: "json",
+    //         success:function (res) {
+    //             if (res.message=="批次已开启") {
+    //                 var docHeight = $(document).height(); //获取窗口高度
+    //                 var docWidth = $(document).width();
+    //
+    //                 $('body').append('<div id="overlay">批次已开启，无法进行操作</div>');
+    //                 $('#overlay')
+    //                     .height(docHeight)
+    //                     .width(docWidth)
+    //                     .css({
+    //                         'opacity': .9, //透明度
+    //                         'position': 'absolute',
+    //                         'top': 0,
+    //                         // 'left': 0,
+    //                         'background-color': 'red',
+    //                         'text-align':'center',
+    //                         // 'width': '100%',
+    //                         'z-index': 5000 //保证这个悬浮层位于其它内容之上
+    //                     });
+    //             }else {
+    //                 $('body').append('<div style="width: 1120px;height: 435px;">\n' +
+    //                     '    <div style="width: 19%;height: 435px;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;">\n' +
+    //                     '        <ul id="tree" class="ztree" style="height:435px; overflow:auto;"></ul>\n' +
+    //                     '    </div>\n' +
+    //                     '    <div id="targetManagement" style="width: 81%;height: 100%; float: left;">\n' +
+    //                     '\n' +
+    //                     '    </div>\n' +
+    //                     '</div>')
+    //                 $(initIndex());
+    //             }
+    //         }
+    //
+    //     })
+    // })
     $(initIndex());
 
 
     //声明一个数组，用于指标选项
-    var arrayBox = new Array('A','B','C','D','E','F','G','H','I','J','K','L')
+    // var arrayBox = new Array('A','B','C','D','E','F','G','H','I','J','K','L')
     // zTree的设置
     var setting = {
         // check:{
@@ -47,6 +77,7 @@
 
     //重载zTree
     function reInit(targetId) {
+        console.log("我开始执行")
         var url = '/TargetManagement/targetTree';
         //$.post 和 .get设置同步和异步请求由于.get设置同步和异步请求由于.post() 和 .get()默认是异步请求
         // 如果需要同步请求，在.post()前把ajax设置为同步：.ajaxSettings.async=false;
@@ -55,14 +86,14 @@
         $.ajaxSettings.async = false;
         $.post(url,function (data) {
             initzTree(data);
-            console.log("我先执行")
+            // console.log("我先执行")
         },"json")
         $.ajaxSettings.async = true;
 
         var treeObj = $.fn.zTree.getZTreeObj("tree");
         //获得指定id节点
         var node = treeObj.getNodeByParam("id", targetId);
-        console.log(node.tId)
+        // console.log(node.tId)
         $("#"+node.tId+"_a").click();
 
     }
@@ -75,11 +106,26 @@
         // var param = {"role_ID":1};
 
         $.post(url,function (data) {
+            // console.log(data)
+            //声明一个集合，对得到的数据进行排序，使父节点在不是父节点的兄弟节点之前显示
+            var list=[];
+            for (var i=0;i<data.length;i++){
+                if (data[i].leafs==0){
+                    list.push(data[i]);
+                }
+            }
+            // console.log(list)
+            for (var i=0;i<data.length;i++) {
+                if (data[i].leafs == -1) {
+                    list.push(data[i]);
+                }
+            }
+                // console.log(list)
 
             $("#targetManagement").empty()
 
             //    调用初始化zTree的方法
-            initzTree(data);
+            initzTree(list);
 
             //页面初始化，显示添加一级类别的表单
             $('#targetManagement').append('        <div id="topDiv" style="width: 100%;">\n' +
@@ -134,7 +180,7 @@
     //treeId----对应 zTree 的 treeId(存放zTree标签的id)
     // treeNode----被点击的节点 JSON 数据对象
     function zTreeOnClick(event, treeId, treeNode) {
-        console.log(treeNode)
+        // console.log(treeNode)
         // alert(treeNode.targetName)
         $.ajax({
             url:"/TargetManagement/targetOptions",
@@ -142,7 +188,7 @@
                 target_id:treeNode.id
             },
             success:function (res) {
-                console.log("测试")
+                // console.log("测试")
                 //动态添加元素之前先全部清除
                 $("#targetManagement").empty()
                 // alert(treeNode.leafs)
@@ -172,6 +218,21 @@
                         '            </div>\n' +
                         '        </div>');
                 } else {
+                    // var optionsIdList = []
+                    // var optionsContentList = []
+                    // var optionsWeightList = []
+                    // for (var i=0;i<res.options.length;i++) {
+                    //     optionsIdList.push(res.options[i].options_Id)
+                    //     optionsContentList.push(res.options[i].options_Content)
+                    //     optionsWeightList.push(res.options[i].options_Weight)
+                    //     // console.log(optionsIdList);
+                    //     // console.log(optionsContentList);
+                    //     // console.log(optionsWeightList);
+                    // }
+                    // if (optionsContentList.length==0) {
+                    //     // optionsIdList = NaN;
+                    //     // console.log(optionsIdList.length)
+                    // }
                     //右侧添加上半部div
                     $("#targetManagement").append('        <div style="width: 100%;border-bottom: #4E5465 1px solid;padding-bottom: 25px;">\n' +
                         '            <div class="layui-form-item" style="padding-left: 70px">\n' +
@@ -187,9 +248,8 @@
                         '            </div>\n' +
                         '\n' +
                         '            <div style="width:400px;margin: 0 auto">\n' +
-                        '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加指标</button>\n' +
-                        '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>\n' +
-                        '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存</button>\n' +
+                        '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" onclick="targetMaintenance()" style="margin-left: 20px;padding: 0 20px">指标维护</button>\n' +
+                        '                <button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" onclick="saveTargetChange('+"'"+treeNode.targetName+"'"+","+treeNode.targetWeight+","+treeNode.id+')" style="margin-left: 20px;padding: 0 20px">保存</button>\n' +
                         '            </div>\n' +
                         '        </div>');
 
@@ -199,31 +259,34 @@
                         $('#targetManagement').append('        <div style="width:100%;height:325px;">\n' +
                             '            <fieldset class="layui-elem-field site-demo-button" >\n' +
                             '                <legend>指标维护</legend>\n' +
-                            '                <div  style="margin-bottom: 10px;">\n' +
-                            '                    <button type="button" class="layui-btn">添加选项</button>\n' +
+                            '                <div id="addButton"  style="margin-bottom: 10px;visibility: hidden;text-align: right;padding-right: 175px">\n' +
+                            '                    <button type="button" onclick="addOptions()" class="layui-btn layui-btn-sm">添加选项</button>\n' +
+                            '                    <button type="button" onclick="saveTargetMaintenance('+treeNode.id+')"  class="layui-btn layui-btn-sm layui-btn-normal">保存</button>\n' +
                             '                </div>\n' +
                             '                <form id="addOptions" class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">\n' +
                             '                </form>\n' +
                             '            </fieldset>\n' +
                             '        </div>')
                         if (res.options.length!=0){
+
+
                             for (var i=0;i<res.options.length;i++){
                                 $('#addOptions').append('<div class="layui-form-item">\n' +
                                     '                        <div class="layui-inline">\n' +
-                                    '                            <label class="layui-form-label">选项'+arrayBox[i]+':</label>\n' +
+                                    '                            <label class="layui-form-label">选项:</label>\n' +
                                     '                            <div class="layui-input-inline" style="width: 400px">\n' +
                                     '                                <input type="hidden" name="id" value="'+res.options[i].options_Id+'">\n' +
-                                    '                                <input type="text" name="optionA" lay-verify="required" class="layui-input" readonly="true" value="'+res.options[i].options_Content+'">\n' +
+                                    '                                <input type="text" name="option" lay-verify="required" class="layui-input" readonly="true" value="'+res.options[i].options_Content+'">\n' +
                                     '                            </div>\n' +
                                     '                        </div>\n' +
                                     '                        <div class="layui-inline">\n' +
                                     '                            <div class="layui-input-inline" style="width: 50px">\n' +
-                                    '                                <input type="text" name="optionAWeight" lay-verify="required" class="layui-input" readonly="true" style="padding-left:0px;text-align: center" value="'+res.options[i].options_Weight+'">\n' +
+                                    '                                <input type="text" name="optionWeight" lay-verify="required" class="layui-input" readonly="true" style="padding-left:0px;text-align: center" value="'+res.options[i].options_Weight+'">\n' +
                                     '                            </div>\n' +
                                     '                        </div>\n' +
                                     '                        <div class="layui-inline">\n' +
-                                    '                            <div class="layui-input-inline" style="width: 50px">\n' +
-                                    '                                <button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>\n' +
+                                    '                            <div class="layui-input-inline deleteButton" style="width: 50px;visibility: hidden">\n' +
+                                    '                                <button type="button" onclick="deleteTheOption(this)" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>\n' +
                                     '                            </div>\n' +
                                     '                        </div>\n' +
                                     '                    </div>')
@@ -246,108 +309,108 @@
         <ul id="tree" class="ztree" style="height:435px; overflow:auto;"></ul>
     </div>
     <div id="targetManagement" style="width: 81%;height: 100%; float: left;">
-        <!--<div style="background-color:#007DDB;width: 100%">-->
-            <!--<div class="layui-form-item" style="padding-left: 70px">-->
-                <!--<label class="layui-form-label">指标名称:</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="text" name="targetName" lay-verify="required" class="layui-input">-->
-                <!--</div>-->
-                <!--<label class="layui-form-label">指标权重:</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="text" name="targetWeight" lay-verify="required" class="layui-input">-->
-                <!--</div>-->
-                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>-->
-            <!--</div>-->
+        <!--&lt;!&ndash;<div style="background-color:#007DDB;width: 100%">&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="layui-form-item" style="padding-left: 70px">&ndash;&gt;-->
+                <!--&lt;!&ndash;<label class="layui-form-label">指标名称:</label>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="layui-input-inline">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input type="text" name="targetName" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<label class="layui-form-label">指标权重:</label>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="layui-input-inline">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<input type="text" name="targetWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
 
-            <!--<div style="width:400px;margin: 0 auto">-->
-                <!--<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加下级指标</button>-->
-                <!--<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>-->
-                <!--<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存修改</button>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div style="width:100%;height:325px;background-color:yellow">-->
-            <!--<fieldset class="layui-elem-field site-demo-button" style="margin-top: 25px;">-->
-                <!--<legend>指标维护</legend>-->
-                <!--<div style="margin-bottom: 10px;">-->
-                    <!--<button type="button" class="layui-btn">添加选项</button>-->
-                <!--</div>-->
-                <!--<form class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">-->
-                    <!--<div class="layui-form-item">-->
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label">选项A:</label>-->
-                            <!--<div class="layui-input-inline" style="width: 400px">-->
-                                <!--<input type="hidden" name="id">-->
-                                <!--<input type="text" name="optionA" lay-verify="required" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<div class="layui-input-inline" style="width: 50px">-->
-                                <!--<input type="text" name="optionAWeight" lay-verify="required" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<div class="layui-input-inline" style="width: 50px">-->
-                                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="layui-form-item">-->
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label">选项B:</label>-->
-                            <!--<div class="layui-input-inline" style="width: 400px">-->
-                                <!--<input type="text" name="optionB" lay-verify="required" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<div class="layui-input-inline" style="width: 50px">-->
-                                <!--<input type="text" name="optionBWeight" lay-verify="required" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<div class="layui-input-inline" style="width: 50px">-->
-                                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="layui-form-item">-->
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label">选项C:</label>-->
-                            <!--<div class="layui-input-inline" style="width: 400px">-->
-                                <!--<input type="text" name="optionC" lay-verify="required" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<div class="layui-input-inline" style="width: 50px">-->
-                                <!--<input type="text" name="optionCWeight" lay-verify="required" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<div class="layui-input-inline" style="width: 50px">-->
-                                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<div class="layui-form-item">-->
-                        <!--<div class="layui-inline">-->
-                            <!--<label class="layui-form-label">选项D:</label>-->
-                            <!--<div class="layui-input-inline" style="width: 400px">-->
-                                <!--<input type="text" name="optionD" lay-verify="required" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<div class="layui-input-inline" style="width: 50px">-->
-                                <!--<input type="text" name="optionDWeight" lay-verify="required" class="layui-input">-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="layui-inline">-->
-                            <!--<div class="layui-input-inline" style="width: 50px">-->
-                                <!--<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</form>-->
-            <!--</fieldset>-->
-        <!--</div>-->
+            <!--&lt;!&ndash;<div style="width:400px;margin: 0 auto">&ndash;&gt;-->
+                <!--&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加下级指标</button>&ndash;&gt;-->
+                <!--&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>&ndash;&gt;-->
+                <!--&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存修改</button>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <!--&lt;!&ndash;<div style="width:100%;height:325px;background-color:yellow">&ndash;&gt;-->
+            <!--&lt;!&ndash;<fieldset class="layui-elem-field site-demo-button" style="margin-top: 25px;">&ndash;&gt;-->
+                <!--&lt;!&ndash;<legend>指标维护</legend>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div style="margin-bottom: 10px;">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<button type="button" class="layui-btn">添加选项</button>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<form class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<label class="layui-form-label">选项A:</label>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="hidden" name="id">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" name="optionA" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" name="optionAWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<label class="layui-form-label">选项B:</label>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" name="optionB" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" name="optionBWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<label class="layui-form-label">选项C:</label>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" name="optionC" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" name="optionCWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<label class="layui-form-label">选项D:</label>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" name="optionD" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<input type="text" name="optionDWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</form>&ndash;&gt;-->
+            <!--&lt;!&ndash;</fieldset>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
     </div>
 </div>
 
@@ -358,6 +421,18 @@
     layui.use('layer',function () {
         layer = layui.layer
     })
+
+    // var form
+    // layui.use('form', function(){
+    //     form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+    //
+    //     //……
+    //
+    //     //但是，如果你的HTML是动态生成的，自动渲染就会失效
+    //     //因此你需要在相应的地方，执行下述方法来手动渲染，跟这类似的还有 element.init();
+    //
+    // });
+
 
 
     //添加指标类别(上半部分)
@@ -563,6 +638,7 @@
 //    添加指标（动态生成元素）
     function addTargetButton(targetId) {
         // console.log("我被调用了")
+        var inputid = 0;
         var divList = $('#targetManagement').children();
         // console.log(divList.length)
         for (var i=1;i<divList.length;i++){
@@ -591,6 +667,7 @@
 
             '        </div>')
         // console.log("调用结束")
+
     }
 
 //    触发添加选项按钮（动态生成input）
@@ -599,7 +676,7 @@
                 '                        <div class="layui-inline">\n' +
                 '                            <label class="layui-form-label">选项:</label>\n' +
                 '                            <div class="layui-input-inline" style="width: 400px">\n' +
-                '                                <input type="hidden" name="id">\n' +
+                '                                <input type="hidden" name="id" value="">\n' +
                 '                                <input type="text" name="option" lay-verify="required" class="layui-input">\n' +
                 '                            </div>\n' +
                 '                        </div>\n' +
@@ -614,6 +691,78 @@
                 '                            </div>\n' +
                 '                        </div>\n' +
                 '                    </div>')
+
+        // layui.use('form', function () {
+        //     form = layui.form;
+        //     //    动态搜索下拉框
+        //     $('#addOptions').append('<div class="layui-form-item">\n' +
+        //         '                        <div class="layui-inline">\n' +
+        //         '                            <label class="layui-form-label">选项:</label>\n' +
+        //         '                            <div id="" class="layui-input-inline selectclick" style="width: 400px">\n' +
+        //         '                                <input type="hidden" name="id">\n' +
+        //         '                                <select id="" class="aaa" name="option" lay-verify="required" lay-search="" lay-filter="select"> <option value="">请输入</option></select>\n' +
+        //         '                            </div>\n' +
+        //         '                        </div>\n' +
+        //         '                        <div class="layui-inline">\n' +
+        //         '                            <div class="layui-input-inline" style="width: 50px">\n' +
+        //         '                                <input type="text" name="optionWeight" lay-verify="required" class="layui-input"  style="padding-left:0px;text-align: center">\n' +
+        //         '                            </div>\n' +
+        //         '                        </div>\n' +
+        //         '                        <div class="layui-inline">\n' +
+        //         '                            <div class="layui-input-inline" style="width: 50px">\n' +
+        //         '                                <button type="button" onclick="deleteTheOption(this)" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>\n' +
+        //         '                            </div>\n' +
+        //         '                        </div>\n' +
+        //         '                    </div>')
+        //     $('.selectclick').click(function () {
+        //
+        //         console.log( $(this).children("select")[0].id)
+        //       //  console.log("11")
+        //     })
+        //
+        //     // layui.form.render();
+        //
+        //     var optionid = 1;
+        //     var options = $('select[name=option]')
+        //     // console.log(options)
+        //     for (var i=0;i<options.length;i++){
+        //         options[i].setAttribute('id',"option"+optionid);
+        //         optionid += 1;
+        //         // console.log(options[i])
+        //     }
+        //     if (optionid>options.length){
+        //         optionid = 1;
+        //     }
+        //
+        //     $.ajax({
+        //         url: '/userAdministration/selectAllRole',
+        //         dataType: 'json',
+        //         type: 'get',
+        //         success: function (data) {
+        //             $.each(data.data, function (index,item) {
+        //                 $('#option1').append(new Option(item.role_Name));// 下拉菜单里添加元素
+        //
+        //
+        //             });
+        //             layui.form.render();
+        //         }
+        //     })
+        //
+        //
+        //     form.on('select(select)', function(data){
+        //         console.log("执行了")
+        //         console.log(data.elem); //得到select原始DOM对象
+        //         console.log(data.value); //得到被选中的值
+        //         console.log(data.othis); //得到美化后的DOM对象
+        //     });
+        //
+        //
+        // });
+
+        //Layui会对select、checkbox、radio等原始元素隐藏，从而进行美化修饰处理。
+        // 但这需要依赖于form组件，所以你必须加载 form，并且执行一个实例。
+        //因此需要动态添加之后，执行下述方法来手动渲染
+        // form.render();
     }
 
     //指标添加 触发添加按钮(插入指标和选项)
@@ -652,8 +801,6 @@
 
                         if (weightList[i].value.replace(/(^\s*)|(\s*$)/g, "") == "") {
                             weightStr += 0
-                        }else {
-                            weightStr += weightList[i].value;
                         }
 
                         optionStr += optionList[i].value;
@@ -665,7 +812,7 @@
                 }
                 //判断选项拼接成的字符串长度是否与数组长度相等，如不相等则存在空值
                 if (!(optionStr.replace(/(^\s*)|(\s*$)/g, "") == "")) {
-                    if (optionStr.split(',').length == optionList.length) {
+                    if (optionStr.split(',').length == optionList.length && weightStr.length==weightList.length) {
                         // console.log("不为空")
                         // console.log(optionStr)
                         // console.log(weightStr)
@@ -759,11 +906,11 @@
         var changeTargetName = $('#topDiv input[name=targetCategory]').val()
         var changeTargetWeight = $('#topDiv input[name=categoryWeight]').val()
 
-        console.log(changeTargetName);
-        console.log(changeTargetWeight);
+        // console.log(changeTargetName);
+        // console.log(changeTargetWeight);
 
         if (targetName != changeTargetName || targetWeight != changeTargetWeight){
-            console.log("改变了")
+            // console.log("改变了")
             $.ajax({
                 url:'/TargetManagement/saveTargetCategoryChange',
                 data:{
@@ -781,7 +928,173 @@
                 }
             })
         } else {
-            console.log("未做出改变")
+            layer.msg("请先进行修改")
+        }
+    }
+
+//    指标修改后点击保存
+    function saveTargetChange(targetName, targetWeight, targetId) {
+        console.log(targetName);
+        console.log(targetWeight);
+        console.log(targetId);
+
+        var changeTargetName = $('input[name=targetName]').val()
+        var changeTargetWeight = $('input[name=targetWeight]').val()
+
+        // console.log(changeTargetName);
+        // console.log(changeTargetWeight);
+
+        if (targetName != changeTargetName || targetWeight != changeTargetWeight){
+            // console.log("改变了")
+            $.ajax({
+                url:'/TargetManagement/saveTargetCategoryChange',
+                data:{
+                    targetName:changeTargetName,
+                    targetWeight:changeTargetWeight,
+                    targetId:targetId
+                },
+                success:function (res) {
+                    if (res.message=="操作成功"){
+                        layer.msg(res.message);
+                        //重新加载zTree
+                        reInit(targetId);
+                        // addTargetButton(targetId);
+                    }
+                }
+            })
+        } else {
+            layer.msg("请先进行修改")
+        }
+    }
+    
+//    指标维护
+    function targetMaintenance() {
+        $('#addButton').css("visibility","visible")
+        $('.deleteButton').css("visibility","visible")
+        $('input[name=option]').attr("readonly",false)
+        $('input[name=optionAWeight]').attr("readonly",false)
+
+    }
+    
+//    保存对指标的维护
+    function saveTargetMaintenance(targetId) {
+        console.log("执行了")
+        var optionStr = ""
+        var weightStr = ""
+        var optionIdStr = ""
+        // console.log($('input[name=option]').length)
+
+        if ($('input[name=option]').length!=0) {
+            // console.log(targetId)
+            // console.log(targetName,targetWeight);
+            //获取选项和选项的权重的值（多个值，所以是数组）
+            var optionsId = $('input[name=id]')
+            var optionList = $('input[name=option]');
+            var weightList = $('input[name=optionWeight]')
+
+
+            //遍历选项和权重数组
+            test:
+            for (var i = 0; i < optionList.length; i++) {
+                // console.log(optionsId[i].value)
+
+
+                if (!(optionList[i].value.replace(/(^\s*)|(\s*$)/g, "") == "")) {
+                    if (optionStr != "") {
+                        optionStr += ",";
+                    }
+
+                    if (weightStr != "") {
+                        weightStr += ",";
+                    }
+
+                    if (optionIdStr != "") {
+                        optionIdStr += ",";
+                    }
+
+                    if (weightList[i].value.replace(/(^\s*)|(\s*$)/g, "") == ""){
+                        weightStr += 0
+                    } else {
+                        weightStr += weightList[i].value;
+                    }
+
+                    for (var j=i+1;j<optionList.length;j++){
+                        if (optionList[i].value==optionList[j].value) {
+                            break test;
+                        }
+                    }
+
+                    optionIdStr += optionsId[i].value;
+                    optionStr += optionList[i].value;
+                } else {
+                    layer.msg("选项内容不能为空");
+                    break;
+                }
+                // if (optionList[i].value)
+            }
+
+            //判断选项拼接成的字符串长度是否与数组长度相等，如不相等则存在空值
+            if (!(optionStr.replace(/(^\s*)|(\s*$)/g, "") == "")) {
+                if (optionStr.split(',').length == optionList.length) {
+                    // console.log("不为空")
+                    // console.log(optionStr)
+                    // console.log(weightStr)
+                    // console.log(targetId)
+
+                    console.log(optionIdStr)
+                    console.log(optionStr)
+                    // console.log(weightStr)
+                    // console.log(targetId)
+                    $.ajax({
+                        url:'/TargetManagement/saveOptionsChange',
+                        type:'post',
+                        data:{
+                            idList:optionIdStr,
+                            optionList:optionStr,
+                            weightList:weightStr,
+                            target_Id:targetId
+                        },
+                        success:function (res) {
+                            if (res.message=="操作成功"){
+                                layer.msg(res.message)
+                                //重新加载zTree
+                                reInit(targetId);
+                            }else {
+                                layer.msg(res.message)
+                            }
+                        }
+                    })
+                }else {
+                    // console.log("重复")
+                    layer.msg("选项不能重复")
+                }
+            }
+            // console.log(optionIdStr);
+            // console.log(optionStr)
+        }else {
+            optionStr = "未添加选项";
+            weightStr = "未添加选项";
+
+            $.ajax({
+                url:'/TargetManagement/saveOptionsChange',
+                type:'post',
+                data:{
+                    idList:optionIdStr,
+                    optionList:optionStr,
+                    weightList:weightStr,
+                    target_Id:targetId
+                },
+                success:function (res) {
+                    if (res.message=="操作成功"){
+                        layer.msg(res.message)
+                        //重新加载zTree
+                        reInit(targetId);
+
+                    } else {
+                        layer.msg(res.message)
+                    }
+                }
+            })
         }
     }
 

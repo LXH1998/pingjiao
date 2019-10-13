@@ -24,7 +24,13 @@ public class TargetServiceImpl implements TargetService {
     @Autowired
     private TargetMapper targetMapper;
 
-//    查询所有的指标
+//    查询是否有批次已开启
+    @Override
+    public int selectBatchHide() {
+        return targetMapper.selectBatchHide();
+    }
+
+    //    查询所有的指标
     @Override
     public List<Target> selectAllTarget() {
         return targetMapper.selectAllTarget();
@@ -84,5 +90,40 @@ public class TargetServiceImpl implements TargetService {
     public int saveTargetCategoryChange(String targetName, Float targetWeight, int targetId) {
         return targetMapper.saveTargetCategoryChange(targetName,targetWeight,targetId);
     }
+
+//    查询指标选项表中是否存在指定指标的选项
+    @Override
+    public int selectTheTargetOptions(int targetId) {
+        return targetMapper.selectTheTargetOptions(targetId);
+    }
+
+    //    删除指定指标的选项
+    @Override
+    public int deleteTheTargetOptions(int targetId) {
+        return targetMapper.deleteTheTargetOptions(targetId);
+    }
+
+    @Override
+    public int restoreTheTargetOptions(int targetId,int optionId) {
+        return targetMapper.restoreTheTargetOptions(targetId,optionId);
+    }
+
+    //    修改指定选项内容
+    @Override
+    public int updataOptionsContent(String optionContent, Float optionWeight, int optionId) {
+        return targetMapper.updataOptionsContent(optionContent,optionWeight,optionId);
+    }
+
+    //    查询指定指标全部删除的选项
+    @Override
+    public List<Integer> selectAllDeletedOptions(int targetId) {
+        return targetMapper.selectAllDeletedOptions(targetId);
+    }
+
+    @Override
+    public int selectTheSameOption(int optionsId, String optionsContent) {
+        return targetMapper.selectTheSameOption(optionsId,optionsContent);
+    }
+
 
 }

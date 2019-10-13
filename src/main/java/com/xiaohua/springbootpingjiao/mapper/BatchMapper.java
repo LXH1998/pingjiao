@@ -4,8 +4,10 @@ import com.xiaohua.springbootpingjiao.entity.Batch;
 import com.xiaohua.springbootpingjiao.entity.Courses;
 import com.xiaohua.springbootpingjiao.entity.TeachData;
 import com.xiaohua.springbootpingjiao.entity.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BatchMapper {
 
@@ -29,4 +31,12 @@ public interface BatchMapper {
     int ModifyEndBatch(int batch_Id);
     //删除某个批次
     int DeleteOneBatch(int batch_Id);
+    //判断是否有批次开启
+    String IfBatchOpen();
+    //复制问卷的指标到历史指标表中
+    int CopyTarget(@Param("papers_Id1")int papers_Id1,@Param("papers_Id2")int papers_Id2);
+    //复制问卷的选项到历史指标表中
+    int CopyOptions(@Param("papers_Id")int papers_Id);
+
+    List<Map<String, Integer>> SelectBatchPapers(@Param("batch_Id")int batch_Id);
 }
