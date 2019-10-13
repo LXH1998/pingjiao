@@ -1,6 +1,7 @@
 package com.xiaohua.springbootpingjiao.service.impl;
 
 import com.xiaohua.springbootpingjiao.entity.Papers;
+import com.xiaohua.springbootpingjiao.entity.Paperstarget;
 import com.xiaohua.springbootpingjiao.mapper.QuestionnaireMapper;
 import com.xiaohua.springbootpingjiao.service.QuestionnaireService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,29 @@ public class QuestionnaireServiceImpl  implements QuestionnaireService {
     @Override
     public List<HashMap<String, String>> selectQuestionnaireinBR(String role_id, String batch_id, int pages, int limit) {
         return QuestionnaireMapper.selectQuestionnaireinBR(role_id,batch_id,pages,limit);
+    }
+
+    @Override
+    public boolean insertTarget(Paperstarget c) {
+        int result = QuestionnaireMapper.insertTarget(c);
+        if (result > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean insertPapers(Papers c) {
+        int result = QuestionnaireMapper.insertPapers(c);
+        if (result > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<HashMap<String, String>> selectOptions(String target_Id) {
+        return QuestionnaireMapper.selectOptions(target_Id);
     }
 
     @Override
