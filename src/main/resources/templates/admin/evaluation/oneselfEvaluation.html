@@ -67,7 +67,7 @@
 <script type="text/html" id="xuHao">
     {{d.LAY_INDEX}}
 </script>
-<table class="layui-table" lay-data="{width:1100,url:'/OneselfEvaluation/selectOneselfEvaluation', id:'idTest',where:{user_id:19}}" lay-filter="demo">
+<table class="layui-table" lay-data="{width:1100, id:'idTest'}" lay-filter="demo">
     <thead>
     <tr>
         <th lay-data="{field: '序号',templet: '#xuHao',sort: true,width:80}">序号</th>
@@ -80,8 +80,18 @@
 
 <!--表格的操作-->
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">开始评教</a>
-    <a class="layui-btn layui-btn-xs" lay-event="detail">查看评教</a>
+    {{#
+    if(d.batch_hide == "1"){
+    }}
+    <a class="layui-btn layui-btn-xs" lay-event="edit" id="edit">开始评教</a>
+    <a class="layui-btn layui-btn-xs" lay-event="detail" id="detail">查看评教</a>
+    {{#
+    }else{
+    }}
+    <a class="layui-btn layui-btn-xs" lay-event="detail" id="detail">查看评教</a>
+    {{#
+    }
+    }}
 </script>
 
 
@@ -99,10 +109,9 @@
                     type:"get",
                     url:"/OneselfEvaluation/selectIfOneselfEvaluation",
                     data:{
-                        rater:user_id_session,
-                        gradeds:1,
+                        gradeds:data.user_id,
                         papers_id:data.papers_id,
-                        courses_id:1
+                        courses_id:data.courses_id
                     },
                     success:function (res) {
                         if(res.data==1){
@@ -132,10 +141,9 @@
                     type:"get",
                     url:"/OneselfEvaluation/selectIfOneselfEvaluation",
                     data:{
-                        rater:user_id_session,
-                        gradeds:1,
+                        gradeds:data.user_id,
                         papers_id:data.papers_id,
-                        courses_id:1
+                        courses_id:data.courses_id
                     },
                     success:function (res) {
                         if(res.data==1){

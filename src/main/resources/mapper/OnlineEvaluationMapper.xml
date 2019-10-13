@@ -6,16 +6,25 @@
         <result property="target_Name" column="target_name"></result>
         <result property="options_Content" column="options_content"></result>
         <result property="options_Id" column="options_id"></result>
+        <result property="options_Weight" column="options_weight"></result>
+        <result property="target_Weight" column="target_weight"></result>
     </resultMap>
 
     <!--生成试卷-->
     <select id="selectOnlineEvaluation" resultMap="evaluationMap">
         select t.target_id,t.target_name,os.options_content,os.options_id,os.options_weight from paperstarget pts
-          left join target t on pts.target_id=t.target_id
-          left join targetoptions tps on tps.target_id=t.target_id
-          left join options os on os.options_id=tps.options_id
+            left join target t on pts.target_id=t.target_id
+            left join targetoptions tps on tps.target_id=t.target_id
+            left join options os on os.options_id=tps.options_id
         where pts.papers_id=#{papers_id}
     </select>
+    <!--生成历史问卷-->
+    <select id="selectHistoryOnlineEvaluation" resultMap="evaluationMap">
+        select th.target_id,th.target_name,th.target_weight,osh.options_content,osh.options_id,osh.options_weight from targethistory th
+          left join optionshistory osh on osh.papers_id=th.papers_id and osh.target_id=th.target_id
+        where th.papers_id=#{papers_id}
+    </select>
+
     <!--计算分数-->
     <select id="OnlineEvaluationFraction" resultType="com.xiaohua.springbootpingjiao.entity.FractionSum">
         select sum(os.options_weight*pst.target_allweight) as fraction from options os

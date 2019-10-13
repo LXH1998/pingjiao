@@ -12,6 +12,16 @@ public class TargetOptins {
     private Integer options_Id;
     private String options_Content;
     private String options_Weight;
+    private String target_Weight;
+
+
+    public String getTarget_Weight() {
+        return target_Weight;
+    }
+
+    public void setTarget_Weight(String target_Weight) {
+        this.target_Weight = target_Weight;
+    }
 
     public Integer getTarget_Id() {
         return target_Id;

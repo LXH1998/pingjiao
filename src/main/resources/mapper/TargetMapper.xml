@@ -17,6 +17,11 @@
         <result property="options_Weight" column="options_weight"></result>
     </resultMap>
 
+    <!--查询是否有批次已开启-->
+    <select id="selectBatchHide" resultType="int">
+        select IFNULL(MAX(batch_id),0) AS batch_id from batch where batch_hide = 1
+    </select>
+
     <!--查询所有指标信息-->
     <select id="selectAllTarget" resultMap="targetResultMap">
         select * from target where hides=1;
@@ -24,7 +29,7 @@
 
     <!--根据指标id查询该指标拥有的选项-->
     <select id="selectTargetOptions" resultMap="optionResultMap">
-        select o.*,tos.* from options o join targetoptions tos on o.options_id =  tos.options_id where tos.target_id=#{target_id}
+        select o.*,tos.* from options o join targetoptions tos on o.options_id =  tos.options_id where tos.target_id=#{target_id} and tos.state=1 order by o.options_id
     </select>
 
     <!--插入指标类别（查看数据库是否存在完全相同指标类别）-->
@@ -72,4 +77,35 @@
     <update id="saveTargetCategoryChange">
         update target set target_name=#{targetName},target_weight=#{targetWeight} where target_id=#{targetId}
     </update>
+
+    <!--查询指标选项表中是否存在指定指标的选项-->
+    <select id="selectTheTargetOptions" resultType="int">
+        select  IFNULL(MAX(targetoptions_id),0) AS targetoptions_id from targetoptions where target_id = #{targetId} and state = 1
+    </select>
+
+    <!--删除指定指标的选项-->
+    <update id="deleteTheTargetOptions">
+        update targetoptions set state = 0 where target_id = #{targetId}
+    </update>
+    <!--恢复指定指标选项-->
+    <update id="restoreTheTargetOptions">
+        update targetoptions set state = 1 where target_id = #{targetId} and options_id=#{optionId}
+    </update>
+
+    <!--修改指定选项内容-->
+    <update id="updataOptionsContent">
+        update options set options_content=#{optionContent},options_weight=#{optionWeight} where options_id=#{optionId}
+    </update>
+
+    <!--查询指定指标全部删除的选项-->
+    <select id="selectAllDeletedOptions" resultType="int">
+        select options_id from targetoptions where target_id=#{targetId}
+    </select>
+
+    <!--查询是否存在内容相同的选项-->
+    <select id="selectTheSameOption" resultType="int">
+        select count(*) from options where options_id=#{optionsId} and options_content=#{optionsContent}
+    </select>
+
+    <!--修改-->
 </mapper>
