@@ -34,4 +34,5 @@ public interface UserMapper {
     List<HashMap> selectUserHaveRole(int user_id);
     int deleteUserIdRole(int user_Id);
     int insertUserIdRole(int user_Id,int role_ID);
+    List<HashMap> selectUserIfRepeat(String user_account);
 }

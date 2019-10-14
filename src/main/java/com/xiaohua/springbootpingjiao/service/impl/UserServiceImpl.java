@@ -140,4 +140,9 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
+    @Override
+    public List<HashMap> selectUserIfRepeat(String user_account) {
+        return userMapper.selectUserIfRepeat(user_account);
+    }
 }
