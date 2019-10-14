@@ -12,7 +12,7 @@
 
     <!--生成试卷-->
     <select id="selectOnlineEvaluation" resultMap="evaluationMap">
-        select t.target_id,t.target_name,os.options_content,os.options_id,os.options_weight from paperstarget pts
+        select t.target_id,t.target_name,os.options_content,os.options_id,os.options_weight,ROUND(pts.target_allweight/( select sum(target_allweight) as target_Num  from paperstarget where papers_id = #{papers_id})*100,2) as target_weight from paperstarget pts
             left join target t on pts.target_id=t.target_id
             left join targetoptions tps on tps.target_id=t.target_id
             left join options os on os.options_id=tps.options_id

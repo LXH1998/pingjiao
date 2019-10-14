@@ -37,6 +37,7 @@ public class OnlineEvaluationServiceImpl implements OnlineEvaluationService {
             v.stream().forEach(item->{
                 Map<String, Object> omap = new LinkedHashMap<>();
                 tmap.put("target_name", item.getTarget_Name());
+                tmap.put("target_weight", item.getTarget_Weight());
 
                 omap.put("options_id", item.getOptions_Id());
                 omap.put("options_content", item.getOptions_Content());

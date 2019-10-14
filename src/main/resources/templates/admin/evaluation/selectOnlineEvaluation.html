@@ -35,7 +35,7 @@
 
 <script>
     function inputDataHandle(obj){
-        console.log("查询页面的试卷ID："+obj.data.papers_id)
+
 
         layui.use(['form', 'upload', 'layer'], function () {
             var form = layui.form;
@@ -44,13 +44,14 @@
                 type:"get",
                 data:{papers_id:obj.data.papers_id},
                 success:function (res) {
+                    console.log("res:"+res.data[0])
                     var a=res.data
                     var b
                     var i=1
                     for(var index in a) {
                         b=a[index].options
                         $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;margin-top:20px " >\n' +
-                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'</label>\n' +
+                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'('+a[index].target_weight+')</label>\n' +
 
                             '        </div>');
                         i++
