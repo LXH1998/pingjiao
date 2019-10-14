@@ -438,4 +438,13 @@
       AND f.gradeds = #{gradeds}
       AND courses_id = #{courses_id}
     </select>
+
+    <select id="queryBaticNameList" parameterType="string" resultType="hashmap">
+     SELECT
+      *
+    FROM
+      batch b
+    WHERE b.`batch_id` = #{batch_id}
+      AND b.`batch_hide` != 0
+    </select>
 </mapper>

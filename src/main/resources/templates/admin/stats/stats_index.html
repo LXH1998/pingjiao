@@ -163,431 +163,468 @@
             <div class="pieLeftOne">
                 <div id="main" style="width: 250px;height:190px;"></div>
             </div>
+            <!--/*@thymesVar id="batchId" type="JDOMAbout"*/-->
+            <span th:text="${batchId}"   id="batchIdFlage" style="display: none;"></span>
+                   </div>
 
-        </div>
-
-        <div id="pieChart">
-            <div class="pieleft">
-                <div id="barMain" style="width: 550px;height:260px;"></div>
-            </div>
-        </div>
-    </div>
+                   <div id="pieChart">
+                       <div class="pieleft">
+                           <div id="barMain" style="width: 550px;height:260px;"></div>
+                       </div>
+                   </div>
+               </div>
 
 
-    <div id="rightDiv">
-        <div class="rightDivFrist">
-            <table id="demo" lay-filter="test"></table>
-            <script type="text/html" id="barDemo">
-                <a class="layui-btn layui-btn-xs" lay-event="detail" id="detail">详情</a>
-            </script>
-        </div>
-    </div>
-</div>
+               <div id="rightDiv">
+                   <div class="rightDivFrist">
+                       <table id="demo" lay-filter="test"></table>
+                       <script type="text/html" id="barDemo">
+                           <a class="layui-btn layui-btn-xs" lay-event="detail" id="detail">详情</a>
+                       </script>
+                   </div>
+               </div>
+           </div>
+           <script>
+               layui.use(['form', 'upload', 'layer'], function () {
+                   $(function () {
+                       functionD()
+                   })
+
+                   $('#search').on('click', function(){
+                       batchId =   $("#batchId").val()
+                       paperId =   $("#paperId").val()
+                       functionD();
+                   });
+               })
+
+           </script>
+           <script type="text/javascript">
+               function dynamic_number(id,value) {
+                   var temp = id;
+                   temp.animate({count: value}, {
+                       duration: 2000,
+                       step: function () {
+                           temp.text(String(parseInt(this.count)));
+                       }
+                   });
+               }
+               function functionD() {
+                   $("#departmSize").text("")
+                   $("#evaluationSize").text("")
+                   $("#participateMen").text("")
+                   $("#GreatAvg").text("")
+                   console.log(batchId,papersId)
+                  var batchId =  $("#batchId").val()
+                   var papersId =  $("#paperId").val()
+                   $.ajax({
+                       type:"post",
+                       url:"/stats/evaluationTop",
+                       dataType:"json",
+                       data:{
+                           "batchId":batchId,
+                           "papersId":papersId
+                       },
+                       success:function (res) {
+                           dynamic_number($("#departmSize"),res[0].length);
+                           dynamic_number($("#evaluationSize"),res[1].length);
+                           dynamic_number($("#participateMen"),res[2].length);
+                           dynamic_number($("#GreatAvg"),res[3].length);
+                       }
+                   })
+
+                   /**
+                    * todo 柱状 图
+                    * @type {Array}
+                    */
+                   $.ajax({
+                       type: "post",
+                       async: true,
+                       url: "/stats/querySocoreLimit5",
+                       data: {
+                           "batchId": batchId,
+                           "papersId": papersId
+                       },
+                       dataType: "json",
+                       success: function (result) {
+                           var app = {};
+                           var nameList = [];
+                           var xList =  [] ;
+                               nameList.push("总分");
+                               nameList.push("教师评价总分");
+                               nameList.push("学生评价总分");
+                           var teacherData = [];
+                           var studentData = [];
+                           var scoreData = [];
+                           for (var i = 0;i<result.length;i++){
+                               xList.push(result[i].user_name)
+                               teacherData.push(result[i].students_sum)
+                               studentData.push(result[i].teahcer_sum)
+                               scoreData.push(result[i].scores_sum)
+                           }
+                           var TypeLineChart = echarts.init(document.getElementById('barMain'));
+                           var posList = [
+                               'left', 'right', 'top', 'bottom',
+                               'inside',
+                               'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+                               'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+                           ];
+
+                           app.configParameters = {
+                               rotate: {
+                                   min: -90,
+                                   max: 90
+                               },
+                               align: {
+                                   options: {
+                                       left: 'left',
+                                       center: 'center',
+                                       right: 'right'
+                                   }
+                               },
+                               verticalAlign: {
+                                   options: {
+                                       top: 'top',
+                                       middle: 'middle',
+                                       bottom: 'bottom'
+                                   }
+                               },
+                               position: {
+                                   options: echarts.util.reduce(posList, function (map, pos) {
+                                       map[pos] = pos;
+                                       return map;
+                                   }, {})
+                               },
+                               distance: {
+                                   min: 0,
+                                   max: 100
+                               }
+                           };
+
+                           app.config = {
+                               rotate: 90,
+                               align: 'left',
+                               verticalAlign: 'middle',
+                               position: 'insideBottom',
+                               distance: 15,
+                               onChange: function () {
+                                   var labelOption = {
+                                       normal: {
+                                           rotate: app.config.rotate,
+                                           align: app.config.align,
+                                           verticalAlign: app.config.verticalAlign,
+                                           position: app.config.position,
+                                           distance: app.config.distance
+                                       }
+                                   };
+                                   myChart.setOption({
+                                       series: [{
+                                           label: labelOption
+                                       }, {
+                                           label: labelOption
+                                       }, {
+                                           label: labelOption
+                                       }, {
+                                           label: labelOption
+                                       }]
+                                   });
+                               }
+                           };
+
+
+                           var labelOption = {
+                               normal: {
+                                   show: true,
+                                   position: app.config.position,
+                                   distance: app.config.distance,
+                                   align: app.config.align,
+                                   verticalAlign: app.config.verticalAlign,
+                                   rotate: app.config.rotate,
+                                   formatter: '{c}  {name|{a}}',
+                                   fontSize: 16,
+                                   rich: {
+                                       name: {
+                                           textBorderColor: '#fff'
+                                       }
+                                   }
+                               }
+                           };
+
+                           option = {
+                               color: ['#003366', '#006699', '#4cabce'],
+                               tooltip: {
+                                   trigger: 'axis',
+                                   axisPointer: {
+                                       type: 'shadow'
+                                   }
+                               },
+                               legend: {
+                                   data: nameList
+                               },
+                               toolbox: {
+                                   show: true,
+                                   orient: 'vertical',
+                                   left: 'right',
+                                   top: 'center',
+                                   feature: {
+                                       mark: {show: true},
+                                       dataView: {show: true, readOnly: false},
+                                       magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                                       restore: {show: true},
+                                       saveAsImage: {show: true}
+                                   }
+                               },
+                               calculable: true,
+                               xAxis: [
+                                   {
+                                       type: 'category',
+                                       axisTick: {show: false},
+                                       data: xList
+                                   }
+                               ],
+                               yAxis: [
+                                   {
+                                       type: 'value'
+                                   }
+                               ],
+                               series: [
+                                   {
+                                       name: '总分',
+                                       type: 'bar',
+                                       barGap: 0,
+                                       label: labelOption,
+                                       data: scoreData
+                                   },
+                                   {
+                                       name: '教师评价总分',
+                                       type: 'bar',
+                                       label: labelOption,
+                                       data: teacherData
+                                   },
+                                   {
+                                       name: '学生评价总分',
+                                       type: 'bar',
+                                       label: labelOption,
+                                       data: studentData
+                                   }
+                               ]
+                           };
+                           TypeLineChart.setOption(option);
+                       }
+                   })
+
+                   /**
+                    * todo pie 图
+                    * @type {Array}
+                    */
+                   var names=[];
+                   var nums=[];
+                   $.ajax({
+                       type : "post",
+                       async : true,
+                       url : "/stats/queryPie",
+                       data:{
+                           "batchId":batchId,
+                           "papersId":papersId
+                       },
+                       dataType : "json",
+                       success : function(result) {
+                           var TypeSalesChart = echarts.init(document.getElementById('main'));
+                           var option = {
+                               tooltip : {
+                                   trigger: 'item',
+                                   formatter: "{a} <br/>{b} : {c} ({d}%)"
+                               },
+                               legend: {
+                                   orient : 'vertical',
+                                   x : 'left',
+                                   itemWidth: 5,
+                                   itemHeight: 5,
+                                   data:(function(){
+                                       var res = [];
+                                       var len = result.length;
+                                       for(var i=0,size=len;i<size;i++) {
+                                           res.push({
+                                               name: result[i].name,
+                                           });
+                                       }
+                                       return res;
+                                   })()
+
+                               },
+                               title : {
+                                   text: '教学质量 ',
+                                   x:'center'
+                               },
+                               series : [
+                                   {
+                                       name:'教学质量',
+                                       type:'pie',
+                                       radius : '55%',
+                                       center: ['50%', '60%'],
+                                       data:(function(){
+                                           var res = [];
+                                           var len = result.length;
+                                           for(var i=0,size=len;i<size;i++) {
+                                               res.push({
+                                                   //通过把result进行遍历循环来获取数据并放入Echarts中
+                                                   name: result[i].name,
+                                                   value: result[i].size
+                                               });
+                                           }
+                                           return res;
+                                       })()
+                                   }
+                               ]
+                           };
+
+                           TypeSalesChart.setOption(option);
+                       }
+                   })
+
+                   layui.use('table', function() {
+                       var table = layui.table;
+                       //数据表表头
+                       table.render({
+                           elem: '#demo'
+                           // ,height: 400
+                           , url: '/stats/querySocore'
+                           , page: true //开启分页
+                           ,cellMinWidth: 20 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                           ,skin: 'line ' //表格风格 line （行边框风格）row （列边框风格）nob （无边框风格）
+                           //,even: true    //隔行换色
+                           ,limits: [9,10,11]  //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
+                           ,limit: 9 //每页默认显示的数量
+                           ,where:{
+                               "batchId": batchId,
+                               "papersId": papersId
+                           }
+                           , cols: [
+                               [ //表头
+                                   { title: '题号', toolbar: '#indexTpl',type:'numbers',width: '8%' , sort: true}
+                                   , {field: 'gradeds', title: 'ID', width: 50,hide:true}
+                                   , {field: 'papers_id', title: '试卷编号',width: 50,hide:true}
+                                   , {field: 'user_name',  title: '姓名', width: '20%', align: 'center'}
+                                   , {field: 'teahcer_sum', title: '教师评价总分', width: '20%', align: 'center', sort: true}
+                                   , {field: 'students_sum', title: '学生评价总分', width: '20%', align: 'center', sort: true}
+                                   , {field: 'scores_sum', title: '总分数', width: '20%', align: 'center', sort: true}
+                                   , {title: '操作', width: '12%', align: 'center', toolbar: '#barDemo'}
+                               ]
+                           ]
+                           ,done: function(res, curr, count){
+                               $("[data-field='gradeds']").css('display','none'); //关键代码
+                               $("[data-field='papers_id']").css('display','none'); //关键代码
+                           }
+                       })
+                       table.on('tool(test)', function(obj){
+                           var data = obj.data;
+                           var batchId =   $("#batchId").find("option:selected").text();
+                           var papersId =   $("#paperId").find("option:selected").text();
+
+                           console.log(obj)
+                           if(obj.event === 'detail'){
+                               layer.open({
+                                   type: 2
+                                   ,skin: 'layui-layer-rim'
+                                   ,maxmin: true
+                                   ,area: ["1200px","520px"]
+                                   ,title: "评教详情"
+                                   ,content:"/stats/godetails?gradeds="+obj.data.gradeds
+                                   ,success: function (layero,index) {
+                                       var body = layer.getChildFrame('body', index);
+                                       var iframeWin = window[layero.find('iframe')[0]['name']];
+                                       console.log(body.find("#batchId"))
+                                       if(papersId == "选择问卷" ){
+                                               body.find("#paperId").text("历年来所有问卷")
+                                       } else{
+                                           body.find("#paperId").text(papersId)
+                                       }
+                                       body.find("#teacherId").text(obj.data.user_name)
+                                       console.log(obj)
+                                       teacherID = obj.data.gradeds
+                                       papersIds = obj.data.papers_id
+                                       batchIds = $("#batchId").val()
+                                       iframeWin.selectDataCallBack(teacherID,papersIds,batchIds)
+                                   }
+                               })
+                           }
+                       });
+                   })
+               }
+           </script>
+
+           <script type="text/html" id="indexTpl">
+               {{d.LAY_TABLE_INDEX+1}}
+           </script>
+           <!--动态生成角色下拉框-->
 <script>
-    layui.use(['form', 'upload', 'layer'], function () {
-        $(function () {
-            functionD()
-        })
-
-        $('#search').on('click', function(){
-            batchId =   $("#batchId").val()
-            paperId =   $("#paperId").val()
-            functionD();
-        });
-    })
-
-</script>
-<script type="text/javascript">
-    function dynamic_number(id,value) {
-        var temp = id;
-        temp.animate({count: value}, {
-            duration: 2000,
-            step: function () {
-                temp.text(String(parseInt(this.count)));
-            }
-        });
+    function isEmpty(obj){
+        if(typeof obj == "undefined" || obj == null || obj == ""){
+            return true;
+        }else{
+            return false;
+        }
     }
-    function functionD() {
-        $("#departmSize").text("")
-        $("#evaluationSize").text("")
-        $("#participateMen").text("")
-        $("#GreatAvg").text("")
-        console.log(batchId,papersId)
-       var batchId =  $("#batchId").val()
-        var papersId =  $("#paperId").val()
-        $.ajax({
-            type:"post",
-            url:"/stats/evaluationTop",
-            dataType:"json",
-            data:{
-                "batchId":batchId,
-                "papersId":papersId
-            },
-            success:function (res) {
-                dynamic_number($("#departmSize"),res[0].length);
-                dynamic_number($("#evaluationSize"),res[1].length);
-                dynamic_number($("#participateMen"),res[2].length);
-                dynamic_number($("#GreatAvg"),res[3].length);
-            }
-        })
-
-        /**
-         * todo 柱状 图
-         * @type {Array}
-         */
-        $.ajax({
-            type: "post",
-            async: true,
-            url: "/stats/querySocoreLimit5",
-            data: {
-                "batchId": batchId,
-                "papersId": papersId
-            },
-            dataType: "json",
-            success: function (result) {
-                var app = {};
-                var nameList = [];
-                var xList =  [] ;
-                    nameList.push("总分");
-                    nameList.push("教师评价总分");
-                    nameList.push("学生评价总分");
-                var teacherData = [];
-                var studentData = [];
-                var scoreData = [];
-                for (var i = 0;i<result.length;i++){
-                    xList.push(result[i].user_name)
-                    teacherData.push(result[i].students_sum)
-                    studentData.push(result[i].teahcer_sum)
-                    scoreData.push(result[i].scores_sum)
-                }
-                var TypeLineChart = echarts.init(document.getElementById('barMain'));
-                var posList = [
-                    'left', 'right', 'top', 'bottom',
-                    'inside',
-                    'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
-                    'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
-                ];
-
-                app.configParameters = {
-                    rotate: {
-                        min: -90,
-                        max: 90
-                    },
-                    align: {
-                        options: {
-                            left: 'left',
-                            center: 'center',
-                            right: 'right'
-                        }
-                    },
-                    verticalAlign: {
-                        options: {
-                            top: 'top',
-                            middle: 'middle',
-                            bottom: 'bottom'
-                        }
-                    },
-                    position: {
-                        options: echarts.util.reduce(posList, function (map, pos) {
-                            map[pos] = pos;
-                            return map;
-                        }, {})
-                    },
-                    distance: {
-                        min: 0,
-                        max: 100
-                    }
-                };
-
-                app.config = {
-                    rotate: 90,
-                    align: 'left',
-                    verticalAlign: 'middle',
-                    position: 'insideBottom',
-                    distance: 15,
-                    onChange: function () {
-                        var labelOption = {
-                            normal: {
-                                rotate: app.config.rotate,
-                                align: app.config.align,
-                                verticalAlign: app.config.verticalAlign,
-                                position: app.config.position,
-                                distance: app.config.distance
-                            }
-                        };
-                        myChart.setOption({
-                            series: [{
-                                label: labelOption
-                            }, {
-                                label: labelOption
-                            }, {
-                                label: labelOption
-                            }, {
-                                label: labelOption
-                            }]
-                        });
-                    }
-                };
-
-
-                var labelOption = {
-                    normal: {
-                        show: true,
-                        position: app.config.position,
-                        distance: app.config.distance,
-                        align: app.config.align,
-                        verticalAlign: app.config.verticalAlign,
-                        rotate: app.config.rotate,
-                        formatter: '{c}  {name|{a}}',
-                        fontSize: 16,
-                        rich: {
-                            name: {
-                                textBorderColor: '#fff'
-                            }
-                        }
-                    }
-                };
-
-                option = {
-                    color: ['#003366', '#006699', '#4cabce'],
-                    tooltip: {
-                        trigger: 'axis',
-                        axisPointer: {
-                            type: 'shadow'
-                        }
-                    },
-                    legend: {
-                        data: nameList
-                    },
-                    toolbox: {
-                        show: true,
-                        orient: 'vertical',
-                        left: 'right',
-                        top: 'center',
-                        feature: {
-                            mark: {show: true},
-                            dataView: {show: true, readOnly: false},
-                            magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-                            restore: {show: true},
-                            saveAsImage: {show: true}
-                        }
-                    },
-                    calculable: true,
-                    xAxis: [
-                        {
-                            type: 'category',
-                            axisTick: {show: false},
-                            data: xList
-                        }
-                    ],
-                    yAxis: [
-                        {
-                            type: 'value'
-                        }
-                    ],
-                    series: [
-                        {
-                            name: '总分',
-                            type: 'bar',
-                            barGap: 0,
-                            label: labelOption,
-                            data: scoreData
-                        },
-                        {
-                            name: '教师评价总分',
-                            type: 'bar',
-                            label: labelOption,
-                            data: teacherData
-                        },
-                        {
-                            name: '学生评价总分',
-                            type: 'bar',
-                            label: labelOption,
-                            data: studentData
-                        }
-                    ]
-                };
-                TypeLineChart.setOption(option);
-            }
-        })
-
-        /**
-         * todo pie 图
-         * @type {Array}
-         */
-        var names=[];
-        var nums=[];
-        $.ajax({
-            type : "post",
-            async : true,
-            url : "/stats/queryPie",
-            data:{
-                "batchId":batchId,
-                "papersId":papersId
-            },
-            dataType : "json",
-            success : function(result) {
-                var TypeSalesChart = echarts.init(document.getElementById('main'));
-                var option = {
-                    tooltip : {
-                        trigger: 'item',
-                        formatter: "{a} <br/>{b} : {c} ({d}%)"
-                    },
-                    legend: {
-                        orient : 'vertical',
-                        x : 'left',
-                        itemWidth: 5,
-                        itemHeight: 5,
-                        data:(function(){
-                            var res = [];
-                            var len = result.length;
-                            for(var i=0,size=len;i<size;i++) {
-                                res.push({
-                                    name: result[i].name,
-                                });
-                            }
-                            return res;
-                        })()
-
-                    },
-                    title : {
-                        text: '教学质量 ',
-                        x:'center'
-                    },
-                    series : [
-                        {
-                            name:'教学质量',
-                            type:'pie',
-                            radius : '55%',
-                            center: ['50%', '60%'],
-                            data:(function(){
-                                var res = [];
-                                var len = result.length;
-                                for(var i=0,size=len;i<size;i++) {
-                                    res.push({
-                                        //通过把result进行遍历循环来获取数据并放入Echarts中
-                                        name: result[i].name,
-                                        value: result[i].size
-                                    });
-                                }
-                                return res;
-                            })()
-                        }
-                    ]
-                };
-
-                TypeSalesChart.setOption(option);
-            }
-        })
-
-        layui.use('table', function() {
-            var table = layui.table;
-            //数据表表头
-            table.render({
-                elem: '#demo'
-                // ,height: 400
-                , url: '/stats/querySocore'
-                , page: true //开启分页
-                ,cellMinWidth: 20 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                ,skin: 'line ' //表格风格 line （行边框风格）row （列边框风格）nob （无边框风格）
-                //,even: true    //隔行换色
-                ,limits: [9,10,11]  //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
-                ,limit: 9 //每页默认显示的数量
-                ,where:{
-                    "batchId": batchId,
-                    "papersId": papersId
-                }
-                , cols: [
-                    [ //表头
-                        { title: '题号', toolbar: '#indexTpl',type:'numbers',width: '8%' , sort: true}
-                        , {field: 'gradeds', title: 'ID', width: 50,hide:true}
-                        , {field: 'papers_id', title: '试卷编号',width: 50,hide:true}
-                        , {field: 'user_name',  title: '姓名', width: '20%', align: 'center'}
-                        , {field: 'teahcer_sum', title: '教师评价总分', width: '20%', align: 'center', sort: true}
-                        , {field: 'students_sum', title: '学生评价总分', width: '20%', align: 'center', sort: true}
-                        , {field: 'scores_sum', title: '总分数', width: '20%', align: 'center', sort: true}
-                        , {title: '操作', width: '12%', align: 'center', toolbar: '#barDemo'}
-                    ]
-                ]
-                ,done: function(res, curr, count){
-                    $("[data-field='gradeds']").css('display','none'); //关键代码
-                    $("[data-field='papers_id']").css('display','none'); //关键代码
+    layui.use(['form', 'upload', 'layer'], function () {
+            $.ajax({
+                url:"/stats/queryPapersList",
+                dataType: 'json',
+                type: 'get',
+                data:{
+                    "batchId":$("#batchId").val()
+                },
+                success: function (data) {
+                    $.each(data, function (index,item) {
+                        $('#paperId').append(new Option(item.papers_name,item.papers_id));
+                    });
+                    layui.form.render("select");
                 }
             })
-            table.on('tool(test)', function(obj){
-                var data = obj.data;
-                var batchId =   $("#batchId").find("option:selected").text();
-                var papersId =   $("#paperId").find("option:selected").text();
-
-                console.log(obj)
-                if(obj.event === 'detail'){
-                    layer.open({
-                        type: 2
-                        ,skin: 'layui-layer-rim'
-                        ,maxmin: true
-                        ,area: ["1200px","520px"]
-                        ,title: "评教详情"
-                        ,content:"/stats/godetails?gradeds="+obj.data.gradeds
-                        ,success: function (layero,index) {
-                            var body = layer.getChildFrame('body', index);
-                            var iframeWin = window[layero.find('iframe')[0]['name']];
-                            console.log(body.find("#batchId"))
-                            if(papersId == "选择问卷" ){
-                                    body.find("#paperId").text("历年来所有问卷")
-                            } else{
-                                body.find("#paperId").text(papersId)
-                            }
-                            body.find("#teacherId").text(obj.data.user_name)
-                            console.log(obj)
-                            teacherID = obj.data.gradeds
-                            papersIds = obj.data.papers_id
-                            batchIds = $("#batchId").val()
-                            iframeWin.selectDataCallBack(teacherID,papersIds,batchIds)
-                        }
-                    })
-                }
-            });
-        })
-    }
-</script>
-
-<script type="text/html" id="indexTpl">
-    {{d.LAY_TABLE_INDEX+1}}
-</script>
-<!--动态生成角色下拉框-->
-<script>
-    layui.use(['form', 'upload', 'layer'], function () {
-        $.ajax({
-            url:"/stats/queryPapersList",
-            dataType: 'json',
-            type: 'get',
-            data:{
-                "batchId":$("#batchId").val()
-            },
-            success: function (data) {
-                $.each(data, function (index,item) {
-                    $('#paperId').append(new Option(item.papers_name,item.papers_id));
-                });
-                layui.form.render("select");
-            }
-        })
     });
 
     layui.use(['form', 'upload', 'layer'], function () {
-        $.ajax({
-            url:"/stats/queryBatchsList",
-            dataType: 'json',
-            type: 'get',
-            data:{
-                "papersId":$("#paperId").val()
-            },
-            success: function (data) {
-                $.each(data, function (index,item) {
-                    $('#batchId').append(new Option(item.batch_name,item.batch_id));
-                });
-                layui.form.render("select");
-            }
-        })
+        var baTest = $("#batchIdFlage").text();
+        var flag = isEmpty(baTest)
+        console.log(flag)
+        if(flag){
+            $.ajax({
+                url:"/stats/queryBatchsList",
+                dataType: 'json',
+                type: 'get',
+                data:{
+                    "papersId":$("#paperId").val()
+                },
+                success: function (data) {
+                    $.each(data, function (index,item) {
+                        $('#batchId').append(new Option(item.batch_name,item.batch_id));
+                    });
+                    layui.form.render("select");
+                }
+            })
+        }else {
+            console.log(baTest)
+            $.ajax({
+                url: "/stats/queryBaticNameList",
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    "batchId": baTest
+                },
+                success: function (data) {
+                    console.log(data)
+                    $.each(data, function (index, item) {
+                        $('#batchId').append(new Option(item.batch_name,item.batch_id));
+                    });
+                    $("#batchId option[value=baTest]").prop("selected",true);
+                    obj = document.getElementById("batchId");
+                    for(i=0;i<obj.length;i++){
+                        if(obj[i].value==baTest)
+                            obj[i].selected = true;
+                    }
+                    layui.form.render("select");
+                    functionD()
+                }
+            })
+        }
     });
 </script>
 </body>

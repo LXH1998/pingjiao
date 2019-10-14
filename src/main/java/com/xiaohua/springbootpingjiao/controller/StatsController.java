@@ -9,12 +9,10 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,25 +25,26 @@ import java.util.Map;
  * @Description : 统计分析Controller
  */
 @Controller
-@RequestMapping("stats")
+@RequestMapping("/stats")
 public class StatsController {
     @Autowired
     private StatsService service;
-    @RequestMapping("goIndex")
+
+    @RequestMapping("/goIndex")
     public String goStatsIndex(){
-        return "/admin/stats/stats_index";
+        return "admin/stats/stats_index";
     }
-    @RequestMapping("godetails")
+    @RequestMapping("/godetails")
     public String goSstatsDetails(){
-        return "/admin/stats/stats_details";
+        return "admin/stats/stats_details";
     }
-    @RequestMapping("godetailsList")
+    @RequestMapping("/godetailsList")
     public String goDetailsList(){
-        return "/admin/stats/stats_details_list";
+        return "admin/stats/stats_details_list";
     }
-    @RequestMapping("testList")
+    @RequestMapping("/testList")
     public String GoSelectOnlineEvaluation(){
-        return "/admin/stats/testList";
+        return "admin/stats/testList";
     }
     /**
     * @Author xiaoyi
@@ -55,7 +54,7 @@ public class StatsController {
     * @Description 统计评分 将其插入总分表
     */
     @ResponseBody
-    @RequestMapping("/cc")
+    @RequestMapping("cc")
     public List<WaterPojo> ccc(String batchId){
         List<WaterPojo> list =  service.clearUpFraction("1");
         return list;
@@ -69,7 +68,7 @@ public class StatsController {
     * @Description 顶部信息
     */
     @ResponseBody
-    @RequestMapping("/evaluationTop")
+    @RequestMapping("evaluationTop")
     public List<HashMap> ddd(String batchId,String papersId){
         HashMap map = hashmapB(batchId,papersId);
         List<HashMap> listA =  service.queryScoreDepartment(map);
@@ -83,7 +82,7 @@ public class StatsController {
         list.add(listD);
         return list;
     }
-
+    @ResponseBody
     public HashMap hashmapB(String batchId,String papersId){
         HashMap map = new HashMap();
         if(batchId != null && batchId.length()!=0){
@@ -102,7 +101,7 @@ public class StatsController {
     * @Description 底部饼图生成
     */
     @ResponseBody
-    @RequestMapping("/queryPie")
+    @RequestMapping("queryPie")
     public List<HashMap> QueryPie(String batchId,String papersId){
         HashMap map = hashmapB(batchId,papersId);
         List<HashMap> list = service.queryPie(map);
@@ -118,7 +117,7 @@ public class StatsController {
      *
      */
     @ResponseBody
-    @RequestMapping("/queryBatchsList")
+    @RequestMapping("queryBatchsList")
     public List<HashMap> queryBatchsList(String papersId){
         HashMap map = new HashMap();
         if(papersId != null && papersId.length()!=0&&papersId != ""){
@@ -127,6 +126,14 @@ public class StatsController {
         List<HashMap> list = service.queryBatchsList(map);
         return  list;
     }
+
+    @ResponseBody
+    @RequestMapping("queryBaticNameList")
+    public List<HashMap> queryBaticNameList(String batchId){
+        List<HashMap> list = service.queryBaticNameList(batchId);
+        return  list;
+    }
+
 
     /**
      * @Author xiaoyi
@@ -137,7 +144,7 @@ public class StatsController {
      *
      */
     @ResponseBody
-    @RequestMapping("/queryPapersList")
+    @RequestMapping("queryPapersList")
     public List<HashMap> queryPapersList(String batchId){
         HashMap map = new HashMap();
         if(batchId != null && batchId.length()!=0&&batchId!=""){
@@ -155,7 +162,7 @@ public class StatsController {
     * @Description 取评教成绩前5
     */
     @ResponseBody
-    @RequestMapping("/querySocoreLimit5")
+    @RequestMapping("querySocoreLimit5")
     public List<HashMap> querySocoreLimit5(String batchId,String papersId){
         HashMap map = hashmapB(batchId,papersId);
         List<HashMap> list = service.querySocoreLimit5(map);
@@ -170,7 +177,7 @@ public class StatsController {
     * @Description 查询成绩
     */
     @ResponseBody
-    @RequestMapping("/querySocore")
+    @RequestMapping("querySocore")
     public HashMap querySocore(String batchId,String papersId,int page,int limit){
         HashMap map = hashmapB(batchId,papersId);
         int pageing = (page-1)*limit;
@@ -195,7 +202,7 @@ public class StatsController {
     * @Description 查询某老师 课程成绩
     */
     @ResponseBody
-    @RequestMapping("/queryTeacherScore")
+    @RequestMapping("queryTeacherScore")
     public HashMap queryTeacherScore(String batchId,String papersId,int page,int limit,String gradeds){
         HashMap map = hashmapB(batchId,papersId);
         int pageing = (page-1)*limit;
@@ -217,7 +224,7 @@ public class StatsController {
     }
 
     @ResponseBody
-    @RequestMapping("/querydetail")
+    @RequestMapping("querydetail")
     public HashMap querydetail(String batchId,String papersId,int page,int limit,int gradeds,int courses_id){
         HashMap map = hashmapB(batchId,papersId);
         int pageing = (page-1)*limit;
@@ -255,4 +262,13 @@ public class StatsController {
         result.put("data",fractions);
         return result;
     }
+    @RequestMapping("dd")
+    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("batchId", "1");
+        mv.setViewName("/admin/stats/stats_index");
+        return mv;
+    }
+
 }
