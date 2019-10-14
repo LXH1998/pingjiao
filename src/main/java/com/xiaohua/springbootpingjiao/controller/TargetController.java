@@ -211,7 +211,7 @@ public class TargetController {
             Options options = new Options();
 
 //        result.put("数据",insertOptionsId);
-            int categoryCount = targetService.selectSubordinateTargetCategory(target_Name,target_Id);
+            int categoryCount = targetService.selectSubordinateTargetOption(target_Name,target_Id);
             if (categoryCount==0) {
                 Target target = new Target();
                 int insertTargetCount = targetService.insertTarget(target_Name, target_Weight, target_Id, target);
