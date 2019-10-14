@@ -259,5 +259,7 @@ public HashMap selectifTarget(String role_id,String batch_id){
     public String GoOnlineEvaluation(){ return "admin/Questionnaire/onlineEvaluation"; }
     @RequestMapping("addQuestionnaire")
     public String addQuestionnaire(){ return "admin/Questionnaire/addQuestionnaire"; }
+    @RequestMapping("PreviewQuestionnaire")
+    public String PreviewQuestionnaire(){ return "admin/Questionnaire/PreviewQuestionnaire"; }
 
 }

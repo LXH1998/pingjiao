@@ -57,7 +57,7 @@
                 </div>
     </form>
 </div>
-    <div style="width:100%;display: flex;justify-content:flex-end"><button type="button" class="layui-btn">预览</button><button type="button" class="layui-btn" id="add">添加</button></div>
+    <div style="width:100%;display: flex;justify-content:flex-end"><button type="button" class="layui-btn" id="Preview">预览</button><button type="button" class="layui-btn" id="add">添加</button></div>
 
 
 </body>
@@ -400,6 +400,7 @@
                                                 })
 
                                             }
+                                            layer.msg('操作成功', {icon: 1});
                                         }
                                     })
                                     
@@ -430,7 +431,25 @@
              });
          }
     })
+     $("#Preview").click(function () {
+         layer.open({
+             type:2
+             ,skin:'layui-layer-rim'//加上边框
+             // ,maxmin: true //开启最大化最小化按钮
+             ,area: ["100%","100%"]
+             ,title: "预览问卷"
+             ,shade:0.3
+             ,shadeClose:true
+             ,content:"/Questionnaire/PreviewQuestionnaire"
+             ,success: function (layero,index) {
+                 var body = layer.getChildFrame('body', index);
+                 var iframe = window['layui-layer-iframe' + index];
+                 // 向子页面的全局函数
 
+             }
+
+         })
+     })
 </script>
 <style>
 
