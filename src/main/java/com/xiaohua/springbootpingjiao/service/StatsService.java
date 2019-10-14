@@ -1,5 +1,6 @@
 package com.xiaohua.springbootpingjiao.service;
 
+import com.xiaohua.springbootpingjiao.entity.Fraction;
 import com.xiaohua.springbootpingjiao.entity.WaterPojo;
 
 import java.util.HashMap;
@@ -41,4 +42,16 @@ public interface StatsService {
     List<HashMap> querySocore(HashMap map);
     List<HashMap> queryScoreSize(HashMap map);
 
+    /***
+     *查询某老师 课程成绩
+     */
+    List<HashMap> queryTeacherScore(HashMap map);
+    List<HashMap> queryTeacherScoreSize(HashMap map);
+    /**
+     * 查询被评分人具体评教详情
+     */
+    List<HashMap> querydetail(HashMap map);
+    List<HashMap> querydetailSize(HashMap map);
+    List<Fraction> selectEvaluationAnswers(int rater, int gradeds, int papers_id, int courses_id);
+    List<HashMap> selectFractions(int rater, int gradeds, int papers_id, int courses_id);
 }

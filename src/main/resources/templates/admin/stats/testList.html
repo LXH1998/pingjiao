@@ -34,15 +34,14 @@
 </style>
 
 <script>
-    function inputDataHandle(obj){
-        console.log(obj)
-
+    function inputDataHandle(graded,papersid,coursesid,rater){
+        console.log(graded,papersid,coursesid,rater)
         layui.use(['form', 'upload', 'layer'], function () {
             var form = layui.form;
             $.ajax({
-                url:"/OnlineEvaluationController/selectHistoryOnlineEvaluation",
+                url:"/OnlineEvaluationController/selectOnlineEvaluation",
                 type:"get",
-                data:{papers_id:obj.data.papers_id},
+                data:{papers_id:papersid},
                 success:function (res) {
                     var a=res.data
                     var b
@@ -50,7 +49,7 @@
                     for(var index in a) {
                         b=a[index].options
                         $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;margin-top:20px " >\n' +
-                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'('+a[index].target_weight+')</label>\n' +
+                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'</label>\n' +
 
                             '        </div>');
                         i++
@@ -58,23 +57,24 @@
                             $('#targetOptions').append('<div class="layui-card-body" style="margin: 0;padding: 0 0 2px 20px">\n' +
                                 '            <span>\n' +
                                 '                <input lay-filter="options" type="radio"\n' +
-                                '                       name="'+a[index].target_id+'" value="'+b[index1].options_id+'" title="'+b[index1].options_content+'('+b[index1].options_weight+')" lay-skin="primary">\n' +
+                                '                       name="'+a[index].target_id+'" value="'+b[index1].options_id+'" title="'+b[index1].options_content+'" lay-skin="primary">\n' +
                                 '            </span>\n' +
                                 '        </div>')
                         };
 
 
-                        var gradeds = obj.data.user_id;//被评分人
-                        var papers_id = obj.data.papers_id;//批次id
-                        var courses_id = obj.data.courses_id;//课程id
+                        var gradeds = graded;//被评分人
+                        var papers_id = papersid;//批次id
+                        var courses_id = coursesid;//课程id
                         //得出总分
                         $.ajax({
                             type:"get",
-                            url:"/SelectOnlineEvaluationController/selectFractions",
+                            url:"/stats/selectFractions",
                             data:{
                                 gradeds:gradeds,
                                 papers_id:papers_id,
                                 courses_id:courses_id,
+                                rater:rater
                             },
                             success:function (res) {
                                 console.log("分数："+res.data[0].fractions);
@@ -85,14 +85,15 @@
                         //查看详情
                         $.ajax({
                             type:"get",
-                            url:"/SelectOnlineEvaluationController/selectIfEvaluation",
+                            url:"/stats/selectIfEvaluation",
                             data:{
                                 gradeds:gradeds,
                                 papers_id:papers_id,
                                 courses_id:courses_id,
+                                rater:rater
                             },
                             success:function (res) {
-                                // console.log(res.data[0].answers)
+                                console.log(res)
                                 var options_id = res.data[0].answers.split(",")
                                 console.log(options_id)
                                 $.each(options_id,function (index,item) {

@@ -1,6 +1,7 @@
 package com.xiaohua.springbootpingjiao.mapper;
 
 import com.xiaohua.springbootpingjiao.entity.Departments;
+import com.xiaohua.springbootpingjiao.entity.Fraction;
 import com.xiaohua.springbootpingjiao.entity.Scores;
 import com.xiaohua.springbootpingjiao.entity.WaterPojo;
 import org.springframework.stereotype.Repository;
@@ -77,4 +78,20 @@ public interface StatsMapper {
      */
     List<HashMap> querySocore(HashMap map);
     List<HashMap> queryScoreSize(HashMap map);
+
+    /***
+     *查询某老师 课程成绩
+     */
+    List<HashMap> queryTeacherScore(HashMap map);
+    List<HashMap> queryTeacherScoreSize(HashMap map);
+    List<HashMap> queryTeacherScoreList(HashMap map);
+
+    /**
+     * 查询被评分人具体评教详情
+     */
+    List<HashMap> querydetail(HashMap map);
+    List<HashMap> querydetailSize(HashMap map);
+
+    List<Fraction> selectEvaluationAnswers(int rater, int gradeds, int papers_id, int courses_id);
+    List<HashMap> selectFractions(int rater,int gradeds,int papers_id,int courses_id);
 }
