@@ -41,6 +41,8 @@ public interface TargetService {
 //   插入指标
     int insertTarget(String target_Name,Float target_Weight,int target_Id,Target target);
 
+    //    插入指标（查看当前指标类别下是否存在相同指标）
+    int selectSubordinateTargetOption(String target_Name, int target_Id);
     //    插入选项
     int insertOptions(String options_Content, Float options_Weight, Options options);
 
@@ -53,6 +55,8 @@ public interface TargetService {
     //    查询指标选项表中是否存在指定指标的选项
     int selectTheTargetOptions(int targetId);
 
+    //    删除指标选项表中指定的选项
+    int deleteTargetOptions(int targetId);
     //    删除指定指标的选项
     int deleteTheTargetOptions(int targetId);
 
@@ -66,4 +70,11 @@ public interface TargetService {
     List<Integer> selectAllDeletedOptions(int targetId);
 
     int selectTheSameOption(int optionsId, String optionsContent);
+
+    //    删除指定指标的全部选项
+    int deleteAllOptions(List<Integer> list);
+
+
+    //    查询所有targetId
+    List<Integer> isExitSublevel(int targetId);
 }

@@ -76,6 +76,12 @@ public class TargetServiceImpl implements TargetService {
         return targetMapper.insertTarget(target_Name,target_Weight,target_Id,target);
     }
 
+    //    插入指标（查看当前指标类别下是否存在相同指标）
+    @Override
+    public int selectSubordinateTargetOption(String target_Name, int target_Id) {
+        return targetMapper.selectSubordinateTargetOption(target_Name,target_Id);
+    }
+
     @Override
     public int insertOptions(String options_Content, Float options_Weight, Options options) {
         return targetMapper.insertOptions(options_Content,options_Weight,options);
@@ -95,6 +101,11 @@ public class TargetServiceImpl implements TargetService {
     @Override
     public int selectTheTargetOptions(int targetId) {
         return targetMapper.selectTheTargetOptions(targetId);
+    }
+    //    删除指标选项表中指定的选项
+    @Override
+    public int deleteTargetOptions(int targetId) {
+        return targetMapper.deleteTargetOptions(targetId);
     }
 
     //    删除指定指标的选项
@@ -123,6 +134,17 @@ public class TargetServiceImpl implements TargetService {
     @Override
     public int selectTheSameOption(int optionsId, String optionsContent) {
         return targetMapper.selectTheSameOption(optionsId,optionsContent);
+    }
+
+    @Override
+    public int deleteAllOptions(List<Integer> list) {
+        return targetMapper.deleteAllOptions(list);
+    }
+
+//    查询所有targetId
+    @Override
+    public List<Integer> isExitSublevel(int targetId) {
+        return targetMapper.isExitSublevel(targetId);
     }
 
 
