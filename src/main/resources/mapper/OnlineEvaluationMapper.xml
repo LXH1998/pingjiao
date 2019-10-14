@@ -31,7 +31,7 @@
           left join targetoptions tos on os.options_id=tos.options_id
           left join target t on t.target_id=tos.target_id
           left join paperstarget pst on pst.target_id=t.target_id
-        where os.options_id=#{options_id} and pst.target_id=#{target_id}
+        where os.options_id=#{options_id} and pst.target_id=#{target_id} and pst.papers_id=#{papers_id}
     </select>
     <!--插入分数及其信息-->
     <insert id="insertOnlineEvaluation" parameterType="com.xiaohua.springbootpingjiao.entity.Fraction">

@@ -13,16 +13,16 @@
 </head>
 <body>
 <form class="layui-form" action="">
-        <div class="layui-row layui-col-space15">
-            <div class="layui-col-md12">
-                <div class="layui-card" id="targetOptions">
-                </div>
-            </div>
-
-            <div >
-               <h1 style="float: right;padding-right: 200px;padding-top: 4px" id="fractions"></h1><h1 style="float: right">总得分:</h1>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card" id="targetOptions">
             </div>
         </div>
+
+        <div >
+            <h1 style="float: right;padding-right: 200px;padding-top: 4px" id="fractions"></h1><h1 style="float: right">总得分:</h1>
+        </div>
+    </div>
 </form>
 <style>
     .layui-form-radio span{
@@ -40,7 +40,7 @@
         layui.use(['form', 'upload', 'layer'], function () {
             var form = layui.form;
             $.ajax({
-                url:"/OnlineEvaluationController/selectOnlineEvaluation",
+                url:"/OnlineEvaluationController/selectHistoryOnlineEvaluation",
                 type:"get",
                 data:{papers_id:obj.data.papers_id},
                 success:function (res) {
@@ -50,7 +50,7 @@
                     for(var index in a) {
                         b=a[index].options
                         $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;margin-top:20px " >\n' +
-                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'</label>\n' +
+                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'('+a[index].target_weight+')</label>\n' +
 
                             '        </div>');
                         i++
@@ -81,7 +81,7 @@
                                 $("#fractions").html(res.data[0].fractions)
                             }
                         })
-                        
+
                         //查看详情
                         $.ajax({
                             type:"get",
