@@ -16,55 +16,59 @@
 <script type="text/javascript">
 
     //页面初始化
-    // $(function () {
-    //     $.ajax({
-    //         type: "get",
-    //         url:'/TargetManagement/selectBatchHide',
-    //         dataType: "json",
-    //         success:function (res) {
-    //             if (res.message=="批次已开启") {
-    //                 var docHeight = $(document).height(); //获取窗口高度
-    //                 var docWidth = $(document).width();
-    //
-    //                 $('body').append('<div id="overlay">批次已开启，无法进行操作</div>');
-    //                 $('#overlay')
-    //                     .height(docHeight)
-    //                     .width(docWidth)
-    //                     .css({
-    //                         'opacity': .9, //透明度
-    //                         'position': 'absolute',
-    //                         'top': 0,
-    //                         // 'left': 0,
-    //                         'background-color': 'red',
-    //                         'text-align':'center',
-    //                         // 'width': '100%',
-    //                         'z-index': 5000 //保证这个悬浮层位于其它内容之上
-    //                     });
-    //             }else {
-    //                 $('body').append('<div style="width: 1120px;height: 435px;">\n' +
-    //                     '    <div style="width: 19%;height: 435px;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;">\n' +
-    //                     '        <ul id="tree" class="ztree" style="height:435px; overflow:auto;"></ul>\n' +
-    //                     '    </div>\n' +
-    //                     '    <div id="targetManagement" style="width: 81%;height: 100%; float: left;">\n' +
-    //                     '\n' +
-    //                     '    </div>\n' +
-    //                     '</div>')
-    //                 $(initIndex());
-    //             }
-    //         }
-    //
-    //     })
-    // })
     $(function () {
-        initIndex();
         var docHeight = $(document).height(); //获取窗口高度
-        var docWidth = $(document).width(); //获取串口宽度
-        console.log("窗口高度"+docHeight);
-        console.log("窗口宽度"+docWidth);
-        $('#firstDiv')
-            .height(docHeight)
-            .width(docWidth)
+        var docWidth = $(document).width();
+        $.ajax({
+            type: "get",
+            url:'/TargetManagement/selectBatchHide',
+            dataType: "json",
+            success:function (res) {
+                if (res.message=="批次已开启") {
+
+
+                    $('body').append('<div id="overlay">批次已开启，无法进行操作</div>');
+                    $('#overlay')
+                        .height(docHeight)
+                        .width(docWidth)
+                        .css({
+                            'opacity': .9, //透明度
+                            'position': 'absolute',
+                            'top': 0,
+                            // 'left': 0,
+                            // 'background-color': 'red',
+                            'text-align':'center',
+                            // 'width': '100%',
+                            'z-index': 5000 //保证这个悬浮层位于其它内容之上
+                        });
+                }else {
+                    $('body').append('<div  id="firstDiv">\n' +
+                        '    <div id="leftDiv" style="width: 19%;height: 100%;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;overflow:auto;">\n' +
+                        '        <ul id="tree" class="ztree"></ul>\n' +
+                        '    </div>\n' +
+                        '    <div id="targetManagement" style="width: 81%;height: 100%; float: left;">\n' +
+                        '\n' +
+                        '    </div>\n' +
+                        '</div>');
+                    $('#firstDiv')
+                        .height(docHeight)
+                        .width(docWidth)
+                    initIndex();
+                }
+            }
+
+        })
     })
+    // $(function () {
+    //     initIndex();
+    //     var docHeight = $(document).height(); //获取窗口高度
+    //     var docWidth = $(document).width(); //获取串口宽度
+    //     console.log("窗口高度"+docHeight);
+    //     console.log("窗口宽度"+docWidth);
+    //     $('#firstDiv')
+    //         .height(docHeight)
+    //         .width(docWidth)
+    // })
 
 
     // zTree的设置
@@ -329,115 +333,115 @@
     };
 </script>
 <body>
-<div id="firstDiv" >
-    <div id="leftDiv" style="width: 19%;height: 100%;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;overflow:auto;">
-        <ul id="tree" class="ztree"></ul>
-    </div>
-    <div id="targetManagement" style="width: 81%;height: 100%; float: left;">
-        <!--&lt;!&ndash;<div style="background-color:#007DDB;width: 100%">&ndash;&gt;-->
-            <!--&lt;!&ndash;<div class="layui-form-item" style="padding-left: 70px">&ndash;&gt;-->
-                <!--&lt;!&ndash;<label class="layui-form-label">指标名称:</label>&ndash;&gt;-->
-                <!--&lt;!&ndash;<div class="layui-input-inline">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<input type="text" name="targetName" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                <!--&lt;!&ndash;<label class="layui-form-label">指标权重:</label>&ndash;&gt;-->
-                <!--&lt;!&ndash;<div class="layui-input-inline">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<input type="text" name="targetWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>&ndash;&gt;-->
-            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+<!--<div id="firstDiv" >-->
+    <!--<div id="leftDiv" style="width: 19%;height: 100%;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;overflow:auto;">-->
+        <!--<ul id="tree" class="ztree"></ul>-->
+    <!--</div>-->
+    <!--<div id="targetManagement" style="width: 81%;height: 100%; float: left;">-->
+        <!--&lt;!&ndash;&lt;!&ndash;<div style="background-color:#007DDB;width: 100%">&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-form-item" style="padding-left: 70px">&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<label class="layui-form-label">指标名称:</label>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline">&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="targetName" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<label class="layui-form-label">指标权重:</label>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline">&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="targetWeight" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger" style="margin-top: 4px"><i class="layui-icon"></i> 删除</button>&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
 
-            <!--&lt;!&ndash;<div style="width:400px;margin: 0 auto">&ndash;&gt;-->
-                <!--&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加下级指标</button>&ndash;&gt;-->
-                <!--&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>&ndash;&gt;-->
-                <!--&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存修改</button>&ndash;&gt;-->
-            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-        <!--&lt;!&ndash;<div style="width:100%;height:325px;background-color:yellow">&ndash;&gt;-->
-            <!--&lt;!&ndash;<fieldset class="layui-elem-field site-demo-button" style="margin-top: 25px;">&ndash;&gt;-->
-                <!--&lt;!&ndash;<legend>指标维护</legend>&ndash;&gt;-->
-                <!--&lt;!&ndash;<div style="margin-bottom: 10px;">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<button type="button" class="layui-btn">添加选项</button>&ndash;&gt;-->
-                <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                <!--&lt;!&ndash;<form class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<label class="layui-form-label">选项A:</label>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="hidden" name="id">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="text" name="optionA" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="text" name="optionAWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<label class="layui-form-label">选项B:</label>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="text" name="optionB" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="text" name="optionBWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<label class="layui-form-label">选项C:</label>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="text" name="optionC" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="text" name="optionCWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<label class="layui-form-label">选项D:</label>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="text" name="optionD" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<input type="text" name="optionDWeight" lay-verify="required" class="layui-input">&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<div class="layui-inline">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;-->
-                                <!--&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;-->
-                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                <!--&lt;!&ndash;</form>&ndash;&gt;-->
-            <!--&lt;!&ndash;</fieldset>&ndash;&gt;-->
-        <!--&lt;!&ndash;</div>&ndash;&gt;-->
-    </div>
-</div>
+            <!--&lt;!&ndash;&lt;!&ndash;<div style="width:400px;margin: 0 auto">&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="padding: 0 20px">增加下级指标</button>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">指标维护</button>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn  layui-btn-sm layui-btn-normal" style="margin-left: 20px;padding: 0 20px">保存修改</button>&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;<div style="width:100%;height:325px;background-color:yellow">&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;<fieldset class="layui-elem-field site-demo-button" style="margin-top: 25px;">&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<legend>指标维护</legend>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<div style="margin-bottom: 10px;">&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn">添加选项</button>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;<form class="layui-form layui-form-pane" style="height:252px;padding-left:150px;overflow: auto">&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<label class="layui-form-label">选项A:</label>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="hidden" name="id">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="optionA" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="optionAWeight" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<label class="layui-form-label">选项B:</label>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="optionB" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="optionBWeight" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<label class="layui-form-label">选项C:</label>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="optionC" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="optionCWeight" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-form-item">&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<label class="layui-form-label">选项D:</label>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 400px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="optionD" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<input type="text" name="optionDWeight" lay-verify="required" class="layui-input">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-inline">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<div class="layui-input-inline" style="width: 50px">&ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;&lt;!&ndash;<button type="button" class="layui-btn layui-btn-sm layui-btn-normal layui-btn-danger">删除</button>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                    <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash;</form>&ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash;</fieldset>&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;</div>&ndash;&gt;&ndash;&gt;-->
+    <!--</div>-->
+<!--</div>-->
 
 
 <script type="text/javascript">
