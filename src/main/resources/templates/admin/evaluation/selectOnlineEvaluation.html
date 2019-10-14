@@ -39,82 +39,164 @@
 
         layui.use(['form', 'upload', 'layer'], function () {
             var form = layui.form;
-            $.ajax({
-                url:"/OnlineEvaluationController/selectOnlineEvaluation",
-                type:"get",
-                data:{papers_id:obj.data.papers_id},
-                success:function (res) {
-                    console.log("res:"+res.data[0])
-                    var a=res.data
-                    var b
-                    var i=1
-                    for(var index in a) {
-                        b=a[index].options
-                        $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;margin-top:20px " >\n' +
-                            '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'('+a[index].target_weight+')</label>\n' +
+            if(obj.data.batch_hide == "3"){
+                console.log("历史问卷")
+                $.ajax({
+                    url:"/OnlineEvaluationController/selectHistoryOnlineEvaluation",
+                    type:"get",
+                    data:{papers_id:obj.data.papers_id},
+                    success:function (res) {
+                        var a=res.data
+                        var b
+                        var i=1
+                        for(var index in a) {
+                            b=a[index].options
+                            $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;margin-top:20px " >\n' +
+                                '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'('+a[index].target_weight+')</label>\n' +
 
-                            '        </div>');
-                        i++
-                        for(var index1 in b) {
-                            $('#targetOptions').append('<div class="layui-card-body" style="margin: 0;padding: 0 0 2px 20px">\n' +
-                                '            <span>\n' +
-                                '                <input lay-filter="options" type="radio"\n' +
-                                '                       name="'+a[index].target_id+'" value="'+b[index1].options_id+'" title="'+b[index1].options_content+'('+b[index1].options_weight+')" lay-skin="primary">\n' +
-                                '            </span>\n' +
-                                '        </div>')
+                                '        </div>');
+                            i++
+                            for(var index1 in b) {
+                                $('#targetOptions').append('<div class="layui-card-body" style="margin: 0;padding: 0 0 2px 20px">\n' +
+                                    '            <span>\n' +
+                                    '                <input lay-filter="options" type="radio"\n' +
+                                    '                       name="'+a[index].target_id+'" value="'+b[index1].options_id+'" title="'+b[index1].options_content+'('+b[index1].options_weight+')" lay-skin="primary">\n' +
+                                    '            </span>\n' +
+                                    '        </div>')
+                            };
+
+
+                            var gradeds = obj.data.user_id;//被评分人
+                            var papers_id = obj.data.papers_id;//批次id
+                            var courses_id = obj.data.courses_id;//课程id
+                            //得出总分
+                            $.ajax({
+                                type:"get",
+                                url:"/SelectOnlineEvaluationController/selectFractions",
+                                data:{
+                                    gradeds:gradeds,
+                                    papers_id:papers_id,
+                                    courses_id:courses_id,
+                                },
+                                success:function (res) {
+                                    console.log("分数："+res.data[0].fractions);
+                                    $("#fractions").html(res.data[0].fractions)
+                                }
+                            })
+
+                            //查看详情
+                            $.ajax({
+                                type:"get",
+                                url:"/SelectOnlineEvaluationController/selectIfEvaluation",
+                                data:{
+                                    gradeds:gradeds,
+                                    papers_id:papers_id,
+                                    courses_id:courses_id,
+                                },
+                                success:function (res) {
+                                    // console.log(res.data[0].answers)
+                                    var options_id = res.data[0].answers.split(",")
+                                    console.log(options_id)
+                                    $.each(options_id,function (index,item) {
+                                        console.log("1:"+item)
+                                        console.log("2:"+a[index].target_id)
+                                        $("input[name='"+a[index].target_id+"'][value='"+item+"']").prop("checked",true);
+                                        layui.form.render();
+                                    })
+                                    // $("#targetOptions input[value='"+item+"']").prop("checked",true);
+
+
+                                }
+                            })
+
                         };
 
 
-                        var gradeds = obj.data.user_id;//被评分人
-                        var papers_id = obj.data.papers_id;//批次id
-                        var courses_id = obj.data.courses_id;//课程id
-                        //得出总分
-                        $.ajax({
-                            type:"get",
-                            url:"/SelectOnlineEvaluationController/selectFractions",
-                            data:{
-                                gradeds:gradeds,
-                                papers_id:papers_id,
-                                courses_id:courses_id,
-                            },
-                            success:function (res) {
-                                console.log("分数："+res.data[0].fractions);
-                                $("#fractions").html(res.data[0].fractions)
-                            }
-                        })
-                        
-                        //查看详情
-                        $.ajax({
-                            type:"get",
-                            url:"/SelectOnlineEvaluationController/selectIfEvaluation",
-                            data:{
-                                gradeds:gradeds,
-                                papers_id:papers_id,
-                                courses_id:courses_id,
-                            },
-                            success:function (res) {
-                                // console.log(res.data[0].answers)
-                                var options_id = res.data[0].answers.split(",")
-                                console.log(options_id)
-                                $.each(options_id,function (index,item) {
-                                    console.log("1:"+item)
-                                    console.log("2:"+a[index].target_id)
-                                    $("input[name='"+a[index].target_id+"'][value='"+item+"']").prop("checked",true);
-                                    layui.form.render();
-                                })
-                                // $("#targetOptions input[value='"+item+"']").prop("checked",true);
+
+                        layui.form.render();
+                    }
+                })
+            }else{
+                console.log("实时问卷")
+                $.ajax({
+                    url:"/OnlineEvaluationController/selectOnlineEvaluation",
+                    type:"get",
+                    data:{papers_id:obj.data.papers_id},
+                    success:function (res) {
+                        console.log("res:"+res.data[0])
+                        var a=res.data
+                        var b
+                        var i=1
+                        for(var index in a) {
+                            b=a[index].options
+                            $('#targetOptions').append('<div class="layui-card-header" style="background-color: #F2F2F2;margin-top:20px " >\n' +
+                                '            <label class="layui-form-label" style="font-size: 16px;width: 30%;text-align: left;margin-top: 3px ">'+i+'.'+a[index].target_name+'('+a[index].target_weight+')</label>\n' +
+
+                                '        </div>');
+                            i++
+                            for(var index1 in b) {
+                                $('#targetOptions').append('<div class="layui-card-body" style="margin: 0;padding: 0 0 2px 20px">\n' +
+                                    '            <span>\n' +
+                                    '                <input lay-filter="options" type="radio"\n' +
+                                    '                       name="'+a[index].target_id+'" value="'+b[index1].options_id+'" title="'+b[index1].options_content+'('+b[index1].options_weight+')" lay-skin="primary">\n' +
+                                    '            </span>\n' +
+                                    '        </div>')
+                            };
 
 
-                            }
-                        })
+                            var gradeds = obj.data.user_id;//被评分人
+                            var papers_id = obj.data.papers_id;//批次id
+                            var courses_id = obj.data.courses_id;//课程id
+                            //得出总分
+                            $.ajax({
+                                type:"get",
+                                url:"/SelectOnlineEvaluationController/selectFractions",
+                                data:{
+                                    gradeds:gradeds,
+                                    papers_id:papers_id,
+                                    courses_id:courses_id,
+                                },
+                                success:function (res) {
+                                    console.log("分数："+res.data[0].fractions);
+                                    $("#fractions").html(res.data[0].fractions)
+                                }
+                            })
 
-                    };
+                            //查看详情
+                            $.ajax({
+                                type:"get",
+                                url:"/SelectOnlineEvaluationController/selectIfEvaluation",
+                                data:{
+                                    gradeds:gradeds,
+                                    papers_id:papers_id,
+                                    courses_id:courses_id,
+                                },
+                                success:function (res) {
+                                    // console.log(res.data[0].answers)
+                                    var options_id = res.data[0].answers.split(",")
+                                    console.log(options_id)
+                                    $.each(options_id,function (index,item) {
+                                        console.log("1:"+item)
+                                        console.log("2:"+a[index].target_id)
+                                        $("input[name='"+a[index].target_id+"'][value='"+item+"']").prop("checked",true);
+                                        layui.form.render();
+                                    })
+                                    // $("#targetOptions input[value='"+item+"']").prop("checked",true);
+
+
+                                }
+                            })
+
+                        };
 
 
 
-                    layui.form.render();
-                }
-            })
+                        layui.form.render();
+                    }
+                })
+            }
+
+
 
             //全部渲染
             form.render();
