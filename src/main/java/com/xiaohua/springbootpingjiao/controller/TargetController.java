@@ -120,13 +120,48 @@ public class TargetController {
     @RequestMapping("/deleteTarget")
     public Map deleteTarget(int target_Id){
         Map result = new HashMap();
-        int count = targetService.deleteTarget(target_Id);
-        if (count==1){
-            result.put("message","操作成功");
-        }else {
-            result.put("message","操作失败");
+        List<Integer> theList = new ArrayList<>();
+        theList.add(target_Id);
+        List<Integer> treeList = getTreeList(theList,target_Id);
+        int count=0;
+        for (Integer targetId:treeList){
+            List<Integer> list = targetService.selectAllDeletedOptions(targetId);
+            if (list.size()==0){
+                targetService.deleteTarget(targetId);
+                count +=1;
+            }else {
+                targetService.deleteAllOptions(list);
+                targetService.deleteTargetOptions(targetId);
+                targetService.deleteTarget(targetId);
+                count +=1;
+            }
+
         }
+        if (count == treeList.size()){
+                result.put("message","操作成功");
+            }
+
+
+//        result.put("message","操作失败");
+//        List<Integer> sublevelList = targetService.isExitSublevel(target_Id);
+//        List<Integer> list = targetService.selectAllDeletedOptions(target_Id);
+//            targetService.deleteAllOptions(list);
+//            int count = targetService.deleteTarget(target_Id);
+//            if (count!=0){
+//                result.put("message","操作成功");
+//            }
+
         return result;
+    }
+
+    public List<Integer> getTreeList(List<Integer> theList, int target_Id){
+//        List<Integer> treeList = new ArrayList<>();
+        List<Integer> nextList = targetService.isExitSublevel(target_Id);
+        for (Integer list:nextList){
+            theList.add(list);
+            getTreeList(theList,list);
+        }
+        return theList;
     }
 
     /**
@@ -158,7 +193,7 @@ public class TargetController {
     public Map addTarget(String target_Name,Float target_Weight,String optionList,String weightList,int target_Id){
         Map result = new HashMap();
         if (optionList.equals("未添加选项")&&weightList.equals("未添加选项")){
-            int categoryCount = targetService.selectSubordinateTargetCategory(target_Name,target_Id);
+            int categoryCount = targetService.selectSubordinateTargetOption(target_Name,target_Id);
             if (categoryCount==0){
                 Target target = new Target();
                 int insertTargetCount = targetService.insertTarget(target_Name, target_Weight, target_Id, target);
@@ -176,7 +211,7 @@ public class TargetController {
             Options options = new Options();
 
 //        result.put("数据",insertOptionsId);
-            int categoryCount = targetService.selectSubordinateTargetCategory(target_Name,target_Id);
+            int categoryCount = targetService.selectSubordinateTargetOption(target_Name,target_Id);
             if (categoryCount==0) {
                 Target target = new Target();
                 int insertTargetCount = targetService.insertTarget(target_Name, target_Weight, target_Id, target);

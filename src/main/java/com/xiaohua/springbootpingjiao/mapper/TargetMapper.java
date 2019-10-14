@@ -32,6 +32,8 @@ public interface TargetMapper {
 //    插入指标类别
     int insertTargetCategory(String target_Name,Float target_Weight);
 
+//    删除指标选项表中指定的选项
+    int deleteTargetOptions(int targetId);
 //    删除指标
     int deleteTarget(int target_Id);
 
@@ -40,6 +42,8 @@ public interface TargetMapper {
 //    插入下级指标类别
     int insertSubordinateTargetCategory(String target_Name,Float target_Weight,int target_Id);
 
+//    插入指标（查看当前指标类别下是否存在相同指标）
+    int selectSubordinateTargetOption(String target_Name, int target_Id);
 //    插入指标
     int insertTarget(String target_Name,Float target_Weight,int target_Id,Target target);
 
@@ -69,4 +73,10 @@ public interface TargetMapper {
 
 //
     int selectTheSameOption(int optionsId, String optionsContent);
+
+//    删除指定指标的全部选项
+    int deleteAllOptions(List<Integer> list);
+
+//    查询所有targetId
+    List<Integer> isExitSublevel(int targetId);
 }

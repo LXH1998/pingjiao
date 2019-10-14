@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>预览</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<body>
+
+
+
+
+
+
+</body>
+<script>
+    layui.use(['form', 'layedit', 'laydate','table','jquery', 'upload', 'layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,$=layui.jquery
+            , table = layui.table;
+  //  console.log(parent.yishuan)
+        for (keys in parent.yishuan) {
+            var xuhao=Number(keys)+1
+            var zhibiao=`
+ <div data-id="${parent.yishuan[keys].id}">
+    <blockquote class=" " style="background-color: #F2F2F2;margin-top:20px;line-height: 50px ">
+        <span style="margin-left: 10px  ">${xuhao}</span>.${parent.yishuan[keys].data}
+    </blockquote>
+</div>
+`
+            $("body").append(zhibiao)
+            $.ajax({
+                url:"/Questionnaire/selectOptions",
+                type:"get",
+                datatype:"json",
+                async: false,
+                data:{target_Id:parent.yishuan[keys].id},
+                success:function (e) {
+                    var ZhiBiao="div[data-id="+parent.yishuan[keys].id+"]"
+                    for (keys in e.data){
+                        var options=`
+                          <div class="layui-card-body" style="margin: 0;padding: 0 0 2px 20px">
+                             <span><input lay-filter="options" type="radio">${e.data[keys].options_content}</span>
+                          </div>`
+
+                        $(ZhiBiao).append(options)
+
+                    }
+
+
+
+
+                }
+            })
+        }
+
+    })
+</script>
+</html>

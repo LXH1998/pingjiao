@@ -19,9 +19,16 @@
         </div>
         <label class="layui-form-label" style="width: 120px">问卷批次与角色:</label>
         <div class="layui-input-inline">
-            <select  name="" id="jiaose" lay-filter="college" lay-search>
+            <select  name="" id="jiaose" lay-filter="jiaose" lay-search>
                 <option value="">请选择角色</option>
             </select>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">问卷名称: </label>
+            <div class="layui-input-inline">
+                <input  type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入问卷名称" class="layui-input" id="addpapers_name">
+            </div>
+
         </div>
 
     <div class="layui-card-header">选择题目</div>
@@ -36,7 +43,7 @@
                     </form>
 
                     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
-                        <legend>已选题目</legend>
+                        <legend >已选<span id="XuanTiShu">0</span>题目</legend>
                     </fieldset>
                     <!--lay-allowclose="true" 允许关闭标签 值：lay-allowclose="" |lay-allowclose="true" -->
                     <!--lay-newTag="true" 允许新增标签  值：lay-newTag="" |lay-newTag="true" -->
@@ -50,7 +57,7 @@
                 </div>
     </form>
 </div>
-    <div style="width:100%;display: flex;justify-content:flex-end"><button type="button" class="layui-btn">预览</button><button type="button" class="layui-btn">添加</button></div>
+    <div style="width:100%;display: flex;justify-content:flex-end"><button type="button" class="layui-btn" id="Preview">预览</button><button type="button" class="layui-btn" id="add">添加</button></div>
 
 
 </body>
@@ -62,9 +69,13 @@
 </style>
 
 <script>
+    var addrole_id
+    var addbatch_id
+    var addpapers_name
     var id
-var arrid=[]
+    var arrid=[]
     var yishuan=[];
+
     function deleteItem (item, list) {
         // 先遍历list里面的每一个元素，对比item与每个元素的id是否相等，再利用splice的方法删除
         for (var key in list) {
@@ -82,6 +93,23 @@ var arrid=[]
             ,$=layui.jquery
             , table = layui.table
             ,element = layui.element;
+
+
+        form.on('select(college)', function(data){
+          //  console.log(data.value)
+            addbatch_id=data.value
+          //  console.log(addbatch_id)
+        });
+        form.on('select(jiaose)', function(data){
+         //   console.log(data.value)
+            addrole_id=data.value
+         //console.log(addrole_id)
+        });
+
+
+
+
+
         layui.config({
             base: '../static/modules/' //假设这是你存放拓展模块的根目录
         }).extend({ //设定模块别名
@@ -95,15 +123,17 @@ var arrid=[]
 
 
             form.on('checkbox', function(data){
-                console.log( $(data));
+            //    console.log( $(data));
               //  console.log(data.elem.checked); //是否被选中，true或者false
-                console.log(data.value); //复选框value值，也可以通过data.elem.value得到
-                console.log(data.othis); //得到美化后的DOM对象
-
-                fruits = {"id":data.value,"data":$(data.elem).attr("title")}
+             //   console.log(data.value); //复选框value值，也可以通过data.elem.value得到
+              //  console.log(data.othis); //得到美化后的DOM对象
+               // console.log( $(data.elem).parent().parent().prev().data("allweight"));
+                //console.log($(data.elem).data("allweight"));
+                var allweight=Number($(data.elem).parent().parent().prev().data("allweight"))*Number($(data.elem).data("allweight"))
+                fruits = {"id":data.value,"data":$(data.elem).attr("title"),allweight:allweight}
                 if (data.elem.checked) {
                     yishuan.push(fruits)
-                    //console.log(yishuan)
+                    console.log(yishuan)
                 }else {
 
                     deleteItem(data.value, yishuan);
@@ -111,6 +141,7 @@ var arrid=[]
                     //    console.log(yishuan)
                    // console.log(data.value)
                 };
+                $("#XuanTiShu").text(yishuan.length )
                 $("#xuanzhelan").empty()
                 var objStr=JSON.stringify(yishuan);//对象转字符串
                 window.localStorage.setItem("yishuan",objStr)
@@ -159,19 +190,19 @@ var arrid=[]
             });
 
             tag.on('click(demo)', function (data) {
-                console.log('点击');
-                console.log(this); //当前Tag标签所在的原始DOM元素
-                console.log(data.index); //得到当前Tag的所在下标
-                console.log(data.elem); //得到当前的Tag大容器
+          //      console.log('点击');
+           //     console.log(this); //当前Tag标签所在的原始DOM元素
+           //     console.log(data.index); //得到当前Tag的所在下标
+           //     console.log(data.elem); //得到当前的Tag大容器
             });
 
             tag.on('delete(demo)', function (data) {
-                console.log('删除');
-               console.log($(this).parent().data('id'));//当前Tag标签所在的原始DOM元素
+            //    console.log('删除');
+           //    console.log($(this).parent().data('id'));//当前Tag标签所在的原始DOM元素
                aaa="input[value="+$(this).parent().data('id')+"]"
-               console.log( $(aaa).next("div").parent().children("div"))
+            //   console.log( $(aaa).next("div").parent().children("div"))
                 $(aaa).next("div").parent().children("div").trigger("click");
-                console.log(yishuan)
+              //  console.log(yishuan)
                // $(aaa).next("div").parent().children("div").removeClass("layui-form-checked")
 
                 //console.log(data.index); //得到当前Tag的所在下标
@@ -213,7 +244,7 @@ var arrid=[]
                 var fu
                 for (keys in e.data) {
                     fu=` <div class="layui-colla-item">
-                                <h2 class="layui-colla-title" data-id="${e.data[keys].target_id}">${e.data[keys].target_name}(${e.data[keys].target_weight})</h2>
+                                <h2 class="layui-colla-title" data-id="${e.data[keys].target_id}" data-allweight="${e.data[keys].target_weight}">${e.data[keys].target_name}(${e.data[keys].target_weight})</h2>
                                   <div class="layui-colla-content pad"  data-id="${e.data[keys].target_id}" style="background-color: white">
 
                                 </div>
@@ -239,14 +270,14 @@ var arrid=[]
 
             id=data.title.data('id')
 
-            console.log(arrid)
+          //  console.log(arrid)
             var result = arrid.some(function(item) {
               //  console.log(item.id)
                 if (item.id == data.title.data('id')) {
                     return true;
                 }
             })
-            console.log(result)
+           // console.log(result)
             if (result){
 
 
@@ -275,16 +306,34 @@ var arrid=[]
                                 $(ccc).append(fu)
 
                             }else {
+
+
                               //  console.log(e.data[keys].leafs_id)
                                 var zhi
-                                zhi=` <p><input type="checkbox" name=""   value="${e.data[keys].target_id}" title="${e.data[keys].target_name}(${e.data[keys].target_weight})"  ></p>
-                                        <p><span style="padding-left: 20px; padding-right: 20px">选项1:asasasddad</span>
-                                        <span style="padding-left: 20px; padding-right: 20px">选项2:dsadsdsafsafafafaasfa</span>
-                                        <span style="padding-left: 20px; padding-right: 20px">选项3:dsadsdsafsafafafaasfa</span>
-                                        <span style="padding-left: 20px; padding-right: 20px">选项4:dsadsdsafsafafafaasfa</span></p>`
+                                zhi=` <p ><input type="checkbox" name=""   value="${e.data[keys].target_id}" data-allweight="${e.data[keys].target_weight}" title="${e.data[keys].target_name}(${e.data[keys].target_weight})"  ></p>
+                                        <p data-idop="${e.data[keys].target_id}"></p>`
                                 //console.log(e.data[keys])
                                 // console.log(zhi)
                                 $(ccc).append(zhi)
+                               var options="p[data-idop="+e.data[keys].target_id+"]"
+                             //   console.log($(options))
+                                    $.ajax({
+                                        url:"/Questionnaire/selectOptions",
+                                        type:"get",
+                                        dataType:"json",
+                                        async: false,
+                                        data:{target_Id:e.data[keys].target_id},
+                                        success:function (e) {
+                                            //console.log(e)
+                                            for (keys in e.data){
+                                                var shu=Number(keys)+1
+                                                var opt=`<span style="padding-left: 20px; padding-right: 20px">选项${shu}:${e.data[keys].options_content}</span>`
+                                                $(options).append(opt)
+                                            }
+
+
+                                        }
+                                    })
                             }
 
 
@@ -296,13 +345,111 @@ var arrid=[]
                 })
                 fruits1 = {"id":data.title.data('id')}
                 arrid.push(fruits1)
+
             }
 
         });
 
     });
 
+    $("#add").click(function () {
+     //   console.log(yishuan)
+        addpapers_name=$("#addpapers_name").val()
 
+        //console.log( $.trim(addpapers_name).length)
+         if ( $.trim(addpapers_name).length>0){
+             //先判断批次和id是否存在
+
+             $.ajax({
+                 url:"/Questionnaire/selectifTarget",
+                 type:"get",
+                 dataType:"json",
+                 data:{role_id:addrole_id,batch_id:addbatch_id},
+                 success:function (e) {
+                     console.log(e)
+                     console.log(e.datalength)
+                     if (e.data.length==0&&yishuan.length!=0) {
+                         console.log(yishuan)
+                        $.ajax({
+                            url:"/Questionnaire/insertPapers",
+                            type:"get",
+                            datatype: "json",
+                            data:{batch_Id:addbatch_id,role_Id:addrole_id,papers_Name:addpapers_name},
+                            success:function (e) {
+                                if (e){//插入表是否成功
+
+                                   // console.log(e)
+                                    $.ajax({
+                                        url:"/Questionnaire/selectifTarget",//查询插入的问卷id
+                                        type:"get",
+                                        datatype:"json",
+                                        data:{batch_id:addbatch_id,role_id:addrole_id},
+                                        success:function (e) {
+                                            console.log(e)
+                                            for (keys in yishuan){
+                                                // console.log(yishuan[keys].id)
+                                                $.ajax({
+                                                    url:"/Questionnaire/insertTarget",
+                                                    type:"get",
+                                                    datatype:"json",
+                                                    data:{papers_Id:e.data[0].papers_id,target_Id:yishuan[keys].id,target_allweight:yishuan[keys].allweight},
+                                                    success:function (e) {
+
+                                                    }
+
+                                                })
+
+                                            }
+                                            layer.msg('操作成功', {icon: 1});
+                                        }
+                                    })
+                                    
+                                }else {
+                                    layer.msg('操作失败', {icon: 2});
+                                }
+                            },
+                            error:function () {
+                                layer.msg('操作失败', {icon: 2});
+                            }
+                        })
+
+
+                     }
+                     else {
+                         layer.msg('问卷已存在或无数据', function(){
+                             //关闭后的操作
+                         });
+                     }
+
+                 }
+             })
+         }
+         else {
+             //上次写到这里先谭一个请输入名称
+             layer.msg('请输入问卷名称', function(){
+                  //关闭后的操作
+             });
+         }
+    })
+     $("#Preview").click(function () {
+         layer.open({
+             type:2
+             ,skin:'layui-layer-rim'//加上边框
+             // ,maxmin: true //开启最大化最小化按钮
+             ,area: ["100%","100%"]
+             ,title: "预览问卷"
+             ,shade:0.3
+             ,shadeClose:true
+             ,content:"/Questionnaire/PreviewQuestionnaire"
+             ,success: function (layero,index) {
+                 var body = layer.getChildFrame('body', index);
+                 var iframe = window['layui-layer-iframe' + index];
+                 // 向子页面的全局函数
+
+             }
+
+         })
+     })
 </script>
 <style>
 

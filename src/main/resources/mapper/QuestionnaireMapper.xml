@@ -101,4 +101,19 @@
     <select id="selectTargetzhi" resultType="HashMap">
     select target_id,target_name,target_weight from target where parent_id=#{parent_Id} and hides=1 and leafs_id=-1
    </select>
+
+    <!--查询选项-->
+    <select id="selectOptions" resultType="HashMap">
+   select options_content,options_weight from  targetoptions t left join options o on t.options_id=o.options_id where target_id=#{target_Id}and state=1
+   </select>
+
+    <!--插入问卷-->
+    <insert id="insertPapers" parameterType="com.xiaohua.springbootpingjiao.entity.Papers">
+        INSERT INTO papers ( role_id,batch_id,papers_name)VALUES (#{role_Id},#{batch_Id},#{papers_Name});
+    </insert>
+    <!--插入指标-->
+    <insert id="insertTarget" parameterType="com.xiaohua.springbootpingjiao.entity.Paperstarget">
+      INSERT INTO paperstarget (papers_Id,target_Id,target_allweight)VALUES (#{papers_Id},#{target_Id},#{target_allweight});
+    </insert>
+
 </mapper>

@@ -11,6 +11,12 @@
     <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
+
+<style>
+    .gl{
+        border: 1px solid red;
+    }
+</style>
 <body>
 <form class="layui-form" action="">
     <div class="layui-form-item" style="margin-top: 30px;text-align: center">
@@ -149,6 +155,28 @@
         })
 
         form.render(); //更新全部
+
+        $("#user_account").blur(function (ev) {
+            ev.preventDefault()
+            var update_account = $("#user_account").val()
+            $.ajax({
+                url:"/userAdministration/selectUserIfRepeat",
+                data:{
+                    user_account:update_account
+                },
+                success:function (res) {
+                    if(res.data == 1){
+                        layer.msg("该账号重复",{icon:2})
+                        $("#user_account").addClass("gl")
+                        $("#Submission").addClass("layui-btn-disabled");
+                    }else{
+                        $("#user_account").removeClass("gl")
+                        $("#Submission").removeClass("layui-btn-disabled");
+                    }
+                }
+            })
+        })
+
 
         // 提交事件
         $("#Submission").click(function (ev) {
