@@ -113,7 +113,7 @@
     </insert>
     <!--插入指标-->
     <insert id="insertTarget" parameterType="com.xiaohua.springbootpingjiao.entity.Paperstarget">
-      INSERT INTO paperstarget (papers_Id,target_Id,target_allweight)VALUES (#{papers_Id},#{target_Id});
+      INSERT INTO paperstarget (papers_Id,target_Id,target_allweight)VALUES (#{papers_Id},#{target_Id},#{target_allweight});
     </insert>
 
 </mapper>

@@ -240,10 +240,10 @@ public HashMap selectifTarget(String role_id,String batch_id){
     //插入指标
     @ResponseBody
     @RequestMapping("/insertTarget")
-    public  boolean insertTarget(String papers_Id,String  target_Id){
+    public  boolean insertTarget(String papers_Id,String  target_Id,String target_allweight){
         Paperstarget c = new Paperstarget();
         c.setPapers_Id(Integer.parseInt(papers_Id));
-
+        c.setTarget_allweight(target_allweight);
         c.setTarget_Id(Integer.parseInt(target_Id));
         boolean flag = QuestionnaireService.insertTarget(c);
         if (flag){
@@ -259,5 +259,7 @@ public HashMap selectifTarget(String role_id,String batch_id){
     public String GoOnlineEvaluation(){ return "admin/Questionnaire/onlineEvaluation"; }
     @RequestMapping("addQuestionnaire")
     public String addQuestionnaire(){ return "admin/Questionnaire/addQuestionnaire"; }
+    @RequestMapping("PreviewQuestionnaire")
+    public String PreviewQuestionnaire(){ return "admin/Questionnaire/PreviewQuestionnaire"; }
 
 }
