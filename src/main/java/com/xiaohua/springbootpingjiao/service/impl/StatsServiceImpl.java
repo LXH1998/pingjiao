@@ -330,5 +330,10 @@ public class StatsServiceImpl  implements StatsService {
     public List<HashMap> selectFractions(int rater, int gradeds, int papers_id, int courses_id) {
         return statsMapper.selectFractions(rater, gradeds, papers_id, courses_id);
     }
+
+    @Override
+    public List<HashMap> queryBaticNameList(String batch_id) {
+        return statsMapper.queryBaticNameList(batch_id);
+    }
 }
 
