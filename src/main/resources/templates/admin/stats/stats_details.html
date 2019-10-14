@@ -39,7 +39,7 @@
         text-align: center;
     }
     .topSencendDiv{
-        width: 300px;
+        width: 1000px;
         height: 40px;
     }
 </style>
@@ -49,41 +49,128 @@
         <p class="web-font fontDiv" style="font-size: 40px">评教成绩明细</p>
     </div>
     <div class="topSencendDiv">
-        <div style="width: 300px;height: 20px">
-            <i style="font-size: 16px">评教批次:</i>
-            <i style="margin-left: 20px">2019-2020第一学期</i>
+        <div style="width: 1000px;height: 20px;margin-top: 20px;" >
+            <i style="font-size: 16px;" >评教问卷:</i>
+            <i style="margin-left: 20px;color: #FFB800; "  id="paperId"></i>
+            <i style="font-size: 16px;margin-left: 20px" >老师名称:</i>
+            <i style="margin-left: 20px;color: #FFB800;"  id="teacherId"></i>
         </div>
-        <div style="width: 300px;height: 20px">
-            <i style="font-size: 16px;">评教问卷;</i>
-            <i style="margin-left: 20px">管理员评教</i>
-        </div>
+
     </div>
 </div>
 <table id="demo" lay-filter="test"></table>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="detail">看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="detail">明细</a>
 </script>
 
 </body>
 <script type="text/javascript">
-    layui.use('table', function() {
-        var table = layui.table;
 
-        //数据表表头
-        table.render({
-            elem: '#demo'
-            // ,height: 400
-            , url: '/stats/queryScoreDealits'
-            , page: false //开启分页
-            , cols: [
-                [ //表头
-                    {field: 'user_name', templet: '#xuhao', title: '姓名', width: '20%', sort: true, fixed: 'left', align: 'center'}
-                    , {field: 'courses_name', title: '课程名', width: '35%', align: 'center'}
-                    , {field: 'scores_sum', title: '分数', width: '35%', align: 'center'}
-                    ,{title: '操作', width: '10%', align: 'center', toolbar: '#barDemo'}
+    function selectDataCallBack(teacherID,papersIds,batchIds){
+        layui.use('table', function() {
+            var table = layui.table;
+            //数据表表头
+            table.render({
+                elem: '#demo'
+                // ,height: 400
+                , url: '/stats/queryTeacherScore'
+                , page: true //开启分页
+                , cols: [
+                    [ //表头
+                        {field: 'teacherName', templet: '#xuhao', title: '姓名', width: '20%', fixed: 'left', align: 'center'}
+                        , {field: 'couresName', title: '课程名', width: '20%', align: 'center'}
+                        , {field: 'teacherScore', title: '老师分数', width: '15%', align: 'center'}
+                        , {field: 'studentScore', title: '学生分数', width: '15%', align: 'center'}
+                        , {field: 'score', title: '总分数', width: '20%', align: 'center'}
+                        , {field: 'teacherID', title: 'ID', width: 50,hide:true}
+                        , {field: 'paperId', title: '问卷ID', width: 50,hide:true}
+                        , {field: 'couresID', title: '课程ID', width: 50,hide:true}
+                        ,{title: '操作', width: '10%', align: 'center', toolbar: '#barDemo'}
+                    ]
                 ]
-            ]
-        });
-    })
+                ,done: function(res, curr, count){
+                    $("[data-field='teacherID']").css('display','none'); //关键代码
+                    $("[data-field='paperId']").css('display','none'); //关键代码
+                    $("[data-field='couresID']").css('display','none');
+                }
+                ,where:{
+                    "gradeds":teacherID,
+                    "papersId":papersIds,
+                    "batchId":batchIds
+                }
+            });
+            table.on('tool(test)', function(obj){
+                console.log(teacherID)
+                var data = obj.data;
+                console.log(obj)
+                if(obj.event === 'detail'){
+                    var couresID = obj.data.couresID
+                    var paperId = obj.data.paperId
+                    var gradeds = teacherID
+                    console.log(gradeds     )
+                    table.render({
+                        elem: '#demo'
+                        , url: '/stats/querydetail'
+                        , page: true //开启分页
+                        , cols: [
+                            [ //表头
+                                {field: 'user_name', templet: '#xuhao', title: '姓名', width: '25%', fixed: 'left', align: 'center'}
+                                , {field: 'role_name', title: '身份', width: '25%', align: 'center'}
+                                , {field: 'fractions', title: '评价分数', width: '25%', align: 'center'}
+                                ,{title: '操作', width: '25%', align: 'center', toolbar: '#barDemo'}
+                                , {field: 'papers_id', width: 50,hide:true}
+                                , {field: 'user_id',width: 50,hide:true}
+                                , {field: 'courses_id', width: 50,hide:true}
+                            ]
+                        ]
+                        ,done: function(res, curr, count){
+                            $("[data-field='papers_id']").css('display','none'); //关键代码
+                            $("[data-field='user_id']").css('display','none'); //关键代码
+                            $("[data-field='courses_id']").css('display','none');
+                        }
+                        ,where:{
+                            "gradeds":gradeds,
+                            "courses_id":couresID,
+                            "papersId":paperId
+                        }
+                    });
+                    table.on('tool(test)', function(obj){
+                        var data = obj.data;
+                        // var batchId =   $("#batchId").find("option:selected").text();
+                        // var papersId =   $("#paperId").find("option:selected").text();
+
+                        console.log(obj)
+                        if(obj.event === 'detail'){
+
+                            var rater=obj.data.user_id
+                            var graded=teacherID
+                            var papersid=obj.data.papers_id
+                            var coursesid=obj.data.courses_id
+                            $.ajax({
+                                type:"get",
+                                url:"/stats/testList",
+                                success:function (res) {
+                                        layer.open({
+                                            type:2
+                                            ,skin:'layui-layer-rim'//加上边框
+                                            // ,maxmin: true //开启最大化最小化按钮
+                                            ,area: ["100%","100%"]
+                                            ,title: "查询成绩"
+                                            ,content:"/stats/testList"
+                                            ,success: function (layero,index) {
+                                                var body = layer.getChildFrame('body', index);
+                                                var iframe = window['layui-layer-iframe' + index];
+                                                // 向子页面的全局函数
+                                                iframe.inputDataHandle(graded,papersid,coursesid,rater);
+                                            }
+                                        })
+                                }
+                            })
+                        }
+                    });
+                }
+            });
+        })
+    }
 </script>
 </html>

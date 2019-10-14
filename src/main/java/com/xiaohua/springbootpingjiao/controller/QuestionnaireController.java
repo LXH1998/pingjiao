@@ -2,6 +2,7 @@ package com.xiaohua.springbootpingjiao.controller;
 
 
 import com.xiaohua.springbootpingjiao.entity.Papers;
+import com.xiaohua.springbootpingjiao.entity.Paperstarget;
 import com.xiaohua.springbootpingjiao.service.QuestionnaireService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -168,6 +169,8 @@ public HashMap selectQuestionnaireinBatch(String batch_id,int page, int limit){
         return result;
     }
 
+
+
 //删除问卷
     @ResponseBody
     @RequestMapping("/deletePapers")
@@ -200,7 +203,55 @@ public HashMap selectQuestionnaireinBatch(String batch_id,int page, int limit){
         result.put("data",classes);
         return result;
     }
+//查询选项
 
+    @ResponseBody
+    @RequestMapping("/selectOptions")
+    public HashMap selectOptions(String target_Id){
+        HashMap result = new HashMap();
+        List<HashMap<String,String>> classes = QuestionnaireService.selectOptions(target_Id);
+        result.put("data",classes);
+        return result;
+    }
+//通过批次和角色判断问卷是否存在
+@ResponseBody
+@RequestMapping("/selectifTarget")
+public HashMap selectifTarget(String role_id,String batch_id){
+    HashMap result = new HashMap();
+    List<HashMap<String,String>> classes = QuestionnaireService.selectQuestionnaireinBRCount(role_id,batch_id);
+    result.put("data",classes);
+    return result;
+}
+//插入问卷
+    @ResponseBody
+    @RequestMapping("/insertPapers")
+    public  boolean insertPapers(String role_Id,String  batch_Id,String papers_Name){
+        Papers c = new Papers();
+        c.setRole_Id(Integer.parseInt(role_Id));
+        c.setPapers_Name(papers_Name);
+        c.setBatch_Id(Integer.parseInt(batch_Id));
+        boolean flag = QuestionnaireService.insertPapers(c);
+        if (flag){
+            return   true;
+        }
+        return  false;
+
+    }
+    //插入指标
+    @ResponseBody
+    @RequestMapping("/insertTarget")
+    public  boolean insertTarget(String papers_Id,String  target_Id){
+        Paperstarget c = new Paperstarget();
+        c.setPapers_Id(Integer.parseInt(papers_Id));
+
+        c.setTarget_Id(Integer.parseInt(target_Id));
+        boolean flag = QuestionnaireService.insertTarget(c);
+        if (flag){
+            return   true;
+        }
+        return  false;
+
+    }
 
     @RequestMapping("Questionnaire")
     public String details(){ return "admin/Questionnaire/Questionnaire"; }

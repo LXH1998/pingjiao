@@ -1,6 +1,7 @@
 package com.xiaohua.springbootpingjiao.controller;
 
 
+import com.xiaohua.springbootpingjiao.entity.Fraction;
 import com.xiaohua.springbootpingjiao.entity.WaterPojo;
 import com.xiaohua.springbootpingjiao.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,12 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +39,14 @@ public class StatsController {
     public String goSstatsDetails(){
         return "/admin/stats/stats_details";
     }
-
+    @RequestMapping("godetailsList")
+    public String goDetailsList(){
+        return "/admin/stats/stats_details_list";
+    }
+    @RequestMapping("testList")
+    public String GoSelectOnlineEvaluation(){
+        return "/admin/stats/testList";
+    }
     /**
     * @Author xiaoyi
     * @Return
@@ -110,10 +123,8 @@ public class StatsController {
         HashMap map = new HashMap();
         if(papersId != null && papersId.length()!=0&&papersId != ""){
             map.put("papersId",papersId);
-        }else{
-            map.put("papersId","null");
         }
-        List<HashMap> list = service.queryPapersList(map);
+        List<HashMap> list = service.queryBatchsList(map);
         return  list;
     }
 
@@ -131,10 +142,8 @@ public class StatsController {
         HashMap map = new HashMap();
         if(batchId != null && batchId.length()!=0&&batchId!=""){
             map.put("batchId",batchId);
-        }else {
-            map.put("batchId","null");
         }
-        List<HashMap> list = service.queryBatchsList(map);
+        List<HashMap> list = service.queryPapersList(map);
         return  list;
     }
 
@@ -176,5 +185,74 @@ public class StatsController {
         result.put("count",count);
         result.put("data",list);
         return  result;
+    }
+
+    /**
+    * @Author xiaoyi
+    * @Return
+    * @Date 2019/10/12 9:17
+    * @param
+    * @Description 查询某老师 课程成绩
+    */
+    @ResponseBody
+    @RequestMapping("/queryTeacherScore")
+    public HashMap queryTeacherScore(String batchId,String papersId,int page,int limit,String gradeds){
+        HashMap map = hashmapB(batchId,papersId);
+        int pageing = (page-1)*limit;
+        map.put("page",Integer.toString(pageing));
+        map.put("limit",Integer.toString(limit));
+        map.put("gradeds",gradeds);
+
+        List<HashMap> teacherList = service.queryTeacherScore(map);
+
+        List<HashMap> size = service.queryTeacherScoreSize(map);
+        int count = size.size();
+        HashMap res = hashmapB(batchId,papersId);
+        HashMap map1  = new HashMap();
+        map1.put("code",0);
+        map1.put("msg","");
+        map1.put("count",count);
+        map1.put("data",teacherList);
+        return  map1;
+    }
+
+    @ResponseBody
+    @RequestMapping("/querydetail")
+    public HashMap querydetail(String batchId,String papersId,int page,int limit,int gradeds,int courses_id){
+        HashMap map = hashmapB(batchId,papersId);
+        int pageing = (page-1)*limit;
+        map.put("page",Integer.toString(pageing));
+        map.put("limit",Integer.toString(limit));
+        map.put("gradeds",gradeds);
+        map.put("courses_id",courses_id);
+        List<HashMap> teacherList = service.querydetail(map);
+
+        List<HashMap> size = service.querydetailSize(map);
+        int count = size.size();
+        HashMap res = hashmapB(batchId,papersId);
+        HashMap map1  = new HashMap();
+        map1.put("code",0);
+        map1.put("msg","");
+        map1.put("count",count);
+        map1.put("data",teacherList);
+        return  map1;
+    }
+
+    @ResponseBody
+    @RequestMapping("selectIfEvaluation")
+    public Map selectIfEvaluation(int gradeds, int papers_id, int courses_id,int rater ){
+        Map result=new HashMap();
+        List<Fraction> fractions = service.selectEvaluationAnswers(rater, gradeds, papers_id, courses_id);
+        result.put("data",fractions);
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("selectFractions")
+    public Map selectFractions(int gradeds,int papers_id,int courses_id, int rater){
+        Map result=new HashMap();
+        List<HashMap> fractions = service.selectFractions(rater, gradeds, papers_id, courses_id);
+        result.put("data",fractions);
+        return result;
     }
 }

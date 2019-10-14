@@ -1,6 +1,7 @@
 package com.xiaohua.springbootpingjiao.mapper;
 
 import com.xiaohua.springbootpingjiao.entity.Papers;
+import com.xiaohua.springbootpingjiao.entity.Paperstarget;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -29,8 +30,14 @@ public interface QuestionnaireMapper {
     List<HashMap<String, String>> selectQuestionnaireinBRCount(String role_id,String batch_id);
 
     List<HashMap<String, String>> selectTarget(String parent_Id);
-    List<HashMap<String, String>>  selectTargetzhi(String parent_Id);
 
+    List<HashMap<String, String>> selectTargetzhi(String parent_Id);
 
-  int deletePapers(Papers c);
+    List<HashMap<String, String>> selectOptions(String target_Id);
+
+    int insertPapers(Papers c);
+
+    int insertTarget(Paperstarget c);
+
+    int deletePapers(Papers c);
 }
