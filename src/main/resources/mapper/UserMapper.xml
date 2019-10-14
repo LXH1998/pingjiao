@@ -121,5 +121,10 @@
     <insert id="insertUserIdRole" parameterType="com.xiaohua.springbootpingjiao.entity.Userrole">
         INSERT INTO userrole(user_id,role_id) values(#{user_Id},#{role_ID})
     </insert>
-
+    
+    <!--查询用户是否重复-->
+    <select id="selectUserIfRepeat" resultType="HashMap">
+        select* from user
+        where user_account=#{user_account}
+    </select>
 </mapper>

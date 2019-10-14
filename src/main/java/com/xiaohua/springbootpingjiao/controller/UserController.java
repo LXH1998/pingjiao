@@ -183,4 +183,17 @@ public class UserController {
         result.put("data",users);
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping("/selectUserIfRepeat")
+    public Map selectUserIfRepeat(String user_account){
+        Map result=new HashMap();
+        List<HashMap> users = userService.selectUserIfRepeat(user_account);
+        if(users.size()>0){
+            result.put("data",1);
+        }else{
+            result.put("data",0);
+        }
+        return result;
+    }
 }
