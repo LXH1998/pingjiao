@@ -17,59 +17,59 @@
     <!---->
 
     //页面初始化
-    // $(function () {
-    //     var docHeight = $(document).height(); //获取窗口高度
-    //     var docWidth = $(document).width();
-    //     $.ajax({
-    //         type: "get",
-    //         url:'/TargetManagement/selectBatchHide',
-    //         dataType: "json",
-    //         success:function (res) {
-    //             if (res.message=="批次已开启") {
-    //
-    //
-    //                 $('body').append('<div id="overlay">批次已开启，无法进行操作</div>');
-    //                 $('#overlay')
-    //                     .height(docHeight)
-    //                     .width(docWidth)
-    //                     .css({
-    //                         'opacity': .9, //透明度
-    //                         'position': 'absolute',
-    //                         'top': 0,
-    //                         // 'left': 0,
-    //                         // 'background-color': 'red',
-    //                         'text-align':'center',
-    //                         // 'width': '100%',
-    //                         'z-index': 5000 //保证这个悬浮层位于其它内容之上
-    //                     });
-    //             }else {
-    //                 $('body').append('<div  id="firstDiv">\n' +
-    //                     '    <div id="leftDiv" style="width: 19%;height: 100%;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;overflow:auto;">\n' +
-    //                     '        <ul id="tree" class="ztree"></ul>\n' +
-    //                     '    </div>\n' +
-    //                     '    <div id="targetManagement" style="width: 81%;height: 100%; float: left;">\n' +
-    //                     '\n' +
-    //                     '    </div>\n' +
-    //                     '</div>');
-    //                 $('#firstDiv')
-    //                     .height(docHeight)
-    //                     .width(docWidth)
-    //                 initIndex();
-    //             }
-    //         }
-    //
-    //     })
-    // })
     $(function () {
-        initIndex();
         var docHeight = $(document).height(); //获取窗口高度
-        var docWidth = $(document).width(); //获取串口宽度
-        console.log("窗口高度"+docHeight);
-        console.log("窗口宽度"+docWidth);
-        $('#firstDiv')
-            .height(docHeight)
-            .width(docWidth)
+        var docWidth = $(document).width();
+        $.ajax({
+            type: "get",
+            url:'/TargetManagement/selectBatchHide',
+            dataType: "json",
+            success:function (res) {
+                if (res.message=="批次已开启") {
+
+
+                    $('body').append('<div id="overlay">批次已开启，无法进行操作</div>');
+                    $('#overlay')
+                        .height(docHeight)
+                        .width(docWidth)
+                        .css({
+                            'opacity': .9, //透明度
+                            'position': 'absolute',
+                            'top': 0,
+                            // 'left': 0,
+                            // 'background-color': 'red',
+                            'text-align':'center',
+                            // 'width': '100%',
+                            'z-index': 5000 //保证这个悬浮层位于其它内容之上
+                        });
+                }else {
+                    $('body').append('<div  id="firstDiv">\n' +
+                        '    <div id="leftDiv" style="width: 19%;height: 100%;float: left;box-sizing:border-box;border-right: #4E5465 1px solid;overflow:auto;">\n' +
+                        '        <ul id="tree" class="ztree"></ul>\n' +
+                        '    </div>\n' +
+                        '    <div id="targetManagement" style="width: 81%;height: 100%; float: left;">\n' +
+                        '\n' +
+                        '    </div>\n' +
+                        '</div>');
+                    $('#firstDiv')
+                        .height(docHeight)
+                        .width(docWidth)
+                    initIndex();
+                }
+            }
+
+        })
     })
+    // $(function () {
+    //     initIndex();
+    //     var docHeight = $(document).height(); //获取窗口高度
+    //     var docWidth = $(document).width(); //获取串口宽度
+    //     console.log("窗口高度"+docHeight);
+    //     console.log("窗口宽度"+docWidth);
+    //     $('#firstDiv')
+    //         .height(docHeight)
+    //         .width(docWidth)
+    // })
 
 
     // zTree的设置
