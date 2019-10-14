@@ -6,6 +6,11 @@ public class Paperstarget{
     private Integer paperstarget_Id;
     private Integer papers_Id;
     private Integer target_Id;
+    private  String target_allweight;
+
+    public String getTarget_allweight() { return target_allweight; }
+
+    public void setTarget_allweight(String target_allweight) { this.target_allweight = target_allweight; }
 
     public Integer getPaperstarget_Id() {
         return paperstarget_Id;
