@@ -124,9 +124,12 @@
                             ]
                         ]
                         ,done: function(res, curr, count){
+                            console.log(res.data[0].papers_name)
                             $("[data-field='papers_id']").css('display','none'); //关键代码
                             $("[data-field='user_id']").css('display','none'); //关键代码
                             $("[data-field='courses_id']").css('display','none');
+                            $("[data-field='papers_name']").css('display','none');
+                            $("#paperId").text(res.data[0].papers_name)
                         }
                         ,where:{
                             "gradeds":gradeds,

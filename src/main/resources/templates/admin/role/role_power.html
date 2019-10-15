@@ -52,38 +52,39 @@
 
     <script type="text/javascript">
         // zTree的设置
-        var setting = {
-            check:{
-                enable:true
-            },
-            data:{
-                simpleData:{
-                    enable:true
-                }
-            }
-        };
-
-        $(function () {
-            var url = '/roleManagement/checkTest'
-
-            var param = {"role_ID":roleID};
-
-            $.post(url,param,function (data) {
-            //    调用初始化方法
-                initzTree(data);
-                initialNode();
-            },"json");
-        });
-
-        function initzTree(data) {
-            // console.log(data);
-        //    初始化树
-            zTreeObj = $.fn.zTree.init($("#tree"), setting, data);
-        //    展开树的节点
-            zTreeObj.expandAll(true);
-
-            parent.powerIds = submitCheckedNode;
-        }
+        // var setting = {
+        //     check:{
+        //         enable:true
+        //     },
+        //     data:{
+        //         simpleData:{
+        //             enable:true
+        //         }
+        //     }
+        // };
+        //
+        // $(function () {
+        //     var url = '/roleManagement/checkTest'
+        //
+        //     var param = {"role_ID":roleID};
+        //     console.log(roleID)
+        //
+        //     $.post(url,param,function (data) {
+        //     //    调用初始化方法
+        //         initzTree(data);
+        //         initialNode();
+        //     },"json");
+        // });
+        //
+        // function initzTree(data) {
+        //     // console.log(data);
+        // //    初始化树
+        //     zTreeObj = $.fn.zTree.init($("#tree"), setting, data);
+        // //    展开树的节点
+        //     zTreeObj.expandAll(true);
+        //
+        //     parent.powerIds = submitCheckedNode;
+        // }
     </script>
 </head>
 <body>
@@ -151,6 +152,40 @@
     function child(obj){
         // console.log(obj);
         roleID=obj.role_ID;
+        console.log(roleID)
+        var setting = {
+            check:{
+                enable:true
+            },
+            data:{
+                simpleData:{
+                    enable:true
+                }
+            }
+        };
+
+        $(function () {
+            var url = '/roleManagement/checkTest'
+
+            var param = {"role_ID":roleID};
+            console.log(roleID)
+
+            $.post(url,param,function (data) {
+                //    调用初始化方法
+                initzTree(data);
+                initialNode();
+            },"json");
+        });
+
+        function initzTree(data) {
+            // console.log(data);
+            //    初始化树
+            zTreeObj = $.fn.zTree.init($("#tree"), setting, data);
+            //    展开树的节点
+            zTreeObj.expandAll(true);
+
+            parent.powerIds = submitCheckedNode;
+        }
         // roleName=obj.role_Name;
 
     };

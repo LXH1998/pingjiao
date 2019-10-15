@@ -68,7 +68,7 @@ public class OnlineEvaluationController {
             int options_id = Integer.parseInt(options);
             int target_id = Integer.parseInt(targets_id);
             FractionSum fractionSum = new FractionSum();
-            List<FractionSum> fractions = onlineEvaluationService.OnlineEvaluationFraction(options_id,target_id);
+            List<FractionSum> fractions = onlineEvaluationService.OnlineEvaluationFraction(options_id,target_id,papers_id);
             sum = sum + fractions.get(0).getFraction();
         }
         String fractions = String.valueOf(sum);
