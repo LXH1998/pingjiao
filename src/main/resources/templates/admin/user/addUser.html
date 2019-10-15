@@ -138,7 +138,11 @@
         //选择院系，得到班级
         form.on('select(quiz2)', function(data) {
             $('#quiz3').empty()
+            $('#quiz3').append(` <option value="">请选择班级</option>`)
             var departments_id = data.value
+            if(departments_id==""){
+                departments_id=0
+            }
             $.ajax({
                 url: '/userAdministration/selectAllClass',
                 dataType: 'json',

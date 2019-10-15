@@ -66,6 +66,7 @@
 
 <script>
 var banji_id
+var yuanxi_id
     $(function () {
         $("#id").bind("input propertychange", function () {
             //  $(this).text()
@@ -96,6 +97,7 @@ var banji_id
             , table = layui.table;
         form.on('select(xueyuan)', function(data){
             $('#banji').empty()
+            $('#banji').append('  <option value="">请选择班级</option>')
             var departments_id=data.value
             if (departments_id=="") {
                 departments_id=0
@@ -147,13 +149,26 @@ var banji_id
     });
     $("#tj").click(function () {
         banji_id =$("#banji").val()
+        yuanxi_id=$("#xueyuan").val()
         console.log(banji_id)
          if (banji_id==undefined||banji_id==""){
                   console.log("kong")
             }else {
-                 var a=parent.duoxuan
+             var a=JSON.parse(parent.duoxuan)
              for (keys in a) {
-                 
+               console.log(a[keys])
+                 $.ajax({
+                     url:'/userAdministration/updateUserClass',
+                     type:'get',
+                     dataType:'json',
+                     data:{user_Name:a[keys].user_name,user_Account:a[keys].user_account,user_Sex:a[keys].user_sex,departments_Id:yuanxi_id,class_Id:banji_id,user_Id:a[keys].user_id},
+                     success:function (e) {
+                         console.log(e)
+                         var index = parent.layer.getFrameIndex(window.name); //获取当前窗口的name
+                         parent.layer.close(index);		//关闭窗口
+                         parent.layer.msg('修改成功',{icon:1})
+                     }
+                 })
              }
          }
 

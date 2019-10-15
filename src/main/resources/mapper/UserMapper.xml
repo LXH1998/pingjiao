@@ -90,6 +90,14 @@
                         departments_id=#{departments_Id},class_id=#{class_Id}
         where user_id=#{user_Id}
     </update>
+
+    <!--批次转移班级-->
+    <update id="updateUserClass" parameterType="com.xiaohua.springbootpingjiao.entity.User">
+        update user set user_name=#{user_Name},user_account=#{user_Account},user_sex=#{user_Sex},
+                        departments_id=#{departments_Id},class_id=#{class_Id}
+        where user_id=#{user_Id}
+    </update>
+
     <update id="updateUserRole" parameterType="com.xiaohua.springbootpingjiao.entity.Userrole">
         update userrole set role_id=#{role_Id} where user_id=#{user_Id}
     </update>

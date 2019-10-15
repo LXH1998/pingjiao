@@ -159,6 +159,18 @@ public class UserController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping("updateUserClass")
+    public Map updateUserInformationRole(String user_Name, String user_Account, String user_Sex,
+                                         int departments_Id, int class_Id, int user_Id) {
+        Map result = new HashMap();
+        if(userService.updateUserInformation(user_Name,user_Account,user_Sex,departments_Id,class_Id,user_Id)){
+            result.put("data",1);
+        }else{
+            result.put("data",0);
+        }
+        return result;
+    }
 
     @RequestMapping("goUserInterface")
     public String GoUserInterface(){
