@@ -37,6 +37,7 @@ public class OnlineEvaluationServiceImpl implements OnlineEvaluationService {
             v.stream().forEach(item->{
                 Map<String, Object> omap = new LinkedHashMap<>();
                 tmap.put("target_name", item.getTarget_Name());
+                tmap.put("target_weight", item.getTarget_Weight());
 
                 omap.put("options_id", item.getOptions_Id());
                 omap.put("options_content", item.getOptions_Content());
@@ -80,8 +81,8 @@ public class OnlineEvaluationServiceImpl implements OnlineEvaluationService {
     }
 
     @Override
-    public List<FractionSum> OnlineEvaluationFraction(int options_id,int target_id) {
-        return onlineEvaluationMapper.OnlineEvaluationFraction(options_id,target_id);
+    public List<FractionSum> OnlineEvaluationFraction(int options_id,int target_id,int papers_id) {
+        return onlineEvaluationMapper.OnlineEvaluationFraction(options_id,target_id,papers_id);
     }
 
     @Override

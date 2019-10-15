@@ -33,6 +33,11 @@ public class SelectOnlineEvaluationController {
         return "/admin/evaluation/selectOnlineEvaluation";
     }
 
+    @RequestMapping("GoSelectOnlineHistoryEvaluation")
+    public String GoSelectOnlineHistoryEvaluation(){
+        return "/admin/evaluation/selectOnlineHistoryEvaluation";
+    }
+
     @ResponseBody
     @RequestMapping("selectIfEvaluation")
     public Map selectIfEvaluation(int gradeds, int papers_id, int courses_id){

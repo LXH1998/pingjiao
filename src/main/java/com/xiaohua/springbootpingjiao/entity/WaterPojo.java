@@ -10,7 +10,7 @@ public class WaterPojo {
     /**流水表ID*/
     Integer fraction_id;
     /**评价得分*/
-    Integer fractions;
+    double fractions;
     /**评价者角色名称*/
     String role_name;
     /**被评价人ID*/
@@ -31,11 +31,12 @@ public class WaterPojo {
         this.fraction_id = fraction_id;
     }
 
-    public Integer getFractions() {
+
+    public double getFractions() {
         return fractions;
     }
 
-    public void setFractions(Integer fractions) {
+    public void setFractions(double fractions) {
         this.fractions = fractions;
     }
 

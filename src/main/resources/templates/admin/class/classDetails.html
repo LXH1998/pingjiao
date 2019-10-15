@@ -9,14 +9,155 @@
 
 </head>
 <style>
+    html::-webkit-scrollbar {
+
+        display: none
+    }
+
+    .biaoti{
+        text-align: center;
+        height: 40px;
+        font-size: 28px;
+        color: #009688;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
 
 </style>
 <body>
-<
+<!--<div class="biaoti">新增班级</div>-->
+<form class="layui-form" action="" style="width: 400px;">
+
+    <div style="height: 20px;"></div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" >学　　院:</label>
+        <div>
+            <div class="layui-inline" style="width: 250px; " id="c">
+                <select name="quiz2" id="xueyuan" lay-filter="xueyuan" lay-search>
+                    <option value="">请选择学院</option>
+
+                </select>
+            </div>
+
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" >班　　级:</label>
+        <div>
+            <div class="layui-inline" style="width: 250px; " >
+                <select name="quiz2" id="banji" lay-filter="banji" lay-search>
+                    <option value="">请选择班级</option>
+
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <div style="text-align: center;margin-top: 40px;">
+        <button type="button" class="layui-btn" style="margin-left: 40px" id="tj">修改</button>
+        <button type="button" class="layui-btn layui-btn-warm"style="margin-left: 40px" id="quxiao">取消</button>
+    </div>
+
+
+</form>
+
 </body>
 
 <script>
+var banji_id
+    $(function () {
+        $("#id").bind("input propertychange", function () {
+            //  $(this).text()
+            //  console.log($(this).val())
+            $.ajax({
+                url:"/class/classhave",
+                dataType: 'json',
+                type: 'get',
+                data:{class_Id:$(this).val()},
+                success:function (e) {
+                    if (e==true) {
+                        $("#id_ok").css("color","forestgreen")
+                        $("#id_ok").html("&#x1005;")
+                    }else {
+                        $("#id_ok").html("&#x1007;")
+                        $("#id_ok").css("color","red")
+                    }
 
+                }
+            })
+        })
+    })
+    layui.use(['form', 'layedit', 'laydate','table'], function() {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate
+            , table = layui.table;
+        form.on('select(xueyuan)', function(data){
+            $('#banji').empty()
+            var departments_id=data.value
+            if (departments_id=="") {
+                departments_id=0
+            }
+            $.ajax({
+                url: '/userAdministration/selectAllClass',
+                dataType: 'json',
+                type: 'get',
+                data:{departments_Id:departments_id},
+                success: function (data) {
+                    $.each(data.data, function (index,item) {
+                        $('#banji').append(new Option(item.class_id,item.class_id));// 下拉菜单里添加元素
+                    });
+                    // $("#quiz3 option[value='"+class_id+"']").prop("selected",true);
+                    layui.form.render("select");
+                    form.on('select(banji)', function(data){
+                        banji_id=data.value
+                        console.log(data); //得到被选中的值
+                    });
+                }
+            })
+
+            console.log(data); //得到被选中的值
+        });
+        var index = parent.layer.getFrameIndex(window.name);
+        $('#quxiao').click(function(){
+            // var val = $('#name').val();
+            // if(val === ''){
+            //     parent.layer.msg('请填写标记');
+            //     return;
+            // }
+            // parent.layer.msg('您将标记 [ ' +val + ' ] 成功传送给了父窗口');
+            parent.layer.close(index);
+        });
+    });
+    layui.use(['form', 'upload', 'layer'], function () {
+        $.ajax({
+            url: '/class/queryDepartments',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+                console.log(data)
+                $.each(data.data, function (index,item) {
+                    $('#xueyuan').append(new Option(item.departments_Name,item.departments_Id));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+    });
+    $("#tj").click(function () {
+        banji_id =$("#banji").val()
+        console.log(banji_id)
+         if (banji_id==undefined||banji_id==""){
+                  console.log("kong")
+            }else {
+                 var a=parent.duoxuan
+             for (keys in a) {
+                 
+             }
+         }
+
+    })
 
 </script>
 </html>

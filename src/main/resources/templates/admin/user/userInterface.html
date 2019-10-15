@@ -124,7 +124,8 @@
                     // layer.close(index);
                 });
 
-            } else if(obj.event === 'del'){//删除用户
+            }
+            else if(obj.event === 'del'){//删除用户
                 layer.confirm('真的删除该用户嘛', function(index){
                     $.ajax({
                         url:"/userAdministration/updateUserState",
@@ -161,7 +162,8 @@
                         }
                     })
                 });
-            } else if(obj.event === 'edit'){
+            }
+            else if(obj.event === 'edit'){
                 var user_account = $('#user_account');
                 var role_name = $('#role_name');
                 layer.open({
@@ -182,7 +184,7 @@
                         console.log(role_name.val());
 
                         if(user_account.val()==""&&role_name.val()==""){
-                            layer.msg('修改成功',{icon:1})
+                           // layer.msg('修改成功',{icon:1})
                             table.reload("idTest",{
                                 page: {
                                     curr: 1 //重新从第 1 页开始
@@ -191,7 +193,7 @@
 
                             });
                         }else {
-                            layer.msg('修改成功',{icon:1})
+                           // layer.msg('修改成功',{icon:1})
                             table.reload("idTest",{
                                 page: {
                                     curr: 1 //重新从第 1 页开始

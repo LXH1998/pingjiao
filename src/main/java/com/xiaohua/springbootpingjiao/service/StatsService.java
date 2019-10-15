@@ -54,4 +54,6 @@ public interface StatsService {
     List<HashMap> querydetailSize(HashMap map);
     List<Fraction> selectEvaluationAnswers(int rater, int gradeds, int papers_id, int courses_id);
     List<HashMap> selectFractions(int rater, int gradeds, int papers_id, int courses_id);
+
+    List<HashMap> queryBaticNameList(String batch_id);
 }

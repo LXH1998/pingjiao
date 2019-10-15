@@ -51,6 +51,9 @@ public class StatsServiceImpl  implements StatsService {
     */
     @Override
     public int statisticalFraction(List<WaterPojo> list,String batchId) {
+        if(list.size()==0){
+            return  0;
+        }
         HashMap mapOne = new HashMap();
         mapOne.put("batchId",batchId);
         double studentFraction = 0;
@@ -91,13 +94,13 @@ public class StatsServiceImpl  implements StatsService {
                         teacherFraction = teacherFraction + demo.getFractions();
                     }
                     int f = list.size();
-                    num = (studentFraction*0.4/stuSize+teacherFraction*0.6/teaSize);
+                    num = (studentFraction*0.4/stuSize+teacherFraction*0.6/teaSize)*100;
                     Scores scores = new Scores();
                     Object teacherId = map.get("gradeds");
                     scores.setGradeds_Id(Integer.parseInt(teacherId.toString()));
                     scores.setPapers_id(papersId);
-                    scores.setStudents_sum((studentFraction*0.4)/stuSize);
-                    scores.setTeahcer_sum((teacherFraction*0.6)/teaSize);
+                    scores.setStudents_sum((studentFraction*0.4)/stuSize*100);
+                    scores.setTeahcer_sum((teacherFraction*0.6)/teaSize*100);
                     scores.setBatch_id(Integer.parseInt(batchId));
                     num = (double) Math.round(num * 100) / 100;
                     scores.setScores_Sum(num);
@@ -285,9 +288,9 @@ public class StatsServiceImpl  implements StatsService {
                 }
             HashMap map1 = new HashMap();
             double score  = studentFraction*0.4/stuSize+teacherFraction*0.6/teaSize;
-            map1.put("studentScore",(double) Math.round(studentFraction/stuSize * 100) / 100);
-            map1.put("teacherScore",(double) Math.round(teacherFraction/teaSize * 100) / 100);
-            map1.put("score",(double) Math.round(score * 100) / 100);
+            map1.put("studentScore",(double) Math.round(studentFraction*0.4/stuSize*100 * 100) / 100);
+            map1.put("teacherScore",(double) Math.round(teacherFraction*0.6/teaSize*100 * 100) / 100);
+            map1.put("score",(double) Math.round(score*100 * 100) / 100);
             map1.put("teacherID",teacherID);
             map1.put("teacherName",teacherName);
             map1.put("couresName",couresName);
@@ -329,6 +332,11 @@ public class StatsServiceImpl  implements StatsService {
     @Override
     public List<HashMap> selectFractions(int rater, int gradeds, int papers_id, int courses_id) {
         return statsMapper.selectFractions(rater, gradeds, papers_id, courses_id);
+    }
+
+    @Override
+    public List<HashMap> queryBaticNameList(String batch_id) {
+        return statsMapper.queryBaticNameList(batch_id);
     }
 }
 

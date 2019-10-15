@@ -76,10 +76,10 @@ WHERE class.class_id like concat('%',#{class_Id},'%') and  class.class_amount=1 
 
     <!--按班级查找学生-->
     <select id="selectUserinClass" resultType="HashMap">
-    select user.user_name,user.user_sex,user.user_account from
+    select user.user_name,user.user_sex,user.user_account,user.user_id from
           (user left join userrole on user.user_id=userrole.user_id )left join role
                          on userrole.role_id=role.role_id
-                   where role.role_id=7 and user.class_id=#{class_Id}
+                   where role.role_name='学生' and user.class_id=#{class_Id} and user.user_state=1
 </select>
 
 <!--删除班级-->
