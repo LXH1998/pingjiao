@@ -51,6 +51,9 @@ public class StatsServiceImpl  implements StatsService {
     */
     @Override
     public int statisticalFraction(List<WaterPojo> list,String batchId) {
+        if(list.size()==0){
+            return  0;
+        }
         HashMap mapOne = new HashMap();
         mapOne.put("batchId",batchId);
         double studentFraction = 0;
