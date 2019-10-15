@@ -5,11 +5,17 @@ import com.xiaohua.springbootpingjiao.entity.Class;
 import com.xiaohua.springbootpingjiao.service.BatchService;
 import com.xiaohua.springbootpingjiao.service.ClassService;
 import com.xiaohua.springbootpingjiao.service.CourseService;
+import com.xiaohua.springbootpingjiao.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +82,7 @@ public class BatchController {
         }
         return result;
     }
-    //修改批次状态为关闭
+    //修改批次状态为开启
     @ResponseBody
     @RequestMapping("/modifyOpenBatch")
     public Map ModifyOpenBatch(int batch_Id)
@@ -104,7 +110,8 @@ public class BatchController {
         }
         return result;
     }
-
+    @Autowired
+    private StatsService service;
     //修改批次状态为关闭
     @ResponseBody
     @RequestMapping("/modifyEndBatch")
@@ -128,6 +135,7 @@ public class BatchController {
         {
             int batchIf = batchService.ModifyEndBatch(batch_Id);;//修改状态量
             if(batchIf == 1){
+                service.clearUpFraction(Integer.toString(batch_Id));
                 result.put("result","1");
             }else {
                 result.put("result","2");

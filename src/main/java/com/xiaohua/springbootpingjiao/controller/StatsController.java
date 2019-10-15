@@ -9,10 +9,14 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +59,7 @@ public class StatsController {
     */
     @ResponseBody
     @RequestMapping("cc")
-    public List<WaterPojo> ccc(String batchId){
+    public List<WaterPojo> ccc(){
         List<WaterPojo> list =  service.clearUpFraction("1");
         return list;
     }

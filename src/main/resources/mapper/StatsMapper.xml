@@ -172,7 +172,7 @@
         *
         FROM
         scores
-        WHERE scores_sum >90
+        WHERE scores_sum >0.9
         <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
         <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
@@ -183,7 +183,7 @@
         *
         FROM
         scores
-        WHERE scores_sum BETWEEN 60 and 90
+        WHERE scores_sum BETWEEN 0.6 and 0.9
         <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
         <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
@@ -194,7 +194,7 @@
         *
         FROM
         scores
-        WHERE scores_sum &lt;60
+        WHERE scores_sum &lt;0.6
         <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
         <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
@@ -430,7 +430,7 @@
     <!--计算分数-->
     <select id="selectFractions" resultType="HashMap">
     SELECT
-      f.`fractions` AS fractions
+      f.`fractions`*100 AS fractions
     FROM
       fraction f
     WHERE f.papers_id = #{papers_id}
