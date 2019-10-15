@@ -143,7 +143,6 @@ public class PowerServiceImpl  implements PowerService {
             }
             result.add(map);
         });
-
         return result;
     }
     /**

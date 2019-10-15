@@ -41,11 +41,11 @@
         <legend>班级人员</legend>
     </fieldset>
 
-    <!--<div class="layui-btn-group demoTable">-->
-        <!--<button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+    <div class="layui-btn-group demoTable">
+        <button class="layui-btn-danger layui-btn layui-btn-sm" data-type="getCheckData" >批量操作</button>
         <!--<button class="layui-btn" data-type="getCheckLength">获取选中数目</button>-->
         <!--<button class="layui-btn" data-type="isAll">验证是否全选</button>-->
-    <!--</div>-->
+    </div>
 
         <table id="a" class="layui-table" lay-data="{ url:'/class/userinclass', page:false , id:'idTest'}" lay-filter="demo">
         <thead>
@@ -59,11 +59,11 @@
         </thead>
     </table>
 
-    <!--<script type="text/html" id="barDemo">-->
-        <!--<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
-        <!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
-        <!--<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
-    <!--</script>-->
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
 
 
 
@@ -72,6 +72,7 @@
 
 </body>
 <script>
+    var duoxuan
     $(function () {
         $("#class_id").text(parent.classid)
         $("#class_name").text(parent.classname)
@@ -127,14 +128,60 @@
             var data = obj.data;
             if(obj.event === 'detail'){
               console.log(data)
-            } else if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
-                    obj.del();
-                    layer.close(index);
-                });
-            } else if(obj.event === 'edit'){
-                console.log(data)
+            }   else if(obj.event === 'del'){//删除用户
+                layer.confirm('真的删除该用户嘛', function(index){
+                    $.ajax({
+                        url:"/userAdministration/updateUserState",
+                        type:"get",
+                        data:{user_Id:data.user_id},
+                        success:function (res) {
+                            var user_account = $('#user_account');
+                            var role_name = $('#role_name');
+                            if(res.data == 1){
+                                    layer.msg('删除成功',{icon:1})
+                                    table.reload("idTest",{
+                                        page: {
+                                            curr: 1 //重新从第 1 页开始
+                                        }
+                                        ,url:"/class/userinclass"
 
+                                    });
+
+                            }
+                        }
+                    })
+                });
+            }
+            else if(obj.event === 'edit'){
+                var user_account = $('#user_account');
+                var role_name = $('#role_name');
+                layer.open({
+                    type:2
+                    ,skin:'layui-layer-rim'//加上边框
+                    ,maxmin: true //开启最大化最小化按钮
+                    ,area: ["500px","500px"]
+                    ,title: "修改用户信息"
+                    ,content:"/userAdministration/GoUpdateUser"
+                    ,success: function (layero,index) {
+                        var body = layer.getChildFrame('body', index);
+                        var iframe = window['layui-layer-iframe' + index];
+                        // 向子页面的全局函数
+                        iframe.inputDataHandle(obj);
+                    },
+                    end:function () {
+                        //console.log(user_account.val())
+                        //console.log(role_name.val());
+
+                            table.reload("idTest",{
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                }
+                                ,url:"/class/userinclass"
+
+                            });
+
+                    }
+                })
             }
         });
 
@@ -142,7 +189,22 @@
             getCheckData: function(){ //获取选中数据
                 var checkStatus = table.checkStatus('idTest')
                     ,data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
+              duoxuan = JSON.stringify(data)
+                console.log(duoxuan)
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['33em', '25em'],
+                    shade: 0.3,
+                    closeBtn: 2,
+                    shadeClose: false,
+                    offset: '100px',
+                    title:'更改班级',
+                    anim: 1,
+                    resize:true,
+                    // time:timee,
+                    content: '/class/classDetails',
+                });
             }
             ,getCheckLength: function(){ //获取选中数目
                 var checkStatus = table.checkStatus('idTest')
