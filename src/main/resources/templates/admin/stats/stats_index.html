@@ -204,7 +204,7 @@
                    temp.animate({count: value}, {
                        duration: 2000,
                        step: function () {
-                           temp.text(String(parseInt(this.count)));
+                           temp.text(Math.round(this.count));
                        }
                    });
                }
