@@ -45,7 +45,7 @@
         float: left;
     }
     #rightDiv{
-        width: 675px;
+        width: 680px;
         height:450px;
         float: right;
     }
@@ -500,14 +500,15 @@
                            }
                            , cols: [
                                [ //表头
-                                   { title: '题号', toolbar: '#indexTpl',type:'numbers',width: '8%' , sort: true}
-                                   , {field: 'gradeds', title: 'ID', width: 50,hide:true}
-                                   , {field: 'papers_id', title: '试卷编号',width: 50,hide:true}
-                                   , {field: 'user_name',  title: '姓名', width: '20%', align: 'center'}
-                                   , {field: 'teahcer_sum', title: '教师评价总分', width: '20%', align: 'center', sort: true}
-                                   , {field: 'students_sum', title: '学生评价总分', width: '20%', align: 'center', sort: true}
-                                   , {field: 'scores_sum', title: '总分数', width: '20%', align: 'center', sort: true}
-                                   , {title: '操作', width: '12%', align: 'center', toolbar: '#barDemo'}
+                                   { title: '题号', toolbar: '#indexTpl',type:'numbers',width: '7%' , sort: true}
+                                   , {field: 'papers_name', title: '问卷名称', width: '19%', align: 'center'}
+                                   , {field: 'user_name',  title: '姓名', width: '13%', align: 'center'}
+                                   , {field: 'teahcer_sum', title: '教师评价总分', width: '18%', align: 'center', sort: true}
+                                   , {field: 'students_sum', title: '学生评价总分', width: '18%', align: 'center', sort: true}
+                                   , {field: 'scores_sum', title: '总分', width: '14%', align: 'center', sort: true}
+                                   , {title: '操作', width: '11%', align: 'center', toolbar: '#barDemo',minWidth: 400}
+                                   , {field: 'gradeds', title: 'ID',hide:true}
+                                   , {field: 'papers_id', title: '试卷编号',hide:true}
                                ]
                            ]
                            ,done: function(res, curr, count){
@@ -533,6 +534,7 @@
                                        var body = layer.getChildFrame('body', index);
                                        var iframeWin = window[layero.find('iframe')[0]['name']];
                                        console.log(body.find("#batchId"))
+                                       console.log(obj)
                                        if(papersId == "选择问卷" ){
                                                body.find("#paperId").text("历年来所有问卷")
                                        } else{
@@ -622,6 +624,7 @@
                     }
                     layui.form.render("select");
                     functionD()
+                    $("#batchIdFlage").text("");
                 }
             })
         }

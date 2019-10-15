@@ -265,7 +265,7 @@
 <!--  查询成绩  -->
     <select id="querySocore" parameterType="hashmap" resultType="hashmap" >
         SELECT
-        s.`scores_id`,s.`scores_sum`,u.`user_name`, s.`students_sum`, s.`teahcer_sum`,s.`gradeds`,s.`papers_id`
+        s.`scores_id`,s.`scores_sum`,u.`user_name`, s.`students_sum`, s.`teahcer_sum`,s.`gradeds`,s.`papers_id`, p.`papers_name`
         FROM
         scores s
         LEFT JOIN batch b
@@ -309,7 +309,8 @@
       c.`courses_name`,
       r.`role_name`,
       f.`papers_id`,
-      b.`batch_id`
+      b.`batch_id`,
+      p.`papers_name`
     FROM
       fraction f
       LEFT JOIN USER u
@@ -378,7 +379,8 @@
       uu.`user_name`,
       f.`fractions`,
       f.`papers_id`,
-      f.`courses_id`
+      f.`courses_id`,
+      p.`papers_name`
     FROM
       fraction f
       LEFT JOIN USER u
@@ -389,6 +391,8 @@
       ON ur.`user_id` = u.`user_id`
       LEFT JOIN role r
       ON r.`role_id` = ur.`role_id`
+      LEFT JOIN papers p
+      ON p.`papers_id` = f.`papers_id`
     WHERE f.`gradeds` = #{gradeds}
         AND f.`courses_id` = #{courses_id}
         <if test=" batchId != null ">AND f.batch_Id=#{batchId}</if>
