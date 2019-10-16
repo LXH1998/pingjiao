@@ -122,38 +122,60 @@
                 contexts = "维护";
                 state=2;
             }
-            layer.open({
-                content: '你确定要修改权限状态'
-                , btn: ['确定', '取消']
-                , yes: function (index, layero) {
-                    data.elem.checked = x;
-                    $.ajax({
-                        type: "post"
-                        ,url: "/powerBoot/updatePowerState"
-                        ,data: {
-                            "power_id": power_Id,
-                            "state":state
-                        }
-                        ,success:function (res) {
-                            console.log(res)
-                            reload();
-                        }
-                    })
-                    layer.close(index);
-                }
-                , btn2: function (index, layero) {
-                    //按钮【按钮二】的回调
-                    data.elem.checked = !x;
-                    reload();
-                    layer.close(index);
-                }
-                , cancel: function () {
-                    //右上角关闭回调
-                    data.elem.checked = !x;
-                    reload();
-                    //return false 开启该代码可禁止点击该按钮关闭
-                }
-            })
+            console.log(power_Id)
+            console.log(this)
+            if (power_Id!=5){
+                layer.open({
+                    content: '你确定要修改权限状态'
+                    , btn: ['确定', '取消']
+                    , yes: function (index, layero) {
+                        data.elem.checked = x;
+                        $.ajax({
+                            type: "post"
+                            ,url: "/powerBoot/updatePowerState"
+                            ,data: {
+                                "power_id": power_Id,
+                                "state":state
+                            }
+                            ,success:function (res) {
+                                console.log(res)
+                                reload();
+                            }
+                        })
+                        layer.close(index);
+                    }
+                    , btn2: function (index, layero) {
+                        //按钮【按钮二】的回调
+                        data.elem.checked = !x;
+                        reload();
+                        layer.close(index);
+                    }
+                    , cancel: function () {
+                        //右上角关闭回调
+                        data.elem.checked = !x;
+                        reload();
+                        //return false 开启该代码可禁止点击该按钮关闭
+                    }
+                })
+            } else {
+                layer.open({
+                    content: '此功能不可关闭'
+                    , btn: ['确定']
+                    ,title:"警告"
+                    , yes: function (index, layero) {
+                        //按钮【按钮二】的回调
+                        data.elem.checked = !x;
+                        reload();
+                        layer.close(index);
+                    }
+                    , cancel: function () {
+                        //右上角关闭回调
+                        data.elem.checked = !x;
+                        reload();
+                        //return false 开启该代码可禁止点击该按钮关闭
+                    }
+                })
+            }
         })
 
         treeGrid.on('tool(treeTable)',function (obj) {
