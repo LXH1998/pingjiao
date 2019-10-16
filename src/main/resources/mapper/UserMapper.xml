@@ -17,8 +17,10 @@
     <select id="selectAllUser" resultType="HashMap">
         select * from user u left join departments d
           on u.departments_id=d.departments_id left join class c
-            on c.class_id=u.class_id
-        where u.user_state = 1 limit #{pages},#{limit}
+            on c.class_id=u.class_id left join userrole ur
+              on u.user_id=ur.user_id left join role r
+                on r.role_id=ur.role_id
+        where u.user_state = 1 and r.role_name!="管理员" limit #{pages},#{limit}
     </select>
     <!--left join userrole ur-->
     <!--on u.user_id=ur.user_id left join role r-->
@@ -26,7 +28,12 @@
 
     <!--所有用户的总数-->
     <select id="selectCount" resultType="HashMap">
-        select * from user u  where u.user_state = 1
+        select * from user u
+          left join userrole ur
+            on u.user_id=ur.user_id left join role r
+              on r.role_id=ur.role_id
+        where u.user_state = 1 and r.role_name!="管理员"
+
     </select>
 
     <!--初始化密码-->
@@ -50,7 +57,7 @@
             on u.user_id=ur.user_id left join role r
               on r.role_id=ur.role_id left join class c
                 on c.class_id=u.class_id
-        where u.user_state = 1
+        where u.user_state = 1 and r.role_name!="管理员"
           and u.user_account LIKE  concat('%',#{user_Account},'%')
           and r.role_name LIKE  concat('%',#{role_name},'%')
         group by u.user_id limit #{pages},#{limit}
@@ -62,14 +69,14 @@
     on u.user_id=ur.user_id left join role r
     on r.role_id=ur.role_id left join class c
     on c.class_id=u.class_id
-    where u.user_state = 1
+    where u.user_state = 1 and r.role_name!="管理员"
     and u.user_account LIKE  concat('%',#{user_Account},'%')
     and r.role_name LIKE  concat('%',#{role_name},'%')
     </select>
 
     <!--查询所有角色-->
     <select id="selectAllRole" resultType="com.xiaohua.springbootpingjiao.entity.Role">
-        select * from role
+        select * from role r where r.role_name!="管理员"
     </select>
 
     <!--查询所有院系-->

@@ -202,25 +202,65 @@
 
             console.log(update_role)
 
+            var role_name = $("#userRole input:checkbox:checked").map(function (index, elem) {
+                return $(elem).attr('title');
+            }).get().join(',');
 
-            $.ajax({
-                url:"/userAdministration/insertUserInformationRole",
-                type:"get",
-                data:{
-                    user_Name:update_name,
-                    user_Account:update_account,
-                    user_Sex:update_sex,
-                    departments_Id:update_departments,
-                    class_Id:update_class,
-                    role_Id:update_role
-                },
-                success:function (res) {
-                    if (res.data == 1){
-                        var index = parent.layer.getFrameIndex(window.name)
-                        parent.layer.close(index)
+            if(role_name.search("学生") != -1){
+                if(update_class=="") {
+                    layer.msg("请选择班级", {icon: 2})
+                }else {
+                    if(update_name==""||update_account==""||update_sex==""||update_departments==""||role_name==""){
+                        layer.msg("请填写完整信息",{icon:2})
+                    }else{
+                        $.ajax({
+                            url:"/userAdministration/insertUserInformationRole",
+                            type:"get",
+                            data:{
+                                user_Name:update_name,
+                                user_Account:update_account,
+                                user_Sex:update_sex,
+                                departments_Id:update_departments,
+                                class_Id:update_class,
+                                role_Id:update_role
+                            },
+                            success:function (res) {
+                                if (res.data == 1){
+                                    var index = parent.layer.getFrameIndex(window.name)
+                                    parent.layer.close(index)
+                                }
+                            }
+                        })
                     }
                 }
-            })
+            }else{
+                if(update_name==""||update_account==""||update_sex==""||update_departments==""||role_name==""){
+                        layer.msg("请填写完整信息",{icon:2})
+                }else{
+                        $.ajax({
+                            url:"/userAdministration/insertUserInformationRole",
+                            type:"get",
+                            data:{
+                                user_Name:update_name,
+                                user_Account:update_account,
+                                user_Sex:update_sex,
+                                departments_Id:update_departments,
+                                class_Id:update_class,
+                                role_Id:update_role
+                            },
+                            success:function (res) {
+                                if (res.data == 1){
+                                    var index = parent.layer.getFrameIndex(window.name)
+                                    parent.layer.close(index)
+                                }
+                            }
+                        })
+                }
+            }
+
+
+
+
 
         })
 
