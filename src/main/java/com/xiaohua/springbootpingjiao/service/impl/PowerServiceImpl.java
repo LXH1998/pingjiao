@@ -231,7 +231,10 @@ public class PowerServiceImpl  implements PowerService {
         return powerMapper.updaePower(power);
     }
 
-
+    @Override
+    public List<Power> selectDD(Power p) {
+        return powerMapper.selectDD(p);
+    }
     /**
     * @Author xiaoyi
     * @Return
