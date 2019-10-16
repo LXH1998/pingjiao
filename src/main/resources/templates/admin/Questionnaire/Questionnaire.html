@@ -149,7 +149,7 @@ var batch_id
         });
 //下拉监听
         form.on('select(college)', function(data){
-            console.log("点击批次")
+         //   console.log("点击批次")
             batch_id=data.value
             if (role_id==""||role_id==undefined) {
 
@@ -260,32 +260,39 @@ var batch_id
 
         //监听行工具事件
         table.on('tool(test)', function(obj){
-            console.log(obj)
+          //  console.log(obj)
             var data = obj.data;
-            console.log(data)
-            console.log(data.papers_id)
+          //  console.log(data)
+          //  console.log(data.papers_id)
             if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
-                    $.ajax({
-                        type: "get",
-                        url:"/Questionnaire/deletePapers",
-                        data:{papers_Id:data.papers_id},
-                        success:function (e) {
-                            if (e==true) {
-                                obj.del();
-                                layer.close(index);
-                                layer.msg('删除成功', {icon: 1});
-                            }else {
+                console.log(data.batch_hide)
+                if (data.batch_hide!="结束") {
+                    layer.msg('批次未结束', {icon: 2});
+                }else {
+                    layer.confirm('真的删除行么', function(index){
+                        console.log(data)
+                        $.ajax({
+                            type: "get",
+                            url:"/Questionnaire/deletePapers",
+                            data:{papers_Id:data.papers_id},
+                            success:function (e) {
+                                if (e==true) {
+                                    obj.del();
+                                    layer.close(index);
+                                    layer.msg('删除成功', {icon: 1});
+                                }else {
+                                    layer.msg('操作失败', {icon: 2});
+                                }
+                            },
+                            error:function () {
                                 layer.msg('操作失败', {icon: 2});
                             }
-                        },
-                        error:function () {
-                            layer.msg('操作失败', {icon: 2});
-                        }
 
-                    })
+                        })
 
-                });
+                    });
+                }
+
             } else if(obj.event === 'edit'){
                 layer.open({
                     type:2
@@ -338,6 +345,9 @@ var batch_id
                 content: '/Questionnaire/addQuestionnaire',
                 title:"新增问卷",
                 // maxmin: true,
+                end:function () {
+
+                }
             });
 
         })
