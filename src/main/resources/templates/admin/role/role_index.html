@@ -44,14 +44,19 @@
 
 <!--行内工具条-->
 <script type="text/html" id="barDemo">
+    {{#  if(d.role_Name == "管理员"){ }}
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail">权限</a>
+    {{#  } else { }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="detail">权限</a>
     <!--<a class="layui-btn layui-btn-xs" lay-event="add">添加权限</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    {{#  } }}
+
 
     <!-- 这里同样支持 laytpl 语法，如： -->
-    {{#  if(d.auth > 2){ }}
-    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
-    {{#  } }}
+    <!--{{#  if(d.auth > 2){ }}-->
+    <!--<a class="layui-btn layui-btn-xs" lay-event="check">审核</a>-->
+    <!--{{#  } }}-->
 </script>
 
 <!--序号自增-->
@@ -94,8 +99,33 @@
                     ,{title: '操作', align: 'center', toolbar: '#barDemo'}
                 ]
             ]
+            ,done:function (res, curr, count) {
+                var state = "";
+                for (var i in res.data){
+                    var item = res.data[i]
+                    if (item.role_Name == "管理员"){
+                        // checkbox 根据条件设置不可选中
+                        $('tr[data-index=' + i + '] input[type="checkbox"]').prop('disabled', true);
+                        state = "1";// 隐藏表头全选判断状态
+
+                    }
+                }
+
+                // 判断条件
+                if(state == "1"){
+                    // 根据条件移除全选 checkbox
+                    $('th[data-field=0] div').replaceWith('<div class="layui-table-cell laytable-cell-5-0-0"><span></span></div>');
+                    $('th[data-field=0]').css('width','112px')
+                    form.render();// 重新渲染一下
+                }else {
+                    //翻页显示全选按钮 checkbox
+                    $('th[data-field=0] div').replaceWith('<div class="layui-table-cell laytable-cell-1-0-0 laytable-cell-checkbox"><input type="checkbox" name="layTableCheckbox" lay-skin="primary" lay-filter="layTableAllChoose"><div class="layui-unselect layui-form-checkbox" lay-skin="primary"><i class="layui-icon layui-icon-ok"></i></div></div>');
+                }
+            }
             // ,limits : [ 5,6,7,8,9,10 ] //控制多少行一页（默认五条一页）
             // ,limit : 5 //每页默认显示的数量
+
+
         });
 
 
