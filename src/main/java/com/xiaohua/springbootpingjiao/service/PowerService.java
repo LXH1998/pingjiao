@@ -22,4 +22,5 @@ public interface PowerService {
     List<Power> queryPowerAll(String key);
     int deleteChilderPower(String power_id);
     List<Map<String, Object>> queryPowerSelected();
+    List<Power> selectDD(Power p);
 }

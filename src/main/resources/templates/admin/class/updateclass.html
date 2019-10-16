@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+    <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+    <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+
+</head>
+<style>
+    html::-webkit-scrollbar {
+
+        display: none
+    }
+
+    .biaoti{
+        text-align: center;
+        height: 40px;
+        font-size: 28px;
+        color: #009688;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+</style>
+<body>
+<!--<div class="biaoti">新增班级</div>-->
+<form class="layui-form" action="" style="width: 400px;">
+
+    <div style="height: 20px;"></div>
+    <div class="layui-form-item">
+        <label class="layui-form-label" >学　　院:</label>
+        <div>
+            <div class="layui-inline" style="width: 250px; " id="c">
+                <select name="quiz2"  id="xueyuan" disabled="true" lay-search>
+                    <option id="xueyuan1"></option>
+
+                </select>
+            </div>
+
+
+        </div>
+
+        <div style="height: 20px;"></div>
+
+        <div >
+            <label class="layui-form-label">班级编号: </label>
+            <div class="layui-input-inline">
+                <input  type="text" name="title" lay-verify="title" autocomplete="off" readonly="readonly "  class="layui-input" style="width: 250px;" id="id"/>
+                <i id="id_ok" class="layui-icon layui-input-inline" style="color: forestgreen; left:14em;top: -30px; height: 20px"></i>
+            </div>
+
+        </div>
+
+        <div style="height: 20px;"></div>
+        <div class="layui-inline">
+            <label class="layui-form-label">班级名称: </label>
+            <div class="layui-input-inline">
+                <input  type="text" name="title" lay-verify="title" autocomplete="off" class="layui-input" style="width: 250px;" id="name">
+            </div>
+
+        </div>
+        <div style="text-align: center;margin-top: 40px;">
+            <button type="button" class="layui-btn" style="margin-left: 40px" id="tj">修改</button>
+            <button type="button" class="layui-btn layui-btn-warm"style="margin-left: 40px" id="quxiao">取消</button>
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+</form>
+
+</body>
+
+<script>
+
+
+    function inputDataHandle(obj){
+        console.log(obj)
+        $("#xueyuan1").text(obj.data.departments_name)
+        $("#id").val(obj.data.class_id)
+        $("#name").val(obj.data.class_name)
+
+        $("#tj").click(function () {
+          //  console.log(departments_id)
+
+            $.ajax({
+                url: '/class/updateClassIdNname',
+                dataType: 'json',
+                type: 'get',
+                data:{
+                    class_id:$("#id").val(),
+                    class_name:$("#name").val(),
+
+                },
+                success:function (e) {
+                    if (e.data==1){
+                        var index = parent.layer.getFrameIndex(window.name)
+                        parent.layer.close(index)
+                       parent.layer.msg('修改成功', {icon: 1},function () {
+
+                        });
+
+                    }else {
+                        layer.msg('操作失败', {icon: 5});
+                    }
+
+                },
+                error:function () {
+                    layer.msg('操作失败', {icon: 5});
+                }
+
+            })
+        })
+    }
+   // var departments_id;
+    $(function () {
+
+     })
+    layui.use(['form', 'layedit', 'laydate','table'], function() {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate
+            , table = layui.table;
+        // form.on('select', function(data){
+        //
+        //     $.ajax({
+        //         url:"/class/departments_id",
+        //         dataType: 'json',
+        //         type: 'get',
+        //         data:{departments_Name:data.value},
+        //         success:function (e) {
+        //             console.log(e.data[0])
+        //             departments_id=e.data[0]
+        //         }
+        //     })
+        //     console.log(data.value); //得到被选中的值
+        // });
+        var index = parent.layer.getFrameIndex(window.name);
+        $('#quxiao').click(function(){
+            // var val = $('#name').val();
+            // if(val === ''){
+            //     parent.layer.msg('请填写标记');
+            //     return;
+            // }
+            // parent.layer.msg('您将标记 [ ' +val + ' ] 成功传送给了父窗口');
+            parent.layer.close(index);
+        });
+    });
+    layui.use(['form', 'upload', 'layer'], function () {
+        // $.ajax({
+        //     url: '/class/queryDepartments',
+        //     dataType: 'json',
+        //     type: 'get',
+        //     success: function (data) {
+        //         console.log(data)
+        //         $.each(data.data, function (index,item) {
+        //             $('#xueyuan').append(new Option(item.departments_Name));// 下拉菜单里添加元素
+        //         });
+        //         layui.form.render("select");
+        //     }
+        // })
+    });
+
+
+</script>
+</html>

@@ -13,6 +13,7 @@ public class WaterPojo {
     double fractions;
     /**评价者角色名称*/
     String role_name;
+    Integer rater;
     /**被评价人ID*/
     Integer user_id;
     /**批次ID*/
@@ -21,6 +22,14 @@ public class WaterPojo {
     Integer papers_id;
     /**课程ID*/
     Integer courses_id;
+
+    public Integer getRater() {
+        return rater;
+    }
+
+    public void setRater(Integer rater) {
+        this.rater = rater;
+    }
 
 
     public Integer getFraction_id() {

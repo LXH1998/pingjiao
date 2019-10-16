@@ -158,7 +158,17 @@ public class ClassController {
         boolean have=classService.classHave(class_Id);
         return have;
     }
-
+    @ResponseBody
+    @RequestMapping("/updateClassIdNname")
+    public HashMap updateClassIdNname(String class_name,int class_id){
+        HashMap result = new HashMap();
+        if (classService.updateClassIdNname(class_name, class_id)){
+            result.put("data",1);
+        }else {
+            result.put("data",0);
+        }
+        return result;
+    }
 
     @RequestMapping("goaddclass")
     public String goclass(){
@@ -182,5 +192,8 @@ public class ClassController {
     }
     @RequestMapping("classDetails")
     public String details(){ return "admin/class/classDetails"; }
+    @RequestMapping("updateclass")
+    public String updateclass(){ return "admin/class/updateclass"; }
+
 
 }
