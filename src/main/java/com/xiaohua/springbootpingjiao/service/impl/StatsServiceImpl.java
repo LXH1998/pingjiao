@@ -79,30 +79,38 @@ public class StatsServiceImpl  implements StatsService {
                     List<WaterPojo> listStudent  = listA.stream().filter(o -> o.getRole_name().equals("学生")).collect(Collectors.toList());
                     double stuSize = 1;
                     double teaSize = 1;
+
                     if (listStudent.size() != 0){
                         stuSize = listStudent.size();
                     }
 
                     for(WaterPojo demo:listStudent){
-                        studentFraction = studentFraction + demo.getFractions();
+                        List<HashMap> list1 = statsMapper.queryScoreSum(demo.getRater(),demo.getUser_id(),demo.getPapers_id(),demo.getCourses_id());
+                         double studetnScore = Double.parseDouble(list1.get(0).get("fractions").toString());
+                        studentFraction = studentFraction + studetnScore;
                     }
+
                     List<WaterPojo> listTeacher  = listA.stream().filter(o -> o.getRole_name().equals("教师")).collect(Collectors.toList());
                     if (listTeacher.size() != 0){
                         teaSize = listTeacher.size();
                     }
+
+
                     for(WaterPojo demo:listTeacher){
-                        teacherFraction = teacherFraction + demo.getFractions();
+                        List<HashMap> list1 = statsMapper.queryScoreSum(demo.getRater(),demo.getUser_id(),demo.getPapers_id(),demo.getCourses_id());
+                        double teacherScore = Double.parseDouble(list1.get(0).get("fractions").toString());
+                        teacherFraction = teacherFraction + teacherScore;
                     }
                     int f = list.size();
-                    num = (studentFraction*0.4/stuSize+teacherFraction*0.6/teaSize)*100;
+                    num = (studentFraction*0.4/stuSize+teacherFraction*0.6/teaSize);
                     Scores scores = new Scores();
                     Object teacherId = map.get("gradeds");
                     scores.setGradeds_Id(Integer.parseInt(teacherId.toString()));
                     scores.setPapers_id(papersId);
-                    scores.setStudents_sum((studentFraction*0.4)/stuSize*100);
-                    scores.setTeahcer_sum((teacherFraction*0.6)/teaSize*100);
+                    scores.setStudents_sum((studentFraction*0.4/stuSize));
+                    scores.setTeahcer_sum((teacherFraction*0.6/teaSize));
                     scores.setBatch_id(Integer.parseInt(batchId));
-                    num = (double) Math.round(num * 100) / 100;
+                    num = (double) Math.round(num*100) / 100;
                     scores.setScores_Sum(num);
                     statisticalDemo.add(scores);
                     num = 0;
@@ -276,21 +284,24 @@ public class StatsServiceImpl  implements StatsService {
                 }
 
                 for(HashMap demo:listStudent){
-                    studentFraction = studentFraction + Double.parseDouble(demo.get("fractions").toString());
+                    List<HashMap> list1 = statsMapper.queryScoreSum(Integer.parseInt(demo.get("rater").toString()),Integer.parseInt(demo.get("gradeds").toString()),Integer.parseInt(demo.get("papers_id").toString()),Integer.parseInt(demo.get("courses_id").toString()));
+                    double studetnScore = Double.parseDouble(list1.get(0).get("fractions").toString());
+                    studentFraction = studentFraction + studetnScore;
                 }
                 List<HashMap>  listTeacher =listCourse.stream().filter(o -> o.get("role_name").equals("教师")).collect(Collectors.toList());
                 if (listTeacher.size() != 0){
                     teaSize = listTeacher.size();
                 }
                 for(HashMap demo:listTeacher){
-
-                    teacherFraction = teacherFraction + Double.parseDouble(demo.get("fractions").toString());
+                    List<HashMap> list1 = statsMapper.queryScoreSum(Integer.parseInt(demo.get("rater").toString()),Integer.parseInt(demo.get("user_id").toString()),Integer.parseInt(demo.get("papers_id").toString()),Integer.parseInt(demo.get("courses_id").toString()));
+                    double teacherScore = Double.parseDouble(list1.get(0).get("fractions").toString());
+                    teacherFraction = teacherFraction + teacherScore;
                 }
             HashMap map1 = new HashMap();
             double score  = studentFraction*0.4/stuSize+teacherFraction*0.6/teaSize;
-            map1.put("studentScore",(double) Math.round(studentFraction*0.4/stuSize*100 * 100) / 100);
-            map1.put("teacherScore",(double) Math.round(teacherFraction*0.6/teaSize*100 * 100) / 100);
-            map1.put("score",(double) Math.round(score*100 * 100) / 100);
+            map1.put("studentScore",(double) Math.round(studentFraction*0.4/stuSize* 100) / 100);
+            map1.put("teacherScore",(double) Math.round(teacherFraction*0.6/teaSize* 100) / 100);
+            map1.put("score",(double) Math.round(score* 100) / 100);
             map1.put("teacherID",teacherID);
             map1.put("teacherName",teacherName);
             map1.put("couresName",couresName);
@@ -317,7 +328,13 @@ public class StatsServiceImpl  implements StatsService {
     */
     @Override
     public List<HashMap> querydetail(HashMap map) {
-        return statsMapper.querydetail(map);
+        List<HashMap> teacherList = statsMapper.querydetail(map);
+        for(HashMap demo : teacherList){
+            List<HashMap> list1 = statsMapper.queryScoreSum(Integer.parseInt(demo.get("rater").toString()),Integer.parseInt(demo.get("user_id").toString()),Integer.parseInt(demo.get("papers_id").toString()),Integer.parseInt(demo.get("courses_id").toString()));
+            double fractions = Double.parseDouble(list1.get(0).get("fractions").toString());
+            demo.put("fractions",fractions);
+        }
+        return teacherList;
     }
 
     @Override

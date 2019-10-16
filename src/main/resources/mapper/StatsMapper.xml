@@ -16,6 +16,7 @@
       f.`fraction_id`,
       f.`fractions`,
       r.`role_name` ,
+      uu.`user_id`  AS rater,
       u.`user_id` ,
       b.`batch_id`,
       p.`papers_id`,
@@ -172,7 +173,7 @@
         *
         FROM
         scores
-        WHERE scores_sum >0.9
+        WHERE scores_sum >90
         <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
         <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
@@ -183,7 +184,7 @@
         *
         FROM
         scores
-        WHERE scores_sum BETWEEN 0.6 and 0.9
+        WHERE scores_sum BETWEEN 60 and 90
         <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
         <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
@@ -194,7 +195,7 @@
         *
         FROM
         scores
-        WHERE scores_sum &lt;0.6
+        WHERE scores_sum &lt;60
         <if test=" batchId != null ">AND batch_Id=#{batchId}</if>
         <if test=" papersId != null ">AND papers_id=#{papersId}</if>
     </select>
@@ -305,6 +306,7 @@
       u.`user_id`,
       u.`user_name`,
       f.`fractions` ,
+      f.`rater` AS   rater,
       f.`courses_id`,
       c.`courses_name`,
       r.`role_name`,
@@ -375,6 +377,7 @@
       u.`user_id`,
       u.`user_name`,
       r.`role_name`,
+      f.`rater` AS rater,
       uu.`user_id`,
       uu.`user_name`,
       f.`fractions`,
@@ -433,14 +436,9 @@
 
     <!--计算分数-->
     <select id="selectFractions" resultType="HashMap">
-    SELECT
-      f.`fractions`*100 AS fractions
-    FROM
-      fraction f
-    WHERE f.papers_id = #{papers_id}
-      AND f.rater = #{rater}
-      AND f.gradeds = #{gradeds}
-      AND courses_id = #{courses_id}
+      SELECT ROUND(fractions/SUM(target_allweight)*100) AS fractions FROM paperstarget pst
+          LEFT JOIN fraction f ON f.papers_id=pst.papers_id
+        WHERE pst.papers_id=#{papers_id} and f.rater=#{rater} and f.gradeds=#{gradeds} and courses_id=#{courses_id}
     </select>
 
     <select id="queryBaticNameList" parameterType="string" resultType="hashmap">
@@ -450,5 +448,12 @@
       batch b
     WHERE b.`batch_id` = #{batch_id}
       AND b.`batch_hide` != 0
+    </select>
+
+    <!--计算分数-->
+    <select id="queryScoreSum" resultType="HashMap">
+            SELECT ROUND(fractions/SUM(target_allweight)*100) AS fractions FROM paperstarget pst
+          LEFT JOIN fraction f ON f.papers_id=pst.papers_id
+        WHERE pst.papers_id=#{papers_id} and f.rater=#{rater} and f.gradeds=#{gradeds} and courses_id=#{courses_id}
     </select>
 </mapper>
