@@ -114,8 +114,8 @@
                 // 判断条件
                 if(state == "1"){
                     // 根据条件移除全选 checkbox
-                    $('th[data-field=0] div').replaceWith('<div class="layui-table-cell laytable-cell-5-0-0"><span></span></div>');
-                    $('th[data-field=0]').css('width','112px')
+                    // $('th[data-field=0] div').replaceWith('<div class="layui-table-cell laytable-cell-5-0-0"><span></span></div>');
+                    $('th[data-field=0]').children().children('div').remove()
                     form.render();// 重新渲染一下
                 }else {
                     //翻页显示全选按钮 checkbox
