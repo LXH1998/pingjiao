@@ -30,7 +30,7 @@ public class SelectOnlineEvaluationController {
 
     @RequestMapping("/GoSelectOnlineEvaluation")
     public String GoSelectOnlineEvaluation(){
-        return "/admin/evaluation/selectOnlineEvaluation";
+        return "admin/evaluation/selectOnlineEvaluation";
     }
 
     @RequestMapping("GoSelectOnlineHistoryEvaluation")
