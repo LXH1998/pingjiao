@@ -128,4 +128,13 @@ public class ClassServiceImpl implements ClassService {
     public List<HashMap> selectClassWhereDepartIdCount(String departments_id) {
         return classMapper.selectClassWhereDepartIdCount(departments_id);
     }
+
+    @Override
+    public boolean updateClassIdNname(String class_name, int class_id) {
+        int result = classMapper.updateClassIdNname(class_name,class_id);
+        if (result>0){
+            return true;
+        }
+        return false;
+    }
 }

@@ -79,7 +79,7 @@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">详情</a>
-    <a class="layui-btn layui-btn-xs" lay-event="edit" style="display: none">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 <!--         ,url:' ../static/b.json'-->
@@ -220,7 +220,50 @@ var departments_id
                 });
             } else if(obj.event === 'edit'){//编辑
 
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['33em', '27em'],
+                    shade: 0.3,
+                    closeBtn: 2,
+                    shadeClose: false,
+                    offset: '100px',
+                    title:'修改班级',
+                    anim: 1,
+                    resize:true,
+                    // time:timee,
+                    content: '/class/updateclass',
+                    success: function (layero,index) {
+                    var body = layer.getChildFrame('body', index);
+                    var iframe = window['layui-layer-iframe' + index];
+                    // 向子页面的全局函数
+                    iframe.inputDataHandle(obj);
+                },
+                    end: function(){ //此处用于演示
+                        //console.log("jingru")
+                        if (departments_id!=null) {
+                            table.reload('idTest', {
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                },
+                                url:"/class/classindepartments"
+                                ,where: {
+                                    departments_id:departments_id
+                                }
+                            }, 'data');
+                        }else {
+                            table.reload('idTest', {
+                                page: {
+                                    curr: 1 //重新从第 1 页开始
+                                },
+                                url:"/class/goclass"
 
+                            }, 'data')
+                        }
+
+
+                    }
+                });
 
 
             }

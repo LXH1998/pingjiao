@@ -34,5 +34,7 @@ List<HashMap>  selectUserinClass(String class_Id);
     //判断班级是否纯在
     List<HashMap>classHave(String class_Id);
 
+    //根据班级ID修改班级名称
+    int updateClassIdNname(String class_Name,int class_Id);
 
 }

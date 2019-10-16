@@ -39,6 +39,7 @@ public class LoginServiceImpl implements LoginService {
         HttpSession  session = request.getSession();
         if (!list.isEmpty()){
             session.setAttribute("user_id",list.get(0).getUser_Id());
+            session.setAttribute("user_name",list.get(0).getUser_Name());
             return  true;
         }
         return  false;

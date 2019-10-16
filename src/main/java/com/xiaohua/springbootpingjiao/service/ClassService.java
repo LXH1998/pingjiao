@@ -29,4 +29,7 @@ public interface ClassService {
     boolean deleteClass(Class c);
 
     boolean classHave(String class_Id);
+
+    //根据班级ID修改班级名称
+    boolean updateClassIdNname(String class_name,int class_id);
 }
