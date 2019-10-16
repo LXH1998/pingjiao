@@ -47,8 +47,9 @@
     <update id="updateChilderPowerState" parameterType="com.xiaohua.springbootpingjiao.entity.Power">
     UPDATE POWER SET power_state = #{power_state} WHERE FIND_IN_SET(power_parentid, getChildLst(${power_Id}));
     </update>
-
-
+    <select id="selectDD" parameterType="com.xiaohua.springbootpingjiao.entity.Power" resultType="com.xiaohua.springbootpingjiao.entity.Power">
+       SELECT * FROM POWER WHERE FIND_IN_SET(power_parentid, getChildLst(${power_Id}));
+    </select>
 
 
 
@@ -112,7 +113,7 @@
                 WHERE u.`user_id`=ur.`user_id`
                  AND ur.`role_id`=rp.`role_id`
                  AND rp.`power_id`=p.`power_id`
-                 AND u.user_id=#{user_id} And p.power_state!=0 AND rp.power_state != 0 ORDER BY  p.sort
+                 AND u.user_id=#{user_id} And p.power_state = 1 AND rp.power_state != 0 ORDER BY  p.sort
     </select>
 
 <!--添加权限-->

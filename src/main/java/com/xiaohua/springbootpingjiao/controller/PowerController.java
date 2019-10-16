@@ -178,8 +178,14 @@ public class PowerController {
         Power p = new Power();
         p.setPower_Id(power_id);
         p.setPower_state(state);
-        boolean flag = service.updateChilderPowerState(p);
+        boolean flag = false;
         boolean result = false;
+        List res = service.selectDD(p);
+        if (res.size()>0){
+             flag = service.updateChilderPowerState(p);
+        }else {
+            result =  service.updatePowerState(p);
+        }
         if (flag){
             result = service.updatePowerState(p);
         }

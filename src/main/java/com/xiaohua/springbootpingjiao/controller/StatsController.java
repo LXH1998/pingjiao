@@ -237,7 +237,6 @@ public class StatsController {
         map.put("gradeds",gradeds);
         map.put("courses_id",courses_id);
         List<HashMap> teacherList = service.querydetail(map);
-
         List<HashMap> size = service.querydetailSize(map);
         int count = size.size();
         HashMap res = hashmapB(batchId,papersId);

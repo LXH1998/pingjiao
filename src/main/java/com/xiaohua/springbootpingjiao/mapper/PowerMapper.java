@@ -27,6 +27,7 @@ public interface PowerMapper {
       */
      List<Power> queryChilderPower(String power_id);
      int deleteChilderPower(String power_id);
+     List<Power> selectDD(Power p);
      /**
       *  查询所有权限用于下拉框
       */
