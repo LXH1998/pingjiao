@@ -50,11 +50,6 @@ public class StatsController {
     public String GoSelectOnlineEvaluation(){
         return "admin/stats/testList";
     }
-//
-//    @RequestMapping("/tabIndex")
-//    public String tabIndex(){
-//        return "tabIndex";
-//    }
     /**
     * @Author xiaoyi
     * @Return
