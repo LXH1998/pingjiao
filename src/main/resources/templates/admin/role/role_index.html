@@ -115,11 +115,11 @@
                 if(state == "1"){
                     // 根据条件移除全选 checkbox
                     // $('th[data-field=0] div').replaceWith('<div class="layui-table-cell laytable-cell-5-0-0"><span></span></div>');
-                    $('th[data-field=0]').children().children('div').remove()
-                    form.render();// 重新渲染一下
+                    $('th[data-field=0]').children().children('div').css('visibility', 'hidden');
+                    // form.render();// 重新渲染一下
                 }else {
                     //翻页显示全选按钮 checkbox
-                    $('th[data-field=0] div').replaceWith('<div class="layui-table-cell laytable-cell-1-0-0 laytable-cell-checkbox"><input type="checkbox" name="layTableCheckbox" lay-skin="primary" lay-filter="layTableAllChoose"><div class="layui-unselect layui-form-checkbox" lay-skin="primary"><i class="layui-icon layui-icon-ok"></i></div></div>');
+                    $('tr[data-index=0] input[type="checkbox"]').css('visibility', 'visible');
                 }
             }
             // ,limits : [ 5,6,7,8,9,10 ] //控制多少行一页（默认五条一页）
@@ -335,6 +335,29 @@
                         ,{title: '操作', fixed:'right', width: '30%', align: 'center', toolbar: '#barDemo'}
                     ]
                 ]
+                ,done:function (res, curr, count) {
+                    var state = "";
+                    for (var i in res.data){
+                        var item = res.data[i]
+                        if (item.role_Name == "管理员"){
+                            // checkbox 根据条件设置不可选中
+                            $('tr[data-index=' + i + '] input[type="checkbox"]').prop('disabled', true);
+                            state = "1";// 隐藏表头全选判断状态
+
+                        }
+                    }
+
+                    // 判断条件
+                    if(state == "1"){
+                        // debugger
+                        // 根据条件移除全选 checkbox
+                        // $('th[data-field=0] div').replaceWith('<div class="layui-table-cell laytable-cell-5-0-0"><span></span></div>');
+                        $('th[data-field=0]').children().children('div').css('visibility', 'hidden');
+                    }else {
+                        //翻页显示全选按钮 checkbox
+                        $('tr[data-index=0] input[type="checkbox"]').css('visibility', 'visible');
+                    }
+                }
             });
             return false;
         })
