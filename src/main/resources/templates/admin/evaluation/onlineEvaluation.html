@@ -110,34 +110,51 @@
                     return $(elem).val();
                 })
 
+                //判断是否有其他人已经提交
+                $.ajax({
+                    type:"get",
+                    url:"/ColleagueEvaluation/selectIfEvaluation",
+                    data:{
+                        gradeds:gradeds,
+                        papers_id:papers_id,
+                        courses_id:courses_id
+                    },
+                    success:function (res) {
+                        if(res.data==1){
+                            layer.msg('已经完成评教',{icon:2})
+                        }else{
+                            //判断是否都有选择
+                            if(answers_length.length>=target_length){
+                                $.ajax({
+                                    type:"get",
+                                    url:"/OnlineEvaluationController/OnlineEvaluationFraction",
+                                    data:{
+                                        gradeds:gradeds,
+                                        papers_id:papers_id,
+                                        courses_id:courses_id,
+                                        answers:answers,
+                                        optionsAll_id:answers,
+                                        target_name_id:target_name_id
+                                    },
+                                    success:function (res) {
+                                        if (res.data==1){
+                                            layer.msg('评教完毕',{icon:1})
+                                            var index = parent.layer.getFrameIndex(window.name);
+                                            parent.layer.close(index);
 
-                //判断是否都有选择
-                if(answers_length.length>=target_length){
-                    $.ajax({
-                        type:"get",
-                        url:"/OnlineEvaluationController/OnlineEvaluationFraction",
-                        data:{
-                            gradeds:gradeds,
-                            papers_id:papers_id,
-                            courses_id:courses_id,
-                            answers:answers,
-                            optionsAll_id:answers,
-                            target_name_id:target_name_id
-                        },
-                        success:function (res) {
-                            if (res.data==1){
-                                layer.msg('评教完毕',{icon:1})
-                                var index = parent.layer.getFrameIndex(window.name);
-                                parent.layer.close(index);
-
-                            } else{
-                                layer.msg('评教失败',{icon:2})
+                                        } else{
+                                            layer.msg('评教失败',{icon:2})
+                                        }
+                                    }
+                                })
+                            }else {
+                                layer.msg('有未选择题目',{icon:2})
                             }
                         }
-                    })
-                }else {
-                    layer.msg('有未选择题目',{icon:2})
-                }
+                    }
+                })
+
+
 
 
 
