@@ -83,7 +83,7 @@
 
 <!--查询分页所有权限-->
     <select id="queryPermissionsAll" resultMap="permissionsResultmap" parameterType="com.xiaohua.springbootpingjiao.entity.Paging">
-        SELECT  * FROM POWER WHERE power_state!=0 LIMIT #{pages},#{limits}
+        SELECT  * FROM POWER WHERE power_state!=0  LIMIT #{pages},#{limits} ORDER BY  p.sort
     </select>
 
 <!--查询所有权限的条数-->
