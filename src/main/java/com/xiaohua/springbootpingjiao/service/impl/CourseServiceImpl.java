@@ -85,5 +85,25 @@ public class CourseServiceImpl implements CourseService {
     public int AddTeach(String courses_Id, String user_Id, String class_ID) {
         return courseMapper.AddTeach(courses_Id,user_Id,class_ID);
     }
+    //查询具体一门课程授课信息
+    @Override
+    public List<TeachData> SelectTeachCourseOne(String courses_id, int pages, int limit) {
+        return courseMapper.SelectTeachCourseOne(courses_id,pages,limit);
+    }
+//    查询具体一门课程授课信息数量
+    @Override
+    public int SelectTeachCourseOneCount(String courses_id) {
+        return courseMapper.SelectTeachCourseOneCount(courses_id);
+    }
+    //    根据班级查询具体一门课程授课信息
+    @Override
+    public List<TeachData> SelectTeachCourseOneInClass(String class_name, String courses_id, int pages, int limit) {
+        return courseMapper.SelectTeachCourseOneInClass(class_name,courses_id,pages,limit);
+    }
+    //    根据班级查询具体一门课程授课信息数量
+    @Override
+    public int SelectTeachCourseOneCount(String class_name, String courses_id) {
+        return courseMapper.SelectTeachCourseOneCount(class_name,courses_id);
+    }
 
 }

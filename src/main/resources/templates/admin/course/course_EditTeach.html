@@ -56,6 +56,8 @@
 <script>
     console.log(parent.courses_Name)
     $("#course").val(parent.courses_Name)//为课程赋值
+    $("#teach").val(parent.user_Name)//为班级赋值
+    $("#class").val(parent.class_Name)//为教师赋值
 
     layui.use(['form', 'layedit', 'laydate'], function(){
         var form = layui.form
@@ -97,7 +99,12 @@
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index,item) {
-                    $('#class').append(new Option(item.class_Name,item.class_Id));// 下拉菜单里添加元素
+                    if (item.class_Name=parent.class_Name)
+                    {
+                        $('#class').append(new Option(item.class_Name,item.class_Id,true,true));// 下拉菜单里添加选中元素
+                    }else {
+                        $('#class').append(new Option(item.class_Name, item.class_Id));// 下拉菜单里添加元素
+                    }
                 });
                 layui.form.render("select");
             }
@@ -108,7 +115,12 @@
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index,item) {
-                    $('#teach').append(new Option(item.user_Name,item.user_Id));// 下拉菜单里添加元素
+                    if (item.user_Name=parent.user_Name)
+                    {
+                        $('#teach').append(new Option(item.user_Name, item.user_Id,true,true));// 下拉菜单里添加已选中元素
+                    }else {
+                        $('#teach').append(new Option(item.user_Name, item.user_Id));// 下拉菜单里添加元素
+                    }
                 });
                 layui.form.render("select");
             }

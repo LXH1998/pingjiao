@@ -5,7 +5,6 @@
     <title>在线评教系统---统计分析管理模块</title>
     <link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
     <script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
-    <script type="text/javascript" th:src="@{/static/js/echarts.js}"></script>
     <script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
 </head>
 <style>
@@ -77,11 +76,12 @@
                 , page: true //开启分页
                 , cols: [
                     [ //表头
-                        {field: 'teacherName', templet: '#xuhao', title: '姓名', width: '20%', fixed: 'left', align: 'center'}
-                        , {field: 'couresName', title: '课程名', width: '20%', align: 'center'}
+                        {field: 'teacherName', templet: '#xuhao', title: '姓名', width: '15%', fixed: 'left', align: 'center'}
+                        , {field: 'couresName', title: '课程名', width: '15%', align: 'center'}
                         , {field: 'teacherScore', title: '老师分数', width: '15%', align: 'center'}
+                        , {field: 'teacherSelFraction', title: '自我评教', width: '15%', align: 'center'}
                         , {field: 'studentScore', title: '学生分数', width: '15%', align: 'center'}
-                        , {field: 'score', title: '总分数', width: '20%', align: 'center'}
+                        , {field: 'score', title: '总分数', width: '15%', align: 'center'}
                         , {field: 'teacherID', title: 'ID', width: 50,hide:true}
                         , {field: 'paperId', title: '问卷ID', width: 50,hide:true}
                         , {field: 'couresID', title: '课程ID', width: 50,hide:true}
@@ -107,26 +107,26 @@
                     var couresID = obj.data.couresID
                     var paperId = obj.data.paperId
                     var gradeds = teacherID
-                    console.log(gradeds     )
+                    console.log(gradeds)
                     table.render({
                         elem: '#demo'
                         , url: '/stats/querydetail'
                         , page: true //开启分页
                         , cols: [
                             [ //表头
-                                {field: 'user_name', templet: '#xuhao', title: '姓名', width: '25%', fixed: 'left', align: 'center'}
+                                {field: 'raterName', templet: '#xuhao', title: '姓名', width: '25%', fixed: 'left', align: 'center'}
                                 , {field: 'role_name', title: '身份', width: '25%', align: 'center'}
                                 , {field: 'fractions', title: '评价分数', width: '25%', align: 'center'}
                                 ,{title: '操作', width: '25%', align: 'center', toolbar: '#barDemo'}
                                 , {field: 'papers_id', width: 50,hide:true}
-                                , {field: 'user_id',width: 50,hide:true}
+                                , {field: 'rater',width: 50,hide:true}
                                 , {field: 'courses_id', width: 50,hide:true}
                             ]
                         ]
                         ,done: function(res, curr, count){
                             console.log(res.data[0].papers_name)
                             $("[data-field='papers_id']").css('display','none'); //关键代码
-                            $("[data-field='user_id']").css('display','none'); //关键代码
+                            $("[data-field='rater']").css('display','none'); //关键代码
                             $("[data-field='courses_id']").css('display','none');
                             $("[data-field='papers_name']").css('display','none');
                             $("#paperId").text(res.data[0].papers_name)
@@ -145,7 +145,7 @@
                         console.log(obj)
                         if(obj.event === 'detail'){
 
-                            var rater=obj.data.user_id
+                            var rater=obj.data.rater
                             var graded=teacherID
                             var papersid=obj.data.papers_id
                             var coursesid=obj.data.courses_id

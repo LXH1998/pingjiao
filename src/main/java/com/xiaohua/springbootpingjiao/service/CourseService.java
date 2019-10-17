@@ -29,5 +29,12 @@ public interface CourseService {
     int SelectTeachOneCount();
     //新增授课信息
     int  AddTeach(String courses_Id,String user_Id,String class_ID);
-
+    //查询具体一门课程授课信息
+    List<TeachData> SelectTeachCourseOne(String courses_id,int pages,int limit);
+    //    <!--查询具体一门课程授课信息数量-->
+    int SelectTeachCourseOneCount(String courses_id);
+    //    根据班级查询具体一门课程授课信息
+    List<TeachData> SelectTeachCourseOneInClass(String class_name,String courses_id,int pages,int limit);
+    //    根据班级查询具体一门课程授课信息数量
+    int SelectTeachCourseOneCount(String class_name,String courses_id);
 }

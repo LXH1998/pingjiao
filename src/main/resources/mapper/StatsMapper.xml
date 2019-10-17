@@ -82,7 +82,8 @@
       batch_id,
       papers_id,
       teahcer_sum,
-      students_sum
+      students_sum,
+       teacher_self
     )
     VALUES
     <foreach collection="list" item="item" index="index" separator=",">
@@ -92,7 +93,8 @@
         #{item.batch_Id},
         #{item.papers_Id},
         #{item.teahcer_sum},
-        #{item.students_sum}
+        #{item.students_sum},
+        #{item.teacher_self}
      )
     </foreach>
     </insert>
@@ -266,7 +268,7 @@
 <!--  查询成绩  -->
     <select id="querySocore" parameterType="hashmap" resultType="hashmap" >
         SELECT
-        s.`scores_id`,s.`scores_sum`,u.`user_name`, s.`students_sum`, s.`teahcer_sum`,s.`gradeds`,s.`papers_id`, p.`papers_name`
+        s.`scores_id`,s.`scores_sum`,u.`user_name`, s.`students_sum`,s.`teacher_self`,s.`teahcer_sum`,s.`gradeds`,s.`papers_id`, p.`papers_name`
         FROM
         scores s
         LEFT JOIN batch b
@@ -302,32 +304,34 @@
 
 <!--查询某老师 课程成绩-->
     <select id="queryTeacherScore" parameterType="hashmap" resultType="hashmap">
-    SELECT
-      u.`user_id`,
-      u.`user_name`,
-      f.`fractions` ,
-      f.`rater` AS   rater,
-      f.`courses_id`,
-      c.`courses_name`,
-      r.`role_name`,
-      f.`papers_id`,
-      b.`batch_id`,
-      p.`papers_name`
-    FROM
-      fraction f
-      LEFT JOIN USER u
+        SELECT
+        u.`user_id`,
+        u.`user_name`,
+        f.`fractions`,
+        f.`rater` AS rater,
+        f.`courses_id`,
+        c.`courses_name`,
+        r.`role_name`,
+        f.`papers_id`,
+        b.`batch_id`,
+        p.`papers_name`
+        FROM
+        fraction f
+        LEFT JOIN USER u
         ON u.`user_id` = f.`gradeds`
-      LEFT JOIN papers p
+        LEFT JOIN papers p
         ON p.`papers_id` = f.`papers_id`
-      LEFT JOIN batch b
+        LEFT JOIN batch b
         ON b.`batch_id` = p.`batch_id`
-      LEFT JOIN courses c
-      ON c.`courses_id` = f.`courses_id`
-      LEFT JOIN userrole ur ON
-      ur.`user_id` = u.`user_id`
-      LEFT JOIN role r
-      ON r.`role_id` =ur.`role_id`
-    WHERE f.`gradeds` = #{gradeds}
+        LEFT JOIN courses c
+        ON c.`courses_id` = f.`courses_id`
+        LEFT JOIN USER uu
+        ON uu.`user_id` = f.`rater`
+        LEFT JOIN userrole ur
+        ON ur.`user_id` = uu.`user_id`
+        LEFT JOIN role r
+        ON r.`role_id` = ur.`role_id`
+        WHERE f.`gradeds` = #{gradeds}
      <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
      <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
     LIMIT ${page},${limit}
@@ -374,28 +378,27 @@
 <!--查询被评分人具体评教详情-->
     <select id="querydetail" parameterType="hashmap" resultType="hashmap">
     SELECT
-      u.`user_id`,
-      u.`user_name`,
-      r.`role_name`,
-      f.`rater` AS rater,
-      uu.`user_id`,
-      uu.`user_name`,
-      f.`fractions`,
-      f.`papers_id`,
-      f.`courses_id`,
-      p.`papers_name`
-    FROM
-      fraction f
-      LEFT JOIN USER u
-        ON u.`user_id` = f.`rater`
-      LEFT JOIN USER uu
-        ON uu.`user_id` = f.`gradeds`
-      LEFT JOIN userrole ur
-      ON ur.`user_id` = u.`user_id`
-      LEFT JOIN role r
-      ON r.`role_id` = ur.`role_id`
-      LEFT JOIN papers p
-      ON p.`papers_id` = f.`papers_id`
+        u.`user_id`,
+        u.`user_name`,
+        r.`role_name`,
+        f.`rater` AS rater,
+        uu.`user_name` AS raterName,
+        f.`fractions`,
+        f.`papers_id`,
+        f.`courses_id`,
+        p.`papers_name`
+        FROM
+        fraction f
+        LEFT JOIN USER u
+        ON u.`user_id` = f.`gradeds`
+        LEFT JOIN USER uu
+        ON uu.`user_id` = f.`rater`
+        LEFT JOIN userrole ur
+        ON ur.`user_id` = uu.`user_id`
+        LEFT JOIN role r
+        ON r.`role_id` = ur.`role_id`
+        LEFT JOIN papers p
+        ON p.`papers_id` = f.`papers_id`
     WHERE f.`gradeds` = #{gradeds}
         AND f.`courses_id` = #{courses_id}
         <if test=" batchId != null ">AND f.batch_Id=#{batchId}</if>

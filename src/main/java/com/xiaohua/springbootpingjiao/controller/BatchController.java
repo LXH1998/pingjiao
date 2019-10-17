@@ -135,6 +135,7 @@ public class BatchController {
         {
             int batchIf = batchService.ModifyEndBatch(batch_Id);;//修改状态量
             if(batchIf == 1){
+                System.out.println(batch_Id);
                 service.clearUpFraction(Integer.toString(batch_Id));
                 result.put("result","1");
             }else {
