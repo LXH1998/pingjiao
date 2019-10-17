@@ -40,6 +40,7 @@
         <div class="layui-tab" lay-filter="demo" lay-allowclose="true">
             <ul class="layui-tab-title">
             </ul>
+
             <ul class="rightmenu" style="display: none;position: absolute;">
                 <li data-type="closethis">关闭当前</li>
                 <li data-type="closeall">关闭所有</li>
@@ -176,6 +177,12 @@
                 var h = $(window).height()-200;
                 $("iframe").css("height", h + "px");
             }
+            var layid = location.hash.replace(/^#test=/, '');
+            element.tabChange('test', layid);
+
+            element.on('tab(test)', function(elem){
+                location.hash = 'test='+ $(this).attr('lay-id');
+            });
         });
     }
 </script></div>
