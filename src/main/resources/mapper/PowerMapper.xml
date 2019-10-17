@@ -18,6 +18,8 @@
          <if test="key !=null">
             AND  power_id LIKE "%${key}%" OR power_name LIKE "%${key}%"
          </if>
+        ORDER BY  sort
+
     </select>
 
 
@@ -83,7 +85,7 @@
 
 <!--查询分页所有权限-->
     <select id="queryPermissionsAll" resultMap="permissionsResultmap" parameterType="com.xiaohua.springbootpingjiao.entity.Paging">
-        SELECT  * FROM POWER WHERE power_state!=0 LIMIT #{pages},#{limits}
+        SELECT  * FROM POWER WHERE power_state!=0  LIMIT #{pages},#{limits} ORDER BY  sort
     </select>
 
 <!--查询所有权限的条数-->
