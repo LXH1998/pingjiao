@@ -240,16 +240,31 @@
         });
     }
     function del(obj) {
-        layer.confirm("你确定删除数据吗？如果存在下级节点则一并删除，此操作不能撤销！", {icon: 3, title:'提示'},
-            function(index){//确定回调
-                obj.del();
-                layer.close(index);
-                console.log(obj.data.power_Id)
-                delPower(obj.data.power_Id)
-            },function (index) {//取消回调
-                layer.close(index);
-            }
-        );
+        if (obj.data.power_Id!=5){
+            layer.confirm("你确定删除数据吗？如果存在下级节点则一并删除，此操作不能撤销！", {icon: 3, title:'提示'},
+                function(index){//确定回调
+                    obj.del();
+                    layer.close(index);
+                    console.log(obj.data.power_Id)
+                    delPower(obj.data.power_Id)
+                },function (index) {//取消回调
+                    layer.close(index);
+                }
+            );
+        }else {
+            layer.open({
+                content: '此功能不可删除'
+                , btn: ['确定']
+                ,title:"警告"
+                , yes: function (index, layero) {
+                    layer.close(index);
+                }
+                , cancel: function () {
+                    //return false 开启该代码可禁止点击该按钮关闭
+                }
+            })
+        }
+
     }
     function  delPower(power_Id) {
         $.ajax({

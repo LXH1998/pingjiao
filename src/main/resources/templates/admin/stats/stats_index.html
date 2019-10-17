@@ -584,12 +584,11 @@
                 }
             })
     });
-
     layui.use(['form', 'upload', 'layer'], function () {
         var baTest = $("#batchIdFlage").text();
         var flag = isEmpty(baTest)
+        $("#batchIdFlage").text("");
         console.log(flag)
-        if(flag){
             $.ajax({
                 url:"/stats/queryBatchsList",
                 dataType: 'json',
@@ -599,37 +598,16 @@
                 },
                 success: function (data) {
                     $.each(data, function (index,item) {
-                        $('#batchId').append(new Option(item.batch_name,item.batch_id));
+                        if (item.batch_id == baTest ) {
+                            $('#batchId').append(new Option(item.batch_name,item.batch_id,true,true));
+                        }else {
+                            $('#batchId').append(new Option(item.batch_name,item.batch_id));
+                        }
                     });
                     layui.form.render("select");
                 }
             })
-        }else {
-            console.log(baTest)
-            $.ajax({
-                url: "/stats/queryBaticNameList",
-                dataType: 'json',
-                type: 'get',
-                data: {
-                    "batchId": baTest
-                },
-                success: function (data) {
-                    console.log(data)
-                    $.each(data, function (index, item) {
-                        $('#batchId').append(new Option(item.batch_name,item.batch_id));
-                    });
-                    $("#batchId option[value=baTest]").prop("selected",true);
-                    obj = document.getElementById("batchId");
-                    for(i=0;i<obj.length;i++){
-                        if(obj[i].value==baTest)
-                            obj[i].selected = true;
-                    }
-                    layui.form.render("select");
-                    functionD()
-                    $("#batchIdFlage").text("");
-                }
-            })
-        }
+
     });
 </script>
 </body>
