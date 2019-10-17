@@ -43,6 +43,7 @@ public class CourseController {
         result.put("data",courseList);
         return result;
     }
+
     //查询所以课程
     @RequestMapping("/listDateAll")
     @ResponseBody
@@ -80,6 +81,11 @@ public class CourseController {
     public String Courseteach(){
         return "admin/course/course_teach";
     }
+    //跳转到课程授课页面
+    @RequestMapping("/teachOne")
+    public String CourseteachOne(){
+        return "admin/course/course_teachOne";
+    }
     @RequestMapping("/test")
     public String test(){
         return "admin/course/list";
@@ -91,6 +97,34 @@ public class CourseController {
         int pages = (page-1)*limit;
         List<TeachData> teachList = courseService.SelectTeach(pages,limit);
         int count = courseService.SelectTeachCount();
+        Map result = new HashMap<>();
+        result.put("code",0);
+        result.put("msg","返回成功");
+        result.put("data",teachList);
+        result.put("count",count);
+        return result;
+    }
+    //查询具体一门课程授课信息
+    @ResponseBody
+    @RequestMapping("/teachCourseOne")
+    public Map TeachCourseOne(String courses_Id,int page,int limit){
+        int pages = (page-1)*limit;
+        List<TeachData> teachList = courseService.SelectTeachCourseOne(courses_Id,pages,limit);
+        int count = courseService.SelectTeachCourseOneCount(courses_Id);
+        Map result = new HashMap<>();
+        result.put("code",0);
+        result.put("msg","返回成功");
+        result.put("data",teachList);
+        result.put("count",count);
+        return result;
+    }
+    //根据班级查询具体一门课程授课信息
+    @ResponseBody
+    @RequestMapping("/teachCourseOneInClass")
+    public Map teachCourseOneInClass(String class_name,String courses_Id,int page,int limit){
+        int pages = (page-1)*limit;
+        List<TeachData> teachList = courseService.SelectTeachCourseOneInClass(class_name,courses_Id,pages,limit);
+        int count = courseService.SelectTeachCourseOneCount(class_name,courses_Id);
         Map result = new HashMap<>();
         result.put("code",0);
         result.put("msg","返回成功");
@@ -113,6 +147,7 @@ public class CourseController {
         result.put("count",count);
         return result;
     }
+
     //增加课程
     @ResponseBody
     @RequestMapping("/insertCourse")

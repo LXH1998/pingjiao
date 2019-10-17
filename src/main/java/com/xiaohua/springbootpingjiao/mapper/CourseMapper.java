@@ -25,6 +25,14 @@ public interface CourseMapper {
     int insertCourses(String courses_Name);
     //查询所有授课信息
     List<TeachData> SelectTeachAll(int pages,int limit);
+    //查询具体一门课程授课信息
+    List<TeachData> SelectTeachCourseOne(String courses_id,int pages,int limit);
+//    <!--查询具体一门课程授课信息数量-->
+    int SelectTeachCourseOneCount(String courses_id);
+//    根据班级查询具体一门课程授课信息
+    List<TeachData> SelectTeachCourseOneInClass(String class_name,String courses_id,int pages,int limit);
+//    根据班级查询具体一门课程授课信息数量
+    int SelectTeachCourseOneCount(String class_name,String courses_id);
     //查询授课信息数量
     int SelectTeachCount();
     //查询具体一门授课信息
@@ -35,4 +43,5 @@ public interface CourseMapper {
     int EditTeach(int teach_id,String user_Id,String class_ID);
     //新增授课信息
     int  AddTeach(String courses_Id,String user_Id,String class_ID);
+
 }

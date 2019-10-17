@@ -8,6 +8,15 @@ public class Scores{
     private Integer batch_Id;
     private double teahcer_sum;
     private double students_sum;
+    private  double teacher_self;
+
+    public double getTeacher_self() {
+        return teacher_self;
+    }
+
+    public void setTeacher_self(double teacher_self) {
+        this.teacher_self = teacher_self;
+    }
 
     public double getTeahcer_sum() {
         return teahcer_sum;

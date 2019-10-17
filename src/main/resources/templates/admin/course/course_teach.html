@@ -136,6 +136,8 @@
             } else if(layEvent === 'edit'){ //编辑
                 console.log(data)
                 courses_Name = data.courses_Name;
+                class_Name = data.class_Name;
+                user_Name = data.user_Name;
                 teach_id = data.teach_id
                 layer.open({
                     type: 2,
@@ -163,7 +165,7 @@
             layer.open({
                 type: 2,
                 title: false,
-                area: ['450px', '360px'],
+                area: ['35em', '25em'],
                 shade: 0.8,
                 closeBtn: 1,
                 shadeClose: true,

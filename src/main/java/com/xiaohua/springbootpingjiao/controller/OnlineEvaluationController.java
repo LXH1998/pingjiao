@@ -58,6 +58,7 @@ public class OnlineEvaluationController {
         HttpServletRequest request = ((ServletRequestAttributes)ra).getRequest();
         HttpSession session = request.getSession();
         int rater = Integer.parseInt(session.getAttribute("user_id").toString());
+        System.out.println(optionsAll_id);
         String a[]=optionsAll_id.split(",");
         String t[]=target_name_id.split(",");
         Map result =new HashMap();

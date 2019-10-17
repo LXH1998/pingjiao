@@ -65,10 +65,12 @@
         //监听工具条
         table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
+            console.log(data)
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
 
             if(layEvent === 'detail'){ //查看
+                localStorage.setItem("courses_Id",data.courses_Id)
                 //do somehing
                 //iframe层-父子操作
                 // layer.open({
@@ -83,7 +85,7 @@
                 //         iframe.child(data)
                 //     }
                 // });
-                location.href = '/course/teach'
+                location.href = '/course/teachOne'
             } else if(layEvent === 'del'){ //删除
                 layer.confirm('真的删除行么', function(index){
                     //向服务端发送删除指令
@@ -119,23 +121,6 @@
                 layer.alert('Hi，头部工具栏扩展的右侧图标。');
             }
         });
-//头部按钮
-        var $ = layui.$, active = {
-            getCheckData: function(){ //获取选中数据
-                var checkStatus = table.checkStatus('idTest')
-                    ,data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
-            }
-            ,getCheckLength: function(){ //获取选中数目
-                var checkStatus = table.checkStatus('idTest')
-                    ,data = checkStatus.data;
-                layer.msg('选中了：'+ data.length + ' 个');
-            }
-            ,isAll: function(){ //验证是否全选
-                var checkStatus = table.checkStatus('idTest');
-                layer.msg(checkStatus.isAll ? '全选': '未全选')
-            }
-        };
 
         $('.demoTable .layui-btn').on('click', function(){
             var type = $(this).data('type');

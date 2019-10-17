@@ -2,10 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaohua.springbootpingjiao.mapper.CourseMapper">
 
-    <resultMap id="BaseResultMap" type="com.xiaohua.springbootpingjiao.entity.Courses">
-        <result column="courses_Id" jdbcType="INTEGER" property="id" />
-        <result column="courses_Name" jdbcType="VARCHAR" property="name" />
-    </resultMap>
+
 <!--查找所有课程-->
     <select id="SelectCourseAll" resultType="com.xiaohua.springbootpingjiao.entity.Courses">
         select * from Courses where courses_state = '1' limit #{pages},#{limit}
@@ -53,6 +50,30 @@
      select t.teach_id,c.class_name,u.user_name,courses.courses_name from Teach as t left join
       class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
       courses on courses.courses_id = t.courses_id limit #{pages},#{limit}
+    </select>
+    <!--查询具体一门课程授课信息-->
+    <select id="SelectTeachCourseOne" resultType="com.xiaohua.springbootpingjiao.entity.TeachData" >
+     select t.teach_id,c.class_name,u.user_name,courses.courses_name from Teach as t left join
+      class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
+      courses on courses.courses_id = t.courses_id where t.courses_id = #{courses_id} limit #{pages},#{limit}
+    </select>
+    <!--根据班级查询具体一门课程授课信息-->
+    <select id="SelectTeachCourseOneInClass" resultType="com.xiaohua.springbootpingjiao.entity.TeachData" >
+     select t.teach_id,c.class_name,u.user_name,courses.courses_name from Teach as t left join
+      class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
+      courses on courses.courses_id = t.courses_id where c.class_name = #{class_name} and t.courses_id = #{courses_id} limit #{pages},#{limit}
+    </select>
+    <!--根据班级查询具体一门课程授课信息数量-->
+    <select id="SelectTeachCourseOneInClassCount" resultType="int" >
+     select count(*) from Teach as t left join
+      class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
+      courses on courses.courses_id = t.courses_id where t.class_name = #{class_name} and t.courses_id = #{courses_id}
+    </select>
+    <!--查询具体一门课程授课信息数量-->
+    <select id="SelectTeachCourseOneCount" parameterType="String" resultType="int" >
+     select count(*) from Teach as t left join
+      class as c on t.class_id = c.class_id left join user as u on t.user_id = u.user_id join
+      courses on courses.courses_id = t.courses_id where t.courses_id = #{courses_id}
     </select>
     <!--查询授课信息数量-->
     <select id="SelectTeachCount"  resultType="int" >
