@@ -282,7 +282,6 @@
             <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
         </where>
         ORDER BY scores_sum DESC
-        LIMIT ${page},${limit}
     </select>
 
     <select id="queryScoreSize" parameterType="hashmap" resultType="hashmap">
@@ -336,6 +335,34 @@
      <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
     LIMIT ${page},${limit}
     </select>
+    <select id="quertyssss" parameterType="hashmap" resultType="hashmap">
+        SELECT
+        f.`papers_id`,
+        p.`papers_name`
+        FROM
+        fraction f
+        LEFT JOIN USER u
+        ON u.`user_id` = f.`gradeds`
+        LEFT JOIN papers p
+        ON p.`papers_id` = f.`papers_id`
+        LEFT JOIN batch b
+        ON b.`batch_id` = p.`batch_id`
+        LEFT JOIN courses c
+        ON c.`courses_id` = f.`courses_id`
+        LEFT JOIN USER uu
+        ON uu.`user_id` = f.`rater`
+        LEFT JOIN userrole ur
+        ON ur.`user_id` = uu.`user_id`
+        LEFT JOIN role r
+        ON r.`role_id` = ur.`role_id`
+        WHERE f.`gradeds` = #{gradeds}
+        <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
+        <if test=" papersId != null ">AND p.papers_id=#{papersId}</if>
+        GROUP BY f.`papers_id`
+        LIMIT ${page},${limit}
+    </select>
+
+
 
     <select id="queryTeacherScoreSize" parameterType="hashmap" resultType="hashmap">
         SELECT
@@ -399,9 +426,11 @@
         ON r.`role_id` = ur.`role_id`
         LEFT JOIN papers p
         ON p.`papers_id` = f.`papers_id`
+        LEFT JOIN batch b
+        ON b.`batch_id` = p.`batch_id`
     WHERE f.`gradeds` = #{gradeds}
         AND f.`courses_id` = #{courses_id}
-        <if test=" batchId != null ">AND f.batch_Id=#{batchId}</if>
+        <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
         <if test=" papersId != null ">AND f.papers_id=#{papersId}</if>
     LIMIT ${page},${limit}
     </select>
@@ -420,6 +449,10 @@
         fraction f
         LEFT JOIN USER u
         ON u.`user_id` = f.`rater`
+        LEFT JOIN papers p
+        ON p.`papers_id` = f.`papers_id`
+        LEFT JOIN batch b
+        ON b.`batch_id` = p.`batch_id`
         LEFT JOIN USER uu
         ON uu.`user_id` = f.`gradeds`
         LEFT JOIN userrole ur
@@ -428,7 +461,7 @@
         ON r.`role_id` = ur.`role_id`
         WHERE f.`gradeds` = #{gradeds}
         AND f.`courses_id` = #{courses_id}
-        <if test=" batchId != null ">AND f.batch_Id=#{batchId}</if>
+        <if test=" batchId != null ">AND b.batch_Id=#{batchId}</if>
         <if test=" papersId != null ">AND f.papers_id=#{papersId}</if>
     </select>
 
@@ -458,5 +491,41 @@
             SELECT ROUND(fractions/SUM(target_allweight)*100) AS fractions FROM paperstarget pst
           LEFT JOIN fraction f ON f.papers_id=pst.papers_id
         WHERE pst.papers_id=#{papers_id} and f.rater=#{rater} and f.gradeds=#{gradeds} and courses_id=#{courses_id}
+    </select>
+
+    <select id="querydddd" parameterType="hashmap" resultType="hashmap">
+        SELECT
+        u.`user_name`
+        FROM
+        scores s
+        LEFT JOIN batch b
+        ON b.`batch_id` = s.`batch_id`
+        LEFT JOIN papers p
+        ON p.`papers_id` = s.`papers_id`
+        LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+        <where>
+            <if test=" batchId != null ">AND s.batch_Id=#{batchId}</if>
+        </where>
+        GROUP BY u.`user_name`
+        ORDER BY scores_sum DESC
+    </select>
+    <select id="queryttt" parameterType="hashmap" resultType="hashmap">
+        SELECT
+        b.`batch_id`,
+        b.`batch_name`
+        FROM
+        scores s
+        LEFT JOIN batch b
+        ON b.`batch_id` = s.`batch_id`
+        LEFT JOIN papers p
+        ON p.`papers_id` = s.`papers_id`
+        LEFT JOIN USER u
+        ON u.`user_id` = s.`gradeds`
+        <where>
+            <if test=" batchId != null ">AND s.batch_Id=#{batchId}</if>
+        </where>
+        GROUP BY u.`user_name`
+        ORDER BY scores_sum DESC
     </select>
 </mapper>

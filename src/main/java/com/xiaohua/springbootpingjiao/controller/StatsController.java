@@ -213,7 +213,7 @@ public class StatsController {
         map.put("page",Integer.toString(pageing));
         map.put("limit",Integer.toString(limit));
         map.put("gradeds",gradeds);
-
+        map.put("papersId",papersId);
         List<HashMap> teacherList = service.queryTeacherScore(map);
 
         List<HashMap> size = service.queryTeacherScoreSize(map);

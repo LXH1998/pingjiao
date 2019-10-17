@@ -257,7 +257,45 @@ public class StatsServiceImpl  implements StatsService {
     */
     @Override
     public List<HashMap> querySocore(HashMap map) {
-        return statsMapper.querySocore(map);
+        List<HashMap> list  = statsMapper.querySocore(map);
+        List<HashMap> result = new ArrayList<HashMap>();
+        List<HashMap> batchList = statsMapper.queryttt(map);
+        for(HashMap batch  :batchList ){
+            map.put("batchId",batch.get("batch_id"));
+            List<HashMap> teacherNameList = statsMapper.querydddd(map);
+            for(HashMap demo  :teacherNameList ){
+                List<HashMap> listScore = list.stream().filter(o -> o.get("user_name").equals(demo.get("user_name"))).collect(Collectors.toList());
+                double scores_sum = 0.0;
+                double students_sum = 0.0;
+                double teacher_self = 0.0;
+                double teahcer_sum = 0.0;
+                String user_name ="";
+                String gradeds= "";
+                String batch_id= "";
+                String batch_name= "";
+                for(HashMap demo1  :listScore ){
+                    students_sum = students_sum +Double.parseDouble(demo1.get("students_sum").toString());
+                    teacher_self = teacher_self +Double.parseDouble(demo1.get("teacher_self").toString());
+                    teahcer_sum = teahcer_sum +Double.parseDouble(demo1.get("teahcer_sum").toString());
+                    user_name = demo1.get("user_name").toString();
+                    gradeds = demo1.get("gradeds").toString();
+                }
+                batch_id = batch.get("batch_id").toString();
+                batch_name = batch.get("batch_name").toString();
+                scores_sum =  students_sum+teacher_self+teahcer_sum;
+                HashMap map1 = new HashMap();
+                map1.put("batch_id",batch_id);
+                map1.put("user_name",user_name);
+                map1.put("gradeds",gradeds);
+                map1.put("batch_name",batch_name);
+                map1.put("students_sum",students_sum);
+                map1.put("teacher_self",teacher_self);
+                map1.put("teahcer_sum",teahcer_sum);
+                map1.put("scores_sum",scores_sum);
+                result.add(map1);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -276,6 +314,7 @@ public class StatsServiceImpl  implements StatsService {
     public List<HashMap> queryTeacherScore(HashMap map) {
         List<HashMap> res = new ArrayList<HashMap>();
         List<HashMap> list = statsMapper.queryTeacherScore(map);
+        List<HashMap>  paperList = statsMapper.quertyssss(map);
         List<HashMap> courseList = statsMapper.queryTeacherScoreList(map);
         String teacherName= list.get(0).get("user_name").toString();
         String teacherID= list.get(0).get("user_id").toString();

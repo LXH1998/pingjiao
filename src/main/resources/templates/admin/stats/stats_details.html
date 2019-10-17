@@ -49,9 +49,9 @@
     </div>
     <div class="topSencendDiv">
         <div style="width: 1000px;height: 20px;margin-top: 20px;" >
-            <i style="font-size: 16px;" >评教问卷:</i>
+            <i style="font-size: 16px;" id="aa"></i>
             <i style="margin-left: 20px;color: #FFB800; "  id="paperId"></i>
-            <i style="font-size: 16px;margin-left: 20px" >老师名称:</i>
+            <i style="font-size: 16px;margin-l评教问卷eft: 20px" >老师名称:</i>
             <i style="margin-left: 20px;color: #FFB800;"  id="teacherId"></i>
         </div>
 
@@ -108,35 +108,68 @@
                     var paperId = obj.data.paperId
                     var gradeds = teacherID
                     console.log(gradeds)
-                    table.render({
-                        elem: '#demo'
-                        , url: '/stats/querydetail'
-                        , page: true //开启分页
-                        , cols: [
-                            [ //表头
-                                {field: 'raterName', templet: '#xuhao', title: '姓名', width: '25%', fixed: 'left', align: 'center'}
-                                , {field: 'role_name', title: '身份', width: '25%', align: 'center'}
-                                , {field: 'fractions', title: '评价分数', width: '25%', align: 'center'}
-                                ,{title: '操作', width: '25%', align: 'center', toolbar: '#barDemo'}
-                                , {field: 'papers_id', width: 50,hide:true}
-                                , {field: 'rater',width: 50,hide:true}
-                                , {field: 'courses_id', width: 50,hide:true}
+                    var name = $("#aa").text()
+                    if (name!="批次名称:"){
+                        table.render({
+                            elem: '#demo'
+                            , url: '/stats/querydetail'
+                            , page: true //开启分页
+                            , cols: [
+                                [ //表头
+                                    {field: 'raterName', templet: '#xuhao', title: '姓名', width: '25%', fixed: 'left', align: 'center'}
+                                    , {field: 'role_name', title: '身份', width: '25%', align: 'center'}
+                                    , {field: 'fractions', title: '评价分数', width: '25%', align: 'center'}
+                                    ,{title: '操作', width: '25%', align: 'center', toolbar: '#barDemo'}
+                                    , {field: 'papers_id', width: 50,hide:true}
+                                    , {field: 'rater',width: 50,hide:true}
+                                    , {field: 'courses_id', width: 50,hide:true}
+                                ]
                             ]
-                        ]
-                        ,done: function(res, curr, count){
-                            console.log(res.data[0].papers_name)
-                            $("[data-field='papers_id']").css('display','none'); //关键代码
-                            $("[data-field='rater']").css('display','none'); //关键代码
-                            $("[data-field='courses_id']").css('display','none');
-                            $("[data-field='papers_name']").css('display','none');
-                            $("#paperId").text(res.data[0].papers_name)
-                        }
-                        ,where:{
-                            "gradeds":gradeds,
-                            "courses_id":couresID,
-                            "papersId":paperId
-                        }
-                    });
+                            ,done: function(res, curr, count){
+                                console.log(res.data[0].papers_name)
+                                $("[data-field='papers_id']").css('display','none'); //关键代码
+                                $("[data-field='rater']").css('display','none'); //关键代码
+                                $("[data-field='courses_id']").css('display','none');
+                                $("[data-field='papers_name']").css('display','none');
+                                $("#paperId").text(res.data[0].papers_name)
+                            }
+                            ,where:{
+                                "gradeds":gradeds,
+                                "courses_id":couresID,
+                                "papersId":paperId
+                            }
+                        });
+                    }else {
+                        table.render({
+                            elem: '#demo'
+                            , url: '/stats/querydetail'
+                            , page: true //开启分页
+                            , cols: [
+                                [ //表头
+                                    {field: 'raterName', templet: '#xuhao', title: '姓名', width: '25%', fixed: 'left', align: 'center'}
+                                    , {field: 'role_name', title: '身份', width: '25%', align: 'center'}
+                                    , {field: 'fractions', title: '评价分数', width: '25%', align: 'center'}
+                                    ,{title: '操作', width: '25%', align: 'center', toolbar: '#barDemo'}
+                                    , {field: 'papers_id', width: 50,hide:true}
+                                    , {field: 'rater',width: 50,hide:true}
+                                    , {field: 'courses_id', width: 50,hide:true}
+                                ]
+                            ]
+                            ,done: function(res, curr, count){
+                                console.log(res.data[0].papers_name)
+                                $("[data-field='papers_id']").css('display','none'); //关键代码
+                                $("[data-field='rater']").css('display','none'); //关键代码
+                                $("[data-field='courses_id']").css('display','none');
+                                $("[data-field='papers_name']").css('display','none');
+                                $("#paperId").text($("#paperId").text())
+                            }
+                            ,where:{
+                                "gradeds":gradeds,
+                                "courses_id":couresID,
+                                "batchId":batchIds
+                            }
+                        });
+                    }
                     table.on('tool(test)', function(obj){
                         var data = obj.data;
                         // var batchId =   $("#batchId").find("option:selected").text();

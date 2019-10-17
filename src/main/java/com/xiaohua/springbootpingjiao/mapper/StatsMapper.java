@@ -83,6 +83,7 @@ public interface StatsMapper {
      *查询某老师 课程成绩
      */
     List<HashMap> queryTeacherScore(HashMap map);
+    List<HashMap> quertyssss(HashMap map);
     List<HashMap> queryTeacherScoreSize(HashMap map);
     List<HashMap> queryTeacherScoreList(HashMap map);
 
@@ -96,4 +97,6 @@ public interface StatsMapper {
     List<HashMap> selectFractions(int rater,int gradeds,int papers_id,int courses_id);
     List<HashMap> queryScoreSum(int rater,int gradeds,int papers_id,int courses_id);
     List<HashMap> queryBaticNameList(String batch_id);
+    List<HashMap> querydddd(HashMap map);
+    List<HashMap> queryttt(HashMap map);
 }

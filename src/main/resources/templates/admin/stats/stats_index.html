@@ -489,7 +489,7 @@
                            elem: '#demo'
                            // ,height: 400
                            , url: '/stats/querySocore'
-                           , page: true //开启分页
+                           , page: false //开启分页
                            ,cellMinWidth: 20 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
                            ,skin: 'line ' //表格风格 line （行边框风格）row （列边框风格）nob （无边框风格）
                            //,even: true    //隔行换色
@@ -502,20 +502,20 @@
                            , cols: [
                                [ //表头
                                    { title: '题号', toolbar: '#indexTpl',type:'numbers',width: '7%' , sort: true}
-                                   , {field: 'papers_name', title: '问卷名称', width: '14%', align: 'center'}
+                                   , {field: 'batch_name', title: '问卷名称', width: '14%', align: 'center'}
                                    , {field: 'user_name',  title: '姓名', width: '13%', align: 'center'}
                                    , {field: 'teacher_self', title: '自我评价', width: '14%', align: 'center', sort: true}
                                    , {field: 'teahcer_sum', title: '教师评价', width: '14%', align: 'center', sort: true}
                                    , {field: 'students_sum', title: '学生评价', width: '14%', align: 'center', sort: true}
                                    , {field: 'scores_sum', title: '总分', width: '14%', align: 'center', sort: true}
+                                   , {field: 'batch_id', title: '分', align: 'center',hide:true}
                                    , {title: '操作', width: '11%', align: 'center', toolbar: '#barDemo',minWidth: 400}
                                    , {field: 'gradeds', title: 'ID',hide:true}
-                                   , {field: 'papers_id', title: '试卷编号',hide:true}
                                ]
                            ]
                            ,done: function(res, curr, count){
                                $("[data-field='gradeds']").css('display','none'); //关键代码
-                               $("[data-field='papers_id']").css('display','none'); //关键代码
+                               $("[data-field='batch_id']").css('display','none'); //关键代码
                            }
                        })
                        table.on('tool(test)', function(obj){
@@ -538,15 +538,17 @@
                                        console.log(body.find("#batchId"))
                                        console.log(obj)
                                        if(papersId == "选择问卷" ){
-                                               body.find("#paperId").text("历年来所有问卷")
+                                               body.find("#paperId").text(obj.data.batch_name)
+                                               body.find("#aa").text("批次名称:")
                                        } else{
+                                           body.find("#aa").text("问卷名称:")
                                            body.find("#paperId").text(papersId)
                                        }
                                        body.find("#teacherId").text(obj.data.user_name)
                                        console.log(obj)
                                        teacherID = obj.data.gradeds
                                        papersIds = obj.data.papers_id
-                                       batchIds = $("#batchId").val()
+                                       batchIds = obj.data.batch_id
                                        iframeWin.selectDataCallBack(teacherID,papersIds,batchIds)
                                    }
                                })
