@@ -13,7 +13,8 @@
           left join batch b on b.batch_id=ps.batch_id
           left join class c on c.class_id=t.class_id
           left join departments ds on uu.departments_id=ds.departments_id
-        where u.user_Id=#{user_Id} and u.user_id!=uu.user_id and r.role_name="教师" and b.batch_hide!=0
+        where u.user_Id=#{user_Id} and ps.oapers_visible=1 and u.user_id!=uu.user_id and r.role_name="教师" and b.batch_hide!=0
+        group by uu.user_id,cs.courses_id
     </select>
 
     <!--批次模糊查询-->
@@ -28,7 +29,8 @@
           left join batch b on b.batch_id=ps.batch_id
           left join class c on c.class_id=t.class_id
           left join departments ds on uu.departments_id=ds.departments_id
-        where u.user_id=#{user_id} and b.batch_id=#{batch_id} and u.user_id!=uu.user_id and r.role_name="教师" and b.batch_hide!=0
+        where u.user_id=#{user_id} and ps.oapers_visible=1 and b.batch_id=#{batch_id} and u.user_id!=uu.user_id and r.role_name="教师" and b.batch_hide!=0
+        group by uu.user_id,cs.courses_id
     </select>
 
     <!--查询是否评教-->

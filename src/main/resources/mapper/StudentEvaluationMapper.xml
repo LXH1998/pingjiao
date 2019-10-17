@@ -11,7 +11,7 @@
           left join papers pp on pp.role_id=ur.role_id
           left join batch b on b.batch_id=pp.batch_id
           left join role r on r.role_id=ur.role_id
-        where u.user_id=#{user_id} and r.role_name!="教师" and batch_name!="" and b.batch_hide!=0
+        where u.user_id=#{user_id} and pp.oapers_visible=1 and r.role_name!="教师" and batch_name!="" and b.batch_hide!=0
     </select>
 
     <!--动态生成批次搜索下拉框-->
@@ -29,6 +29,6 @@
           left join papers pp on pp.role_id=ur.role_id
           left join batch b on b.batch_id=pp.batch_id
           left join role r on r.role_id=ur.role_id
-        where u.user_id=#{user_id} and r.role_name!="教师" and b.batch_id=#{batch_id} and b.batch_hide!=0
+        where u.user_id=#{user_id} and pp.oapers_visible=1 and r.role_name!="教师" and b.batch_id=#{batch_id} and b.batch_hide!=0
     </select>
 </mapper>

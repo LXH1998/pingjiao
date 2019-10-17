@@ -127,13 +127,14 @@
               //  console.log(data.elem.checked); //是否被选中，true或者false
              //   console.log(data.value); //复选框value值，也可以通过data.elem.value得到
               //  console.log(data.othis); //得到美化后的DOM对象
-               // console.log( $(data.elem).parent().parent().prev().data("allweight"));
-                //console.log($(data.elem).data("allweight"));
+              //  console.log( $(data.elem).parent().parent().prev());
+              //  console.log($(data.elem).data("allweight"));
                 var allweight=Number($(data.elem).parent().parent().prev().data("allweight"))*Number($(data.elem).data("allweight"))
                 fruits = {"id":data.value,"data":$(data.elem).attr("title"),allweight:allweight}
                 if (data.elem.checked) {
                     yishuan.push(fruits)
-                    console.log(yishuan)
+                  //  console.log(yishuan)
+                    //console.log($(data.elem).parent().parent().prev().data("allweight"))
                 }else {
 
                     deleteItem(data.value, yishuan);
@@ -243,8 +244,9 @@
             success: function (e) {
                 var fu
                 for (keys in e.data) {
+                   // console.log(e.data[keys])
                     fu=` <div class="layui-colla-item">
-                                <h2 class="layui-colla-title" data-id="${e.data[keys].target_id}" data-allweight="${e.data[keys].target_weight}">${e.data[keys].target_name}(${e.data[keys].target_weight})</h2>
+                                <h2 class="layui-colla-title"  data-allweight="${e.data[keys].target_weight}" data-id="${e.data[keys].target_id}">${e.data[keys].target_name}(${e.data[keys].target_weight})</h2>
                                   <div class="layui-colla-content pad"  data-id="${e.data[keys].target_id}" style="background-color: white">
 
                                 </div>
@@ -293,10 +295,10 @@
                         ccc="div[data-id="+id+"]"
                         $(ccc).empty()
                         for (keys in e.data) {
-                            //console.log(e.data[keys].leafs_id)
+                            //console.log(e.data[keys].target_weight)
                             if (e.data[keys].leafs_id==0) {
                                 fu=` <div class="layui-colla-item">
-                                <h2 class="layui-colla-title" data-id="${e.data[keys].target_id}">${e.data[keys].target_name}(${e.data[keys].target_weight})</h2>
+                                <h2 class="layui-colla-title" data-allweight="${e.data[keys].target_weight}" data-id="${e.data[keys].target_id}">${e.data[keys].target_name}(${e.data[keys].target_weight})</h2>
                                   <div class="layui-colla-content pad"  data-id="${e.data[keys].target_id}">
 
                                 </div>
@@ -366,10 +368,10 @@
                  dataType:"json",
                  data:{role_id:addrole_id,batch_id:addbatch_id},
                  success:function (e) {
-                     console.log(e)
-                     console.log(e.datalength)
+                  //   console.log(e)
+                   //  console.log(e.datalength)
                      if (e.data.length==0&&yishuan.length!=0) {
-                         console.log(yishuan)
+                       //  console.log(yishuan)
                         $.ajax({
                             url:"/Questionnaire/insertPapers",
                             type:"get",
@@ -385,7 +387,7 @@
                                         datatype:"json",
                                         data:{batch_id:addbatch_id,role_id:addrole_id},
                                         success:function (e) {
-                                            console.log(e)
+                                           // console.log(e)
                                             for (keys in yishuan){
                                                 // console.log(yishuan[keys].id)
                                                 $.ajax({

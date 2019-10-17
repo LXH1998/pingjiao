@@ -265,7 +265,8 @@ public class StatsController {
         result.put("data",fractions);
         return result;
     }
-    @RequestMapping("dd")
+
+    @RequestMapping("look")
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
         ModelAndView mv = new ModelAndView();
@@ -273,5 +274,6 @@ public class StatsController {
         mv.setViewName("/admin/stats/stats_index");
         return mv;
     }
+
 
 }

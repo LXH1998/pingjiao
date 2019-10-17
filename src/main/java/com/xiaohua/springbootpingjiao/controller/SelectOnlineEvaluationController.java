@@ -28,9 +28,9 @@ public class SelectOnlineEvaluationController {
     @Autowired
     private SelectOnlineEvaluationService selectOnlineEvaluationService;
 
-    @RequestMapping("GoSelectOnlineEvaluation")
+    @RequestMapping("/GoSelectOnlineEvaluation")
     public String GoSelectOnlineEvaluation(){
-        return "/admin/evaluation/selectOnlineEvaluation";
+        return "admin/evaluation/selectOnlineEvaluation";
     }
 
     @RequestMapping("GoSelectOnlineHistoryEvaluation")
