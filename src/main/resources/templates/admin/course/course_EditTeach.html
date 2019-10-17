@@ -99,7 +99,7 @@
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index,item) {
-                    if (item.class_Name=parent.class_Name)
+                    if (item.class_Name==parent.class_Name)
                     {
                         $('#class').append(new Option(item.class_Name,item.class_Id,true,true));// 下拉菜单里添加选中元素
                     }else {
@@ -115,7 +115,7 @@
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index,item) {
-                    if (item.user_Name=parent.user_Name)
+                    if (item.user_Name==parent.user_Name)
                     {
                         $('#teach').append(new Option(item.user_Name, item.user_Id,true,true));// 下拉菜单里添加已选中元素
                     }else {

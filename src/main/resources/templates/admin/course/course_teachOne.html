@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>课程管理</title>
+<link type="text/css" th:href="@{/static/layui/css/layui.css}" rel="stylesheet">
+<script type="text/javascript" th:src="@{/static/js/jquery-3.4.0.js}"></script>
+<script type="text/javascript" th:src="@{/static/layui/layui.js}"></script>
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="demoTable"  >
+        班级:
+        <!--lay-search-->
+        <div class="layui-inline">
+            <select name="quiz2" id="class" >
+                <option value="">请选择班级</option>
+            </select>
+        </div>
+        <button type="button" class="layui-btn"   id="add">
+            <i class="layui-icon">&#xe608;</i> 添加
+        </button>
+        <button type="button" class="layui-btn layui-inline fl w130" onclick="f()" style="margin-right: 200px"> 返回到课程</button>
+    </div>
+</form>
+<table id="demo" lay-filter="test"></table>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+
+    <!-- 这里同样支持 laytpl 语法，如： -->
+    {{#  if(d.auth > 2){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="check">审核</a>
+    {{#  } }}
+</script>
+<style>
+
+    /* 防止下拉框的下拉列表被隐藏---必须设置--- */
+    .layui-table-cell {            overflow: visible !important;        }
+    /* 使得下拉框与单元格刚好合适 */
+    td .layui-form-select{
+        margin-top: -10px;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+</style>
+<script type="text/javascript">
+    function f() {
+        location.href = '/course/list'
+    }
+
+    var course_Name;
+    var teach_id;
+    layui.use(['form', 'layedit', 'laydate','table','jquery'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,$=layui.jquery
+            , table = layui.table;
+        //初始化班级下拉框
+        $.ajax({
+            url: '/course/teachCourseOne',
+            type: 'get',
+            data:{
+                    courses_Id:localStorage.getItem("courses_Id"),
+                page:1,
+                limit:100000
+            },
+            success: function (data) {
+                $.each(data.data, function (index,item) {
+                    $('#class').append(new Option(item.class_Name));// 下拉菜单里添加元素
+                });
+                layui.form.render("select");
+            }
+        })
+        //数据表表头
+        table.render({
+            elem: '#demo'
+            // ,height: 400
+            ,url: '/course/teachListDate' //数据接口
+            ,page: true //开启分页
+            ,cols: [
+                [ //表头
+                    {field: 'teach_id', templet: '#xuhao',title: '课程ID', width:'20%', sort: true, fixed: 'left', align: 'center'},
+                    // {field: 'electGxmc', title: '下拉框', width: '20%',align: 'center',templet:'#selectGxmc'},
+                    {field: 'courses_Name', title: '课程名', width: '20%',align: 'center'}
+                    ,{field: 'class_Name', title: '班级', width:'20%', event: 'setSign' ,align: 'center'}
+                    ,{field: 'user_Name', title: '授课教师', width:'20%', align: 'center'}
+                    ,{title: '操作', width: '19%', align: 'center', toolbar: '#barDemo'}
+                ]
+            ]
+        });
+        //重构函数
+        function batchRelode(){
+            table.reload('demo', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                url:"/course/teachCourseOne",
+                where:{
+                    courses_Id:localStorage.getItem("courses_Id")
+                }
+            }, 'data');
+        }
+        batchRelode();
+        //监听工具条
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            console.log(data)
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+            $("#id").html("填充代码");
+            // console.log(tr[0].innerHTML)  获取DOM结构
+
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+                //iframe层-父子操作
+                // layer.open({
+                //     type: 2,
+                //     title:'已有权限',
+                //     area: ['700px', '450px'],
+                //     fixed: false, //不固定
+                //     maxmin: true,
+                //     content: '/course/teach',
+                //     success:function (layero,index) {
+                //         var iframe = window['layui-layer-iframe' + index];
+                //         iframe.child(data)
+                //     }
+                // });
+                location.href = '/course/teach'
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('真的删除行么', function(index){
+                    //向服务端发送删除指令
+                    $.ajax({
+                        url:'/course/deleteOne',
+                        type:'post',
+                        data:{
+                            courses_Id: data.courses_Id
+                        },
+                        success:function (res) {
+                            if (res.result=="操作成功"){
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.close(index);
+                                layer.msg(res.result)
+                            } else if (res.result=="操作失败") {
+                                layer.msg(res.result);
+                            }
+                        },
+                        error:function () {
+                            layer.msg("异常");
+                        }
+                    })
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                console.log(data)
+                courses_Name = data.courses_Name;
+                class_Name = data.class_Name;
+                user_Name = data.user_Name;
+                teach_id = data.teach_id
+                layer.open({
+                    type: 2,
+                    title: false,
+                    area: ['450px', '360px'],
+                    shade: 0.8,
+                    closeBtn: 1,
+                    shadeClose: true,
+                    // time:timee,
+                    content: '/course/editTeach',
+                    end: function(){ //此处用于演示
+
+                        location.reload();
+                    }
+                });
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    ,title: 'xxx'
+                });
+            }
+        });
+        //添加页面跳出
+        $("#add").click(function(){
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['35em', '25em'],
+                shade: 0.8,
+                closeBtn: 1,
+                shadeClose: true,
+                content: '/course/addTeach',
+                end: function(){ //此处用于演示
+                    location.reload();
+                }
+            });
+        });
+        //搜索框
+        form.on('select', function(data){
+           var class_name = $('#class option:selected').text();
+            table.reload('demo', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                url:"/course/teachCourseOneInClass"
+                ,where: {
+                    class_name:class_name,
+                    courses_Id:localStorage.getItem("courses_Id")
+                }
+            });
+            //   console.log(data.value); //得到被选中的值
+        });
+
+        // $('.demoTable .layui-btn').on('click', function(){
+        //     var type = $(this).data('type');
+        //     active[type] ? active[type].call(this) : '';
+        // });
+
+    });
+
+</script>
+</body>
+</html>
