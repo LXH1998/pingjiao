@@ -180,7 +180,7 @@
         //    初始化树
         zTreeObj = $.fn.zTree.init($("#tree"), setting, data);
         //    展开树的节点
-        // zTreeObj.expandAll(true);
+        zTreeObj.expandAll(true);
 
         fixIcon();//调用判断父节点显示文件夹图标的方法。
 
@@ -569,7 +569,9 @@
                         success:function (res) {
                             if (res.message=="操作成功"){
                                 layer.msg(res.message);
-                                initIndex()
+                                // initIndex()
+                                reInit(id)
+                                $('#targetManagement>div').eq(-1).empty()
                             } else {
                                 layer.msg(res.message);
                             }
